@@ -18,6 +18,16 @@ class EditSetting extends EditRecord
         ];
     }
 
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (isset($data['value']) && is_array($data['value'])) {
+            $first = reset($data['value']);
+            $data['value'] = is_string($first) ? $first : null;
+        }
+
+        return $data;
+    }
+
     protected function afterSave(): void
     {
         app(SettingService::class)->clearCache();

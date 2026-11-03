@@ -193,46 +193,46 @@ class CorrectionRequestResource extends Resource
                     ->options(SuggestionStatus::class),
             ])
             ->actions([
-                Action::make('approve')
-                    ->label(__('filament.mark_approved'))
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->visible(fn (CorrectionRequest $record): bool => $record->status !== SuggestionStatus::Approved)
-                    ->action(function (CorrectionRequest $record): void {
-                        $record->update([
-                            'status' => SuggestionStatus::Approved,
-                            'reviewed_by' => auth()->id(),
-                            'reviewed_at' => now(),
-                        ]);
-                        Notification::make()->title(__('filament.status_updated'))->success()->send();
-                    }),
-                Action::make('reject')
-                    ->label(__('filament.mark_rejected'))
-                    ->icon('heroicon-o-x-circle')
-                    ->color('danger')
-                    ->visible(fn (CorrectionRequest $record): bool => $record->status !== SuggestionStatus::Rejected)
-                    ->action(function (CorrectionRequest $record): void {
-                        $record->update([
-                            'status' => SuggestionStatus::Rejected,
-                            'reviewed_by' => auth()->id(),
-                            'reviewed_at' => now(),
-                        ]);
-                        Notification::make()->title(__('filament.status_updated'))->warning()->send();
-                    }),
-                Action::make('pending')
-                    ->label(__('filament.mark_pending'))
-                    ->icon('heroicon-o-clock')
-                    ->color('warning')
-                    ->visible(fn (CorrectionRequest $record): bool => $record->status !== SuggestionStatus::Pending)
-                    ->action(function (CorrectionRequest $record): void {
-                        $record->update([
-                            'status' => SuggestionStatus::Pending,
-                            'reviewed_by' => auth()->id(),
-                            'reviewed_at' => now(),
-                        ]);
-                        Notification::make()->title(__('filament.status_updated'))->info()->send();
-                    }),
                 ActionGroup::make([
+                    Action::make('approve')
+                        ->label(__('filament.mark_approved'))
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->visible(fn (CorrectionRequest $record): bool => $record->status !== SuggestionStatus::Approved)
+                        ->action(function (CorrectionRequest $record): void {
+                            $record->update([
+                                'status' => SuggestionStatus::Approved,
+                                'reviewed_by' => auth()->id(),
+                                'reviewed_at' => now(),
+                            ]);
+                            Notification::make()->title(__('filament.status_updated'))->success()->send();
+                        }),
+                    Action::make('reject')
+                        ->label(__('filament.mark_rejected'))
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->visible(fn (CorrectionRequest $record): bool => $record->status !== SuggestionStatus::Rejected)
+                        ->action(function (CorrectionRequest $record): void {
+                            $record->update([
+                                'status' => SuggestionStatus::Rejected,
+                                'reviewed_by' => auth()->id(),
+                                'reviewed_at' => now(),
+                            ]);
+                            Notification::make()->title(__('filament.status_updated'))->warning()->send();
+                        }),
+                    Action::make('pending')
+                        ->label(__('filament.mark_pending'))
+                        ->icon('heroicon-o-clock')
+                        ->color('warning')
+                        ->visible(fn (CorrectionRequest $record): bool => $record->status !== SuggestionStatus::Pending)
+                        ->action(function (CorrectionRequest $record): void {
+                            $record->update([
+                                'status' => SuggestionStatus::Pending,
+                                'reviewed_by' => auth()->id(),
+                                'reviewed_at' => now(),
+                            ]);
+                            Notification::make()->title(__('filament.status_updated'))->info()->send();
+                        }),
                     EditAction::make(),
                     DeleteAction::make(),
                 ]),

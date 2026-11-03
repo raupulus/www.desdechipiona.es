@@ -141,16 +141,25 @@ class ProverbResource extends Resource
                     ->options(SuggestionStatus::class),
             ])
             ->actions([
-                Action::make('approve')
-                    ->label(__('filament.mark_approved'))
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->visible(fn (Proverb $record): bool => $record->status !== SuggestionStatus::Approved)
-                    ->action(function (Proverb $record): void {
-                        $record->update(['status' => SuggestionStatus::Approved]);
-                        Notification::make()->title(__('filament.status_updated'))->success()->send();
-                    }),
                 ActionGroup::make([
+                    Action::make('approve')
+                        ->label(__('filament.mark_approved'))
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->visible(fn (Proverb $record): bool => $record->status !== SuggestionStatus::Approved)
+                        ->action(function (Proverb $record): void {
+                            $record->update(['status' => SuggestionStatus::Approved]);
+                            Notification::make()->title(__('filament.status_updated'))->success()->send();
+                        }),
+                    Action::make('reject')
+                        ->label(__('filament.mark_rejected'))
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->visible(fn (Proverb $record): bool => $record->status !== SuggestionStatus::Rejected)
+                        ->action(function (Proverb $record): void {
+                            $record->update(['status' => SuggestionStatus::Rejected]);
+                            Notification::make()->title(__('filament.status_updated'))->warning()->send();
+                        }),
                     EditAction::make(),
                     DeleteAction::make(),
                 ]),

@@ -5,11 +5,13 @@ namespace App\Filament\Admin\Resources;
 use App\Models\Comment;
 use App\Models\News;
 use App\Models\Page;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -106,6 +108,14 @@ class CommentResource extends Resource
             ])
             ->actions([
                 ActionGroup::make([
+                    Action::make('toggle_approval')
+                        ->label(fn (Comment $record): string => $record->is_approved ? __('filament.mark_pending') : __('filament.mark_approved'))
+                        ->icon(fn (Comment $record): string => $record->is_approved ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                        ->color(fn (Comment $record): string => $record->is_approved ? 'warning' : 'success')
+                        ->action(function (Comment $record): void {
+                            $record->update(['is_approved' => ! $record->is_approved]);
+                            Notification::make()->title(__('filament.status_updated'))->success()->send();
+                        }),
                     EditAction::make(),
                     DeleteAction::make(),
                 ]),

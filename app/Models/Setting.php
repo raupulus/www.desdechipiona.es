@@ -42,6 +42,13 @@ class Setting extends Model
             app(SettingService::class)->clearCache();
         };
 
+        static::saving(function (self $setting): void {
+            if (is_array($setting->value)) {
+                $first = reset($setting->value);
+                $setting->value = is_string($first) ? $first : null;
+            }
+        });
+
         static::saved($clearCache);
         static::deleted($clearCache);
     }

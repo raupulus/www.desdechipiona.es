@@ -12,7 +12,7 @@
 
         {{-- Tabla de logs --}}
         <x-filament::section>
-            <div style="overflow-x: auto; margin: -1rem -1.5rem;">
+            <div style="overflow-x: auto; width: 100%;">
                 <table style="width: 100%; min-width: 600px; text-align: left; border-collapse: collapse;">
                     <thead>
                         <tr class="border-b border-gray-200 dark:border-white/10">
