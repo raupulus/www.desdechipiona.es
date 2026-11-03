@@ -108,11 +108,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="prov-author-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre o familia</label>
-                        <input type="text" id="prov-author-name" name="author_name" value="{{ old('author_name') }}" placeholder="Ej. Familia Lorenzo / Carmen Naval" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">
+                        <input type="text" id="prov-author-name" name="author_name" value="{{ old('author_name') }}" placeholder="Ej. Familia Lorenzo / Carmen Naval" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
                     </div>
                     <div>
                         <label for="prov-author-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu correo (opcional)</label>
-                        <input type="email" id="prov-author-email" name="author_email" value="{{ old('author_email') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">
+                        <input type="email" id="prov-author-email" name="author_email" value="{{ old('author_email') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
                     </div>
                 </div>
             @endif
@@ -125,13 +125,13 @@
 
             <div>
                 <label for="prov-meaning" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">¿Qué significa o cuándo se usa?</label>
-                <textarea id="prov-meaning" name="meaning" rows="3" placeholder="Explica brevemente su sentido marinero, del campo o del pueblo..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">{{ old('meaning') }}</textarea>
+                <textarea id="prov-meaning" name="meaning" rows="3" placeholder="Explica brevemente su sentido marinero, del campo o del pueblo..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('meaning') }}</textarea>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="prov-category" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tema del refrán *</label>
-                    <select id="prov-category" name="category" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-bold">
+                    <select id="prov-category" name="category" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-bold">
                         <option value="mar">La Mar, Mareas y Corrales</option>
                         <option value="campo">El Campo, Huerta y Moscatel</option>
                         <option value="vientos">Vientos (Levante y Poniente)</option>
@@ -142,7 +142,7 @@
 
                 <div>
                     <label for="prov-page" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Página relacionada (opcional)</label>
-                    <select id="prov-page" name="related_page_id" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-bold">
+                    <select id="prov-page" name="related_page_id" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-bold">
                         <option value="">— Ninguna página en concreto —</option>
                         @foreach($pages as $p)
                             <option value="{{ $p->id }}">{{ $p->getTranslation('title', app()->getLocale()) }}</option>

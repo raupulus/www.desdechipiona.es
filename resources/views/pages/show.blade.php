@@ -198,7 +198,7 @@
             </section>
 
             {{-- Modal nativo <dialog> para enviar solicitud de corrección --}}
-            <dialog id="correction-dialog" class="m-auto w-full max-w-2xl rounded-2xl border-2 border-slate-900 bg-white p-0 text-slate-950 shadow-2xl backdrop:bg-slate-950/75">
+            <dialog id="correction-dialog" class="m-auto w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border-2 border-slate-900 bg-white p-0 text-slate-950 shadow-2xl backdrop:bg-slate-950/75">
                 <div class="p-6 sm:p-8 space-y-5">
                     <div class="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
                         <div>
@@ -225,28 +225,28 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label for="corr-author-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre</label>
-                                    <input type="text" id="corr-author-name" name="author_name" value="{{ old('author_name') }}" placeholder="Ej. María Gómez" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">
+                                    <input type="text" id="corr-author-name" name="author_name" value="{{ old('author_name') }}" placeholder="Ej. María Gómez" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
                                 </div>
                                 <div>
                                     <label for="corr-author-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu correo (opcional)</label>
-                                    <input type="email" id="corr-author-email" name="author_email" value="{{ old('author_email') }}" placeholder="Para avisarte al aprobarla" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">
+                                    <input type="email" id="corr-author-email" name="author_email" value="{{ old('author_email') }}" placeholder="Para avisarte al aprobarla" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
                                 </div>
                             </div>
                         @endif
 
                         <div>
                             <label for="quoted_text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Frase o dato actual que deseas corregir (opcional)</label>
-                            <input type="text" id="quoted_text" name="quoted_text" value="{{ old('quoted_text') }}" placeholder="Copia aquí la frase o fecha que aparece en el texto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">
+                            <input type="text" id="quoted_text" name="quoted_text" value="{{ old('quoted_text') }}" placeholder="Copia aquí la frase o fecha que aparece en el texto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
                         </div>
 
                         <div>
                             <label for="proposed_correction" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">¿Cuál es la corrección o aclaración propuesta? *</label>
-                            <textarea id="proposed_correction" name="proposed_correction" rows="4" required minlength="10" placeholder="Explica con detalle el dato correcto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">{{ old('proposed_correction') }}</textarea>
+                            <textarea id="proposed_correction" name="proposed_correction" rows="4" required minlength="10" placeholder="Explica con detalle el dato correcto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('proposed_correction') }}</textarea>
                         </div>
 
                         <div>
                             <label for="sources_info" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Fuente documental, libro o testimonio (opcional)</label>
-                            <input type="text" id="sources_info" name="sources_info" value="{{ old('sources_info') }}" placeholder="Ej. Archivo Municipal, libro de bautismos, fotografía familiar..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">
+                            <input type="text" id="sources_info" name="sources_info" value="{{ old('sources_info') }}" placeholder="Ej. Archivo Municipal, libro de bautismos, fotografía familiar..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
                         </div>
 
                         <x-turnstile-widget action="correction" />
@@ -290,7 +290,7 @@
                                     <div class="flex items-center gap-2">
                                         <span class="font-extrabold text-sm text-slate-950">{{ $comment->author_name }}</span>
                                         @if($comment->oauth_provider)
-                                            <span class="rounded bg-blue-100 px-2 py-0.5 text-[11px] font-bold text-blue-950">
+                                            <span class="rounded bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-950">
                                                 Verificado con {{ ucfirst($comment->oauth_provider) }}
                                             </span>
                                         @endif
@@ -316,18 +316,18 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label for="comment-author-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre</label>
-                                    <input type="text" id="comment-author-name" name="author_name" value="{{ old('author_name') }}" placeholder="Ej. Juan Camacho" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">
+                                    <input type="text" id="comment-author-name" name="author_name" value="{{ old('author_name') }}" placeholder="Ej. Juan Camacho" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
                                 </div>
                                 <div>
                                     <label for="comment-author-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu correo (opcional)</label>
-                                    <input type="email" id="comment-author-email" name="author_email" value="{{ old('author_email') }}" placeholder="No se publicará" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">
+                                    <input type="email" id="comment-author-email" name="author_email" value="{{ old('author_email') }}" placeholder="No se publicará" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
                                 </div>
                             </div>
                         @endif
 
                         <div>
                             <label for="comment-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu comentario o recuerdo *</label>
-                            <textarea id="comment-body" name="body" rows="3" required minlength="5" placeholder="Escribe aquí tu comentario con respeto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">{{ old('body') }}</textarea>
+                            <textarea id="comment-body" name="body" rows="3" required minlength="5" placeholder="Escribe aquí tu comentario con respeto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('body') }}</textarea>
                         </div>
 
                         <x-turnstile-widget action="comment" />
@@ -388,7 +388,7 @@
                                     href="{{ route('pages.show', $linked->slug) }}"
                                     class="block rounded-xl border border-slate-200 bg-stone-50 p-3 hover:border-orange-600 hover:bg-orange-50/40 transition"
                                 >
-                                    <span class="block text-[11px] font-extrabold uppercase text-orange-800">
+                                    <span class="block text-xs font-extrabold uppercase text-orange-800">
                                         {{ $linked->content_group?->label() ?? 'Ficha relacionada' }}
                                         @if($linked->period_label) · {{ $linked->period_label }} @endif
                                     </span>

@@ -25,7 +25,7 @@
             <span class="inline-flex h-5 w-5 items-center justify-center rounded-md bg-emerald-700 text-white" aria-hidden="true">✓</span>
             <span>Protegido contra spam con <strong>Cloudflare Turnstile</strong></span>
         </div>
-        <span class="font-mono text-[11px] text-slate-600">CF-TURNSTILE</span>
+        <span class="font-mono text-xs text-slate-600">CF-TURNSTILE</span>
         <input type="hidden" name="cf-turnstile-response" value="dev-bypass-token">
     </div>
 @endif

@@ -75,7 +75,7 @@
                     <span class="block font-serif text-xl font-extrabold tracking-tight text-slate-950 group-hover:text-orange-800 transition">
                         {{ setting('site_title', config('app.name')) }}
                     </span>
-                    <span class="block text-[11px] font-semibold text-slate-700">
+                    <span class="block text-xs font-semibold text-slate-700">
                         Historia, Mar, Tierra y Memoria Viva
                     </span>
                 </div>

@@ -76,7 +76,7 @@
                     <p class="text-sm font-bold text-blue-950 mt-1">{{ $tides['type_label'] ?? '' }}</p>
                 </div>
                 <div class="rounded-xl bg-slate-950 px-4 py-2 text-center">
-                    <span class="block text-[10px] font-extrabold uppercase tracking-wider text-amber-300">Coeficiente</span>
+                    <span class="block text-xs font-extrabold uppercase tracking-wider text-amber-300">Coeficiente</span>
                     <span class="font-mono text-2xl font-extrabold text-white">{{ $tides['coefficient'] ?? 72 }}</span>
                 </div>
             </div>

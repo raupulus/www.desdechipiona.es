@@ -91,7 +91,7 @@
                         >
                             <span>{{ $meta['label'] }}</span>
                             @if($count > 0)
-                                <span class="rounded-full px-1.5 py-0.2 text-[11px] {{ $isSelected ? 'bg-amber-400 text-slate-950 font-extrabold' : 'bg-slate-200 text-slate-800' }}">{{ $count }}</span>
+                                <span class="rounded-full px-1.5 py-0.2 text-xs {{ $isSelected ? 'bg-amber-400 text-slate-950 font-extrabold' : 'bg-slate-200 text-slate-800' }}">{{ $count }}</span>
                             @endif
                         </button>
                     @endforeach
@@ -277,12 +277,12 @@
                             <div class="absolute inset-0 p-5 flex flex-col justify-end">
                                 <div class="flex flex-wrap items-center gap-1.5 mb-2">
                                     @if($pageItem->content_group)
-                                        <span class="rounded-md bg-slate-950/90 border border-white/20 px-2.5 py-0.5 text-[11px] font-bold text-white">
+                                        <span class="rounded-md bg-slate-950/90 border border-white/20 px-2.5 py-0.5 text-xs font-bold text-white">
                                             {{ $pageItem->content_group->label() }}
                                         </span>
                                     @endif
                                     @if($pageItem->period_label)
-                                        <span class="rounded-md bg-amber-400 px-2.5 py-0.5 text-[11px] font-extrabold text-slate-950">
+                                        <span class="rounded-md bg-amber-400 px-2.5 py-0.5 text-xs font-extrabold text-slate-950">
                                             {{ $pageItem->period_label }}
                                         </span>
                                     @endif
@@ -330,7 +330,7 @@
 
                         @if($pageItem->relatedPages->count() > 0)
                             <div>
-                                <span class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-700 mb-1.5">
+                                <span class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-1.5">
                                     Páginas enlazadas:
                                 </span>
                                 <div class="flex flex-wrap gap-1.5">
