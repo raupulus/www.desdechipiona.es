@@ -1,6 +1,6 @@
 # AGENTS.md — Guía completa del proyecto para agentes de IA
 
-*Última actualización: 2026-11-03*
+*Última actualización: 2026-11-04*
 
 Este archivo proporciona el contexto y las directrices obligatorias del proyecto para que los agentes de IA
 puedan trabajar de forma autónoma, consistente y precisa. Léelo completamente antes de realizar cualquier modificación.
