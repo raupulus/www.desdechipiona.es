@@ -1,269 +1,166 @@
-# Skeleton Laravel Project
+<div align="center">
 
-*Última actualización: 2026-11-01*
+<img src="docs/images/banner.png" alt="Desde Chipiona — Portal de Historia Moderna y Patrimonio Documental" width="100%">
 
-Plantilla base profesional para aplicaciones Laravel con arquitectura modular, robusta y lista para producción.
-Incluye autenticación web y API, panel de administración Filament, sistema de contenidos bilingüe (posts, páginas, slides, secciones), configuraciones dinámicas, registro de auditoría de emails, SEO automatizado, Docker y suite de tests.
+# Desde Chipiona
+
+**Faro, naturaleza y memoria histórica contrastada documento a documento**
+
+[![Web Oficial](https://img.shields.io/badge/Web-desdechipiona.es-ea580c?style=for-the-badge&logo=googlechrome&logoColor=white)](https://desdechipiona.es)
+[![Telegram](https://img.shields.io/badge/Telegram-Canal%20Oficial-0284c7?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/desdechipiona)
+[![GitLab](https://img.shields.io/badge/GitLab-Repositorio%20Principal-e24329?style=for-the-badge&logo=gitlab&logoColor=white)](https://gitlab.com/raupulus/www.desdechipiona.es)
+[![GitHub](https://img.shields.io/badge/GitHub-Backup-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/raupulus/www.desdechipiona.es)
+
+### 🌐 [https://desdechipiona.es](https://desdechipiona.es)
 
 ---
 
-## Stack tecnológico
+</div>
 
-| Tecnología | Versión | Propósito en el proyecto |
-|-----------|---------|--------------------------|
-| **PHP** | 8.5 | Lenguaje base con tipado estricto, backed enums y readonly properties |
-| **Laravel** | 13.x | Framework principal |
+*Última actualización: 2026-11-03*
+
+## 📖 Sobre el Proyecto
+
+**Desde Chipiona** es una plataforma digital abierta y rigurosa dedicada a la investigación, verificación y divulgación de la historia, el patrimonio marítimo y la naturaleza de Chipiona (Cádiz).
+
+El proyecto abarca desde la prehistoria y la Antigüedad romana (*Caepionis Turris*, alfares de salazón y pecios) hasta los siglos XIX, XX y la actualidad (el Faro de Jaime Font, el Sanatorio marítimo de Santa Clara, los corrales de pesca y la memoria comunitaria). Cada artículo y afirmación se apoya en fondos documentales de archivo (PARES, AHN, AGS, AHPC y archivos municipales) identificados mediante códigos unívocos `[F-XXXX]`, separando con total transparencia los hechos documentados de la tradición oral y las hipótesis académicas.
+
+---
+
+## 🎨 Sistema de Identidad y Paleta Cromática
+
+El portal articula su diseño en **Tailwind CSS v4** mediante una paleta de 4 ejes identitarios inspirados en la historia de la villa:
+
+| Eje Cromático | Tono Tailwind | Hex | Simbolismo Histórico y Rol en la Web |
+|---------------|---------------|-----|--------------------------------------|
+| **Naranja Terracota** | `orange-600` | `#ea580c` | Alfar romano de El Olivar, *Caepionis Turris*, llamadas a la acción (CTA) y Antigüedad |
+| **Rojo Lacre** | `rose-600` | `#e11d48` | Carta Puebla de 1477, sellos nobiliarios de la Casa de Arcos y alertas de discrepancia |
+| **Morado Archivo** | `violet-600` | `#7c3aed` | Siglos XIX–XXI, citas literales, fuentes documentales `[F-XXXX]` y glosario |
+| **Azul Atlántico** | `sky-600` / `blue-900` | `#0284c7` | El océano Atlántico, el Faro, los corrales de pesca y navegación estructural |
+
+Consulte la especificación completa en [docs/info/DESIGN.md](docs/info/DESIGN.md) y el kit de copys y redes en [datos-redes.md](datos-redes.md).
+
+---
+
+## 🚀 Stack Tecnológico
+
+| Tecnología | Versión | Propósito en el Proyecto |
+|------------|---------|--------------------------|
+| **PHP** | 8.5 | Backend tipado estricto con backed enums y readonly properties |
+| **Laravel** | 13.x | Framework de aplicaciones web |
 | **PostgreSQL** | 16.x | **Motor de base de datos obligatorio** (`DB_CONNECTION=pgsql`) |
 | **Filament** | 5.x | Panel de administración (`/admin`) y panel de usuario (`/panel`) |
-| **Tailwind CSS** | 4.x | Estilos frontend utilitarios configurados con `@theme` |
-| **Alpine.js** | 3.x | Interactividad ligera, dropdowns y modales |
-| **Vue 3** | 3.x | Preparado en el frontend para componentes enriquecidos |
+| **Tailwind CSS** | 4.x | Framework CSS utilitario configurado vía `@theme` nativo |
+| **Alpine.js** | 3.x | Interactividad reactiva ligera y modales |
 | **Vite + pnpm** | 8.x / 10.x | Bundler de assets y gestor de paquetes frontend |
-| **Laravel Sanctum** | 4.x | Autenticación API con Bearer tokens personales |
-| **spatie/laravel-translatable** | 6.x | Traducciones directas en campos de modelos |
-| **spatie/laravel-sitemap** | 8.x | Generación automática del sitemap XML multi-idioma |
-| **knuckleswtf/scribe** | 5.x | Documentación interactiva de la API REST (`/docs`) |
+| **Laravel Sanctum** | 4.x | Autenticación y tokens de API REST |
+| **spatie/laravel-translatable** | 6.x | Soporte multilingüe en modelos Eloquent |
+| **spatie/laravel-sitemap** | 8.x | Generación automatizada de sitemaps XML |
+| **knuckleswtf/scribe** | 5.x | Documentación interactiva de la API en `/docs` |
 
 ---
 
-## Requisitos previos
+## 🛠️ Instalación en Desarrollo Local
 
-- **PHP 8.5** o superior con extensiones: `pdo_pgsql`, `pgsql`, `mbstring`, `openssl`, `curl`, `gd` / `imagick`, `fileinfo`, `xml`, `intl`, `zip`.
-- **PostgreSQL 16** instalado y corriendo localmente o mediante Docker.
-- **Composer 2.7+**
-- **Node.js 20.19+ / 22.12+** y **pnpm 10+**
+### Requisitos Previos:
+- **PHP 8.5** con extensiones `pdo_pgsql`, `pgsql`, `mbstring`, `curl`, `gd`, `intl`, `zip`.
+- **PostgreSQL 16** activo en local o mediante Docker.
+- **Composer 2.7+**, **Node.js 20+** y **pnpm 10+**.
 
----
-
-## Instalación en Desarrollo Local
-
-### Opción 1: Inicio Rápido Automatizado
+### Pasos de Instalación:
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://gitlab.com/raupulus/skeleton-laravel-project.git
-cd skeleton-laravel-project
+git clone https://gitlab.com/raupulus/www.desdechipiona.es.git
+cd www.desdechipiona.es
 
-# 2. Configurar entorno inicial
+# 2. Configurar el archivo de entorno
 cp .env.example .env
 
-# 3. Ajustar credenciales de PostgreSQL en .env:
+# 3. Configurar en .env la conexión a PostgreSQL:
 # DB_CONNECTION=pgsql
 # DB_HOST=127.0.0.1
 # DB_PORT=5432
-# DB_DATABASE=skeleton_laravel
+# DB_DATABASE=desdechipiona_db
 # DB_USERNAME=postgres
 # DB_PASSWORD=tu_password
 
-# 4. Instalar dependencias, generar clave, migrar y enlazar storage
+# 4. Instalación guiada de dependencias, base de datos y clave
 php artisan project:install
 
-# 5. Poblar con contenido corporativo de muestra
+# 5. Cargar datos corporativos y de muestra
 php artisan project:dummy
 
-# 6. Iniciar entorno de desarrollo concurrente (servidor, vite, colas, logs)
+# 6. Iniciar el entorno de desarrollo concurrente
 composer run dev
 ```
 
-### Opción 2: Instalación Manual Paso a Paso
-
-```bash
-# 1. Variables de entorno
-cp .env.example .env
-
-# 2. Dependencias PHP y JS
-composer install
-pnpm install
-
-# 3. Clave y Storage
-php artisan key:generate
-php artisan storage:link
-
-# 4. Base de datos (PostgreSQL)
-php artisan migrate
-
-# 5. Cargar datos corporativos de prueba
-php artisan project:dummy
-
-# 6. Compilar assets frontend
-pnpm run build
-# o para desarrollo interactivo:
-pnpm run dev
-```
-
 ---
 
-## Despliegue con Docker
+## 🐳 Despliegue con Docker
 
-El proyecto incluye configuración Docker lista para desarrollo y pruebas de despliegue:
-
-| Servicio | Imagen | Puerto | Descripción |
-|----------|--------|--------|-------------|
-| **app** | PHP 8.5-FPM personalizada | - | Aplicación Laravel |
-| **nginx** | Alpine Nginx | 8000 | Servidor web y reverse proxy |
-| **db** | `postgres:16-alpine` | 5432 | Base de datos PostgreSQL |
-| **redis** | `redis:7-alpine` | 6379 | Caché y colas en segundo plano |
+El proyecto incluye configuración Docker lista para desarrollo:
 
 ```bash
-# 1. Iniciar los contenedores
 cp .env.example .env
 docker compose up -d
-
-# 2. Ejecutar la instalación desatendida dentro del contenedor app
 docker compose exec app php artisan project:install --force
-
-# 3. Poblar datos corporativos
 docker compose exec app php artisan project:dummy
-
-# 4. Acceso web
-# Aplicación: http://localhost:8000
-# Panel Admin: http://localhost:8000/admin
 ```
+
+- **Aplicación web**: [http://localhost:8000](http://localhost:8000)
+- **Panel Admin**: [http://localhost:8000/admin](http://localhost:8000/admin)
 
 ---
 
-## Despliegue en Servidor de Producción
-
-Consulte las configuraciones de servidor en `docs/deploys/` (`nginx.conf`, `apache.conf`, `deploy.sh`).
-
-### Guía de Despliegue Paso a Paso:
+## 🧪 Calidad de Código y Tests
 
 ```bash
-# 1. Clonar el código en el directorio del servidor
-git clone https://gitlab.com/raupulus/skeleton-laravel-project.git /var/www/mi-proyecto
-cd /var/www/mi-proyecto
-
-# 2. Preparar el entorno de producción
-cp .env.example.production .env
-
-# 3. Configurar en .env los valores reales:
-# APP_ENV=production
-# APP_DEBUG=false
-# APP_URL=https://tudominio.com
-# DB_CONNECTION=pgsql
-# DB_HOST=127.0.0.1
-# DB_DATABASE=nombre_bd_prod
-# DB_USERNAME=usuario_bd_prod
-# DB_PASSWORD=contrasena_fuerte
-# RECAPTCHA_SITE_KEY=clave_publica_google
-# RECAPTCHA_SECRET_KEY=clave_secreta_google
-
-# 4. Instalar dependencias optimizadas
-composer install --no-dev --optimize-autoloader
-pnpm install --frozen-lockfile
-pnpm run build
-
-# 5. Clave de cifrado y Storage
-php artisan key:generate --force
-php artisan storage:link
-
-# 6. Migraciones de base de datos
-php artisan migrate --force
-
-# 7. Caché y optimización de Laravel
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan event:cache
-php artisan optimize
-
-# 8. Generar sitemap inicial
-php artisan sitemap:generate
-
-# 9. Configurar permisos de almacenamiento
-sudo chown -R www-data:www-data storage bootstrap/cache
-sudo chmod -R 775 storage bootstrap/cache
-```
-
-### Automatización con `deploy.sh`:
-
-Para despliegues continuos posteriores, puede utilizar el script incluido:
-```bash
-bash docs/deploys/deploy.sh
-```
-
----
-
-## Scripts de Calidad y Formateo (Composer)
-
-El archivo `composer.json` provee atajos estandarizados para validación de código:
-
-```bash
-# Formatear el código con Laravel Pint
+# Formatear el código con Laravel Pint (PSR-12)
 composer run pint
 
-# Comprobar si el código cumple los estándares PSR-12 sin modificarlo
+# Comprobación de formato sin modificar
 composer run pint:test
 
-# Verificación completa (formato + tests automatizados compactos)
+# Suite completa de verificación (formato + tests automatizados compactos)
 composer run check
 ```
 
 ---
 
-## Catálogo de Comandos Artisan Propios
+## 📚 Documentación Técnica Viva (`docs/info/`)
 
-| Comando | Descripción |
-|---------|-------------|
-| `php artisan project:install {--force}` | Instalación paso a paso o desatendida del proyecto |
-| `php artisan project:clear {--force}` | Limpieza integral de cachés, colas, rotación opcional/confirmada de `APP_KEY` y recomposición de autoload |
-| `php artisan project:dummy {--fresh}` | Inserción de datos corporativos de muestra en todos los módulos (Users, Settings, Categories, Pages, Posts, Slides, Sections) |
-| `php artisan sitemap:generate` | Genera `public/sitemap.xml` con alternates hreflang para todas las páginas y artículos publicados |
-| `php artisan manual:generate-pdf` | Compila los manuales de usuario Markdown a PDFs corporativos |
+La documentación de la plataforma se mantiene actualizada bajo `docs/info/`:
 
-Especificación detallada de cada comando en [docs/info/commands.md](docs/info/commands.md).
+- **[Índice General de Módulos](docs/info/README.md)**: Modelos, relaciones, controladores y servicios.
+- **[Guía de Diseño y Estilos](docs/info/DESIGN.md)**: Tokens Tailwind CSS v4, layout y paleta cromática.
+- **[Kit de Redes Sociales y Copys](docs/info/datos-redes.md)**: Textos oficiales, banners y etiquetas para difusión.
+- **[Catálogo de Componentes UI](docs/info/COMPONENTS.md)**: Componentes Blade normalizados.
+- **[Comandos Artisan](docs/info/commands.md)**: Especificación de comandos `project:install`, `project:clear`, etc.
 
 ---
 
-## Seguridad y Formularios Públicos
+## 📡 Canales y Enlaces Oficiales
 
-- **Rate Limiting**: Todos los formularios públicos (`/contact`, `/login`, `/register`, `/forgot-password`, `/reset-password`) tienen activado rate limiting estricto (`throttle:10,1`).
-- **Google reCAPTCHA v3**: Integrado en formularios públicos mediante la regla `App\Rules\Recaptcha`.
-  - **Comprobación condicional**: Si las variables `RECAPTCHA_SITE_KEY` o `RECAPTCHA_SECRET_KEY` no están definidas en `.env`, la validación se ignora automáticamente para permitir desarrollo local y tests sin bloqueos.
-  - Sin campos honeypot innecesarios.
-
----
-
-## Paneles Filament
-
-- **Panel Administrador (`/admin`)**:
-  - Acceso restringido a usuarios con rol `admin` o `superadmin` e `is_active = true`.
-  - Gestión integral de usuarios, categorías, páginas, artículos de blog, carruseles de diapositivas, secciones dinámicas, configuraciones y auditoría de emails enviados.
-  - Acciones de mantenimiento integradas: regenerar sitemap, limpiar caché y visualizador de logs.
-- **Panel de Usuario (`/panel`)**:
-  - Acceso para cualquier usuario registrado con cuenta activa (`is_active = true`).
-  - Gestión de perfil de usuario y generación/revocación de tokens personales de API (Sanctum).
+- 🌐 **Sitio Web Oficial**: [https://desdechipiona.es](https://desdechipiona.es)
+- ✈️ **Canal de Telegram**: [https://t.me/desdechipiona](https://t.me/desdechipiona)
+- 🦊 **GitLab (Fetch & Push)**: [gitlab.com/raupulus/www.desdechipiona.es](https://gitlab.com/raupulus/www.desdechipiona.es)
+- 🐙 **GitHub (Backup Push)**: [github.com/raupulus/www.desdechipiona.es](https://github.com/raupulus/www.desdechipiona.es)
 
 ---
 
-## Documentación Técnica y Manuales
-
-Toda la documentación técnica del proyecto se mantiene viva y actualizada bajo `docs/`:
-
-- **[Índice de Módulos Técnicos](docs/info/README.md)**: Explicación de modelos, servicios, controladores y paneles.
-- **[Catálogo de Componentes UI](docs/info/COMPONENTS.md)**: Componentes Blade normalizados (`<x-primary-button>`, `<x-text-input>`, `<x-modal>`, etc.).
-- **[Guía de Diseño Visual](docs/info/DESIGN.md)**: Esquema de colores, tipografía Figtree y Tailwind CSS v4.
-- **[Comandos Artisan](docs/info/commands.md)**: Documentación exhaustiva de comandos propios y su ejecución periódica.
-- **[Manuales de Usuario](docs/manual/)**: Documentación orientada al cliente final con PDFs descargables (`admin.pdf`, `user_backend.pdf`, `user.pdf`).
-
----
-
-## Autor
+## 👤 Autor
 
 **Raúl Caro Pastorino** (`@raupulus`)
 
-Desarrollador Full Stack Senior con más de 15 años de experiencia creando soluciones tecnológicas robustas y escalables, especializado en arquitectura Backend (PHP / Laravel, Python), PostgreSQL, Inteligencia Artificial aplicada en producción, administración de sistemas GNU/Linux y proyectos Open Source / IoT.
+Desarrollador Full Stack Senior especializado en arquitectura Backend (PHP / Laravel, Python), PostgreSQL, Inteligencia Artificial aplicada en producción, administración de sistemas GNU/Linux y proyectos Open Source / IoT.
 
-- 🌐 **Web y Portfolio**: [https://raupulus.dev](https://raupulus.dev)
+- 🌐 **Web**: [https://raupulus.dev](https://raupulus.dev)
 - 📄 **CV Online**: [https://curriculum.raupulus.dev](https://curriculum.raupulus.dev)
 - ✉️ **Contacto**: [public@raupulus.dev](mailto:public@raupulus.dev)
-- 🦊 **GitLab**: [gitlab.com/raupulus](https://gitlab.com/raupulus)
-- 🐙 **GitHub**: [github.com/raupulus](https://github.com/raupulus)
-- 💼 **LinkedIn**: [linkedin.com/in/raulcaropastorino](https://www.linkedin.com/in/raulcaropastorino/)
-- 🔗 **Redes y Comunidad**: [raupulus.dev/social](https://raupulus.dev/social/)
 
 ---
 
-## Licencia
+## 📄 Licencia
 
-Este proyecto es software de código abierto bajo la licencia [MIT](LICENSE).
+Este proyecto está bajo la licencia [MIT](LICENSE).

@@ -1,6 +1,6 @@
 # AGENTS.md — Guía completa del proyecto para agentes de IA
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-03*
 
 Este archivo proporciona el contexto y las directrices obligatorias del proyecto para que los agentes de IA
 puedan trabajar de forma autónoma, consistente y precisa. Léelo completamente antes de realizar cualquier modificación.
@@ -33,7 +33,7 @@ puedan trabajar de forma autónoma, consistente y precisa. Léelo completamente 
 ## 3. Control de versiones y Exclusiones Git (`.gitignore`)
 
 Los siguientes directorios y archivos están estrictamente excluidos del repositorio git y **NUNCA** deben añadirse al control de versiones:
-- `node_modules/`, `vendor/`, `template/` (y `/template`).
+- `node_modules/`, `vendor/`, `template/` (y `/template`): Directorio temporal exclusivo para diseño y prototipado HTML/CSS de plantillas; totalmente ignorado en git y a eliminar una vez implementado en componentes Blade.
 - Entornos y secretos: `.env`, `.env.backup`, `.env.production` (solo se versionan `.env.example` y `.env.example.production`, sin contraseñas ni datos privados).
 - Carpetas internas y de agentes: `.junie/`, `docs/planning/`, `pnpm-store/`, `docs/auditorias/`.
 - IDEs y editores: `.idea/`, `.vscode/`, `*.sublime-*`, `.DS_Store`, `Thumbs.db`.
@@ -41,12 +41,12 @@ Los siguientes directorios y archivos están estrictamente excluidos del reposit
 - Artefactos generados: `public/build/`, `public/sitemap.xml`, `public/docs/api/`, `.scribe/endpoints.cache/`.
 
 ### ⚠️ Política de commits — OBLIGATORIO
-- **Commits atómicos o agrupados por funcionalidad**: cada commit debe agrupar únicamente cambios relacionados que compartan un mismo contexto (una funcionalidad, un fix, una refactorización, una actualización de dependencias, la documentación de un módulo...). Se cierra el commit de un contexto **antes** de pasar al siguiente.
-- **Nada de commits inútiles**: no crear commits triviales o fragmentados sin contexto propio (p. ej. "fix typo" seguido de "fix typo 2", o un commit por archivo), ni commits "cajón de sastre" que mezclen funcionalidades distintas.
-- **Separar estilo de lógica**: los cambios masivos de formato (Pint) van en un commit propio, sin mezclarse con cambios funcionales.
-- **Cada commit debe dejar el proyecto estable**: los tests (`composer check`) deben pasar tras cada commit.
-- **Mensaje descriptivo en español**: primera línea breve en imperativo/presente que resuma el contexto (≤ 72 caracteres) y, si aporta valor, un cuerpo con viñetas explicando el qué y el porqué.
-- **Código, tests y documentación juntos**: si un cambio funcional requiere actualizar tests o `docs/info/`, se incluyen en el mismo commit de esa funcionalidad.
+- **Commits agrupados por funcionalidad**: Cada commit debe agrupar única y estrictamente los cambios relacionados que compartan un mismo contexto o funcionalidad (p. ej., maquetación base, módulo de blog, actualización de documentación, fix específico). Se cierra y valida el commit de una funcionalidad **antes** de pasar a la siguiente.
+- **Nada de commits inútiles ni triviales**: No crear commits fragmentados sin contexto propio (p. ej., "fix typo", "fix typo 2", o commits por archivo suelto), ni commits "cajón de sastre" que mezclen funcionalidades distintas.
+- **Separar estilo de lógica**: Los cambios masivos de formato (Pint) van en un commit propio, sin mezclarse con cambios funcionales.
+- **Cada commit debe dejar el proyecto estable**: Los tests (`composer check` o `php artisan test --compact`) deben pasar tras cada commit.
+- **Mensaje descriptivo en español**: Primera línea breve en imperativo/presente que resuma el contexto (≤ 72 caracteres) y, si aporta valor, un cuerpo con viñetas explicando el qué y el porqué.
+- **Código, tests y documentación juntos**: Si un cambio funcional requiere actualizar tests o documentación en `docs/info/`, se incluyen en el mismo commit de esa funcionalidad.
 
 ### Enlaces simbólicos de configuración unificada
 - Los directorios `.claude` y `.github` deben ser enlaces simbólicos apuntando a `.agents`:
@@ -196,6 +196,7 @@ La documentación de cada módulo se encuentra en `docs/info/`. **Es obligatorio
 | [content_builder.md](docs/info/content_builder.md) | Especificación técnica del constructor modular de bloques (Page / Post Builder) |
 | [COMPONENTS.md](docs/info/COMPONENTS.md) | Catálogo de componentes Blade UI reutilizables y directrices |
 | [DESIGN.md](docs/info/DESIGN.md) | Especificación de diseño, esquema Tailwind CSS v4 y layout |
+| [datos-redes.md](docs/info/datos-redes.md) | Kit de identidad, copys con gancho y especificaciones para redes y repositorios |
 | [commands.md](docs/info/commands.md) | Especificación completa de comandos Artisan personalizados |
 | [apis/README.md](docs/info/apis/README.md) | Arquitectura y consumo de APIs externas en la aplicación |
 | [usuarios.md](docs/info/usuarios.md) | Gestión de usuarios, roles y autenticación |

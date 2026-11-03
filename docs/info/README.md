@@ -1,6 +1,6 @@
 # Documentación técnica de módulos
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-03*
 
 Este directorio contiene la documentación técnica viva y detallada de cada módulo implementado en la plataforma. Cada archivo describe el objetivo, la arquitectura, los archivos involucrados, los campos, las relaciones, qué es editable desde el panel y el comportamiento de un módulo concreto.
 
@@ -41,6 +41,7 @@ Este directorio contiene la documentación técnica viva y detallada de cada mó
 |--------|---------|-------------|
 | [Catálogo de Componentes UI](COMPONENTS.md) | `COMPONENTS.md` | Catálogo de componentes Blade reutilizables y directrices |
 | [Guía de Diseño y Estilos](DESIGN.md) | `DESIGN.md` | Tokens Tailwind CSS v4, layout, tipografía y esquema de color |
+| [Identidad y Redes Sociales](datos-redes.md) | `datos-redes.md` | Kit de difusión, copys con gancho, tags y especificaciones para redes y repositorios |
 | [Autenticación y autorización](autenticacion.md) | `autenticacion.md` | Auth web por sesión, API (Sanctum), policies y guards |
 | [Traducciones](traducciones.md) | `traducciones.md` | Sistema i18n: archivos de idioma, modelos traducibles, middleware |
 | [Panel Admin Filament](panel-admin.md) | `panel-admin.md` | Panel de administración con todos los Resources |
