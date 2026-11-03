@@ -43,6 +43,9 @@ class SeoService
     /** @var array<int, array{name: string, url: string}> Migas de pan para BreadcrumbList JSON-LD */
     private array $breadcrumbs = [];
 
+    /** @var array{latitude: float, longitude: float, name?: string|null}|null Coordenadas geográficas para Schema.org */
+    private ?array $geo = null;
+
     /**
      * Establece el título de la página.
      */
@@ -156,6 +159,20 @@ class SeoService
     }
 
     /**
+     * Establece las coordenadas geográficas para Schema.org.
+     */
+    public function setGeo(float $latitude, float $longitude, ?string $name = null): static
+    {
+        $this->geo = [
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'name' => $name,
+        ];
+
+        return $this;
+    }
+
+    /**
      * Carga automáticamente los datos SEO desde un modelo que use el trait HasSeo.
      */
     public function fromModel(object $model): static
@@ -191,6 +208,14 @@ class SeoService
             $this->modifiedAt = $model->updated_at->toIso8601String();
         }
 
+        if (isset($model->latitude, $model->longitude) && $model->latitude !== null && $model->longitude !== null) {
+            $this->setGeo(
+                (float) $model->latitude,
+                (float) $model->longitude,
+                isset($model->location_name) ? (string) $model->location_name : null
+            );
+        }
+
         return $this;
     }
 
@@ -203,9 +228,20 @@ class SeoService
     {
         $siteTitle = (string) setting('site_title', config('app.name'));
         $baseUrl = $this->url ?: url()->current();
+
+        $params = [];
         $langParam = request()->query('lang');
-        $canonicalUrl = ($langParam && in_array($langParam, config('locales.available', ['es', 'en']), true))
-            ? $baseUrl.'?lang='.$langParam
+        if ($langParam && in_array($langParam, config('locales.available', ['es', 'en']), true)) {
+            $params['lang'] = $langParam;
+        }
+
+        $pageParam = request()->query('page');
+        if ($pageParam !== null && is_numeric($pageParam) && (int) $pageParam > 1) {
+            $params['page'] = (int) $pageParam;
+        }
+
+        $canonicalUrl = ! empty($params)
+            ? $baseUrl.'?'.http_build_query($params)
             : $baseUrl;
 
         return [
@@ -221,6 +257,7 @@ class SeoService
             'publishedAt' => $this->publishedAt,
             'modifiedAt' => $this->modifiedAt,
             'breadcrumbs' => $this->breadcrumbs,
+            'geo' => $this->geo,
         ];
     }
 
@@ -295,6 +332,14 @@ class SeoService
                 'publisher' => [
                     '@id' => $siteUrl.'/#organization',
                 ],
+                'potentialAction' => [
+                    '@type' => 'SearchAction',
+                    'target' => [
+                        '@type' => 'EntryPoint',
+                        'urlTemplate' => $siteUrl.'/?q={search_term_string}',
+                    ],
+                    'query-input' => 'required name=search_term_string',
+                ],
             ]);
 
             $graph[] = array_filter([
@@ -309,6 +354,18 @@ class SeoService
                 ],
                 'datePublished' => $data['publishedAt'],
                 'dateModified' => $data['modifiedAt'],
+            ]);
+        }
+
+        if ($this->geo !== null) {
+            $graph[] = array_filter([
+                '@type' => 'Place',
+                'name' => $this->geo['name'] ?? $data['title'],
+                'geo' => [
+                    '@type' => 'GeoCoordinates',
+                    'latitude' => $this->geo['latitude'],
+                    'longitude' => $this->geo['longitude'],
+                ],
             ]);
         }
 

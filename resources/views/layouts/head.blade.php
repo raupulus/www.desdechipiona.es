@@ -22,11 +22,16 @@
 <meta name="author" content="{{ $seoData['author'] ?? setting('site_title', config('app.name')) }}" />
 <meta name="robots" content="{{ $pageRobots }}" />
 @unless($isErrorPage)
+@php
+    $pageParam = request()->query('page');
+    $pageSuffix = ($pageParam && is_numeric($pageParam) && (int) $pageParam > 1) ? '&page='.(int) $pageParam : '';
+    $defaultPageSuffix = ($pageParam && is_numeric($pageParam) && (int) $pageParam > 1) ? '?page='.(int) $pageParam : '';
+@endphp
 <link rel="canonical" href="{{ $pageUrl }}" />
 @foreach($availableLocales as $loc)
-<link rel="alternate" hreflang="{{ $loc }}" href="{{ $baseUrl }}?lang={{ $loc }}" />
+<link rel="alternate" hreflang="{{ $loc }}" href="{{ $baseUrl }}?lang={{ $loc }}{{ $pageSuffix }}" />
 @endforeach
-<link rel="alternate" hreflang="x-default" href="{{ $baseUrl }}" />
+<link rel="alternate" hreflang="x-default" href="{{ $baseUrl }}{{ $defaultPageSuffix }}" />
 @endunless
 <meta property="og:locale" content="{{ $currentLocale === 'es' ? 'es_ES' : 'en_US' }}" />
 @foreach($availableLocales as $loc)

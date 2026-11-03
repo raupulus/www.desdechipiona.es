@@ -3,5 +3,10 @@ Disallow: /admin
 Disallow: /panel
 Disallow: /api/
 Disallow: /lang/
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /auth/
 
-Sitemap: https://localhost/sitemap.xml
+Sitemap: https://desdechipiona.es/sitemap.xml
