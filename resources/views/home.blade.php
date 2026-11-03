@@ -107,8 +107,7 @@
                     <select
                         id="filter-era"
                         name="era"
-                        onchange="this.form.submit()"
-                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
                     >
                         <option value="all">⏳ Todas las épocas (Prehistoria — Actualidad)</option>
                         @foreach(\App\Enums\HistoricalEra::cases() as $eraCase)
@@ -126,8 +125,7 @@
                     <select
                         id="filter-evidence"
                         name="evidence"
-                        onchange="this.form.submit()"
-                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
                     >
                         <option value="all">⚖️ Todos los niveles de verificación</option>
                         @foreach(\App\Enums\EvidenceLevel::cases() as $evCase)
@@ -149,7 +147,7 @@
                             name="year_from"
                             value="{{ $filters['year_from'] ?? '' }}"
                             placeholder="Desde (ej. 1477)"
-                            class="w-1/2 rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold text-slate-950"
+                            class="w-1/2 rounded-xl border border-slate-300 px-2.5 py-2 text-base sm:text-sm font-bold text-slate-950"
                         >
                         <input
                             type="number"
@@ -157,7 +155,7 @@
                             aria-label="Hasta el año"
                             value="{{ $filters['year_to'] ?? '' }}"
                             placeholder="Hasta (ej. 1900)"
-                            class="w-1/2 rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold text-slate-950"
+                            class="w-1/2 rounded-xl border border-slate-300 px-2.5 py-2 text-base sm:text-sm font-bold text-slate-950"
                         >
                     </div>
                 </div>
@@ -169,8 +167,7 @@
                     <select
                         id="filter-sort"
                         name="sort"
-                        onchange="this.form.submit()"
-                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
                     >
                         <option value="featured" @selected($activeSort === 'featured')>⭐ Destacados e importantes</option>
                         <option value="chronological_asc" @selected($activeSort === 'chronological_asc')>📜 Más antiguos primero</option>
@@ -178,6 +175,23 @@
                         <option value="recent" @selected($activeSort === 'recent')>🆕 Últimos publicados</option>
                     </select>
                 </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
+                @if($searchQuery !== '' || ($activeGroup !== '' && $activeGroup !== 'all') || $activeEra !== 'all' || $activeEvidence !== 'all' || !empty($filters['year_from']) || !empty($filters['year_to']))
+                    <a
+                        href="{{ route('home') }}"
+                        class="text-xs font-bold text-slate-700 hover:text-orange-700 underline"
+                    >
+                        Limpiar todos los filtros
+                    </a>
+                @endif
+                <button
+                    type="submit"
+                    class="rounded-xl bg-slate-900 px-5 py-2 text-xs sm:text-sm font-extrabold text-white shadow-xs hover:bg-orange-800 transition cursor-pointer"
+                >
+                    Aplicar filtros
+                </button>
             </div>
         </form>
     </div>

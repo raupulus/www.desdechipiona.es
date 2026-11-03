@@ -158,17 +158,49 @@
 
     {{-- Menú desplegable móvil --}}
     <div id="mobile-menu" x-cloak x-show="open" class="lg:hidden border-t border-slate-200 bg-white">
-        <div class="px-4 py-4 space-y-2">
-            <a href="{{ route('home') }}" class="block px-3 py-2 rounded-lg font-bold text-slate-950 hover:bg-slate-100">{{ __('messages.explore_all') }}</a>
-            <a href="{{ route('news.index') }}" class="block px-3 py-2 rounded-lg font-bold text-slate-950 hover:bg-slate-100">{{ __('messages.news_nav') }}</a>
-            <a href="{{ route('proverbs.index') }}" class="block px-3 py-2 rounded-lg font-bold text-slate-950 hover:bg-slate-100">{{ __('messages.proverbs_nav') }}</a>
-            <a href="{{ route('weather.index') }}" class="block px-3 py-2 rounded-lg font-bold text-slate-950 hover:bg-slate-100">{{ __('messages.weather_tides_nav') }}</a>
-            <a href="{{ route('phones.index') }}" class="block px-3 py-2 rounded-lg font-bold text-slate-950 hover:bg-slate-100">{{ __('messages.phones_nav') }}</a>
-            <a href="{{ route('blog.index') }}" class="block px-3 py-2 rounded-lg font-bold text-slate-950 hover:bg-slate-100">{{ __('messages.blog') }}</a>
-            <a href="{{ route('legal') }}" class="block px-3 py-2 rounded-lg font-bold text-slate-950 hover:bg-slate-100">{{ __('messages.author_legal_nav') }}</a>
-            <a href="{{ route('contact') }}" class="block px-3 py-2 rounded-lg font-bold text-slate-950 hover:bg-slate-100">{{ __('messages.contact') }}</a>
+        <div class="px-4 py-4 space-y-1.5">
+            <a
+                href="{{ route('home') }}"
+                @if(request()->routeIs('home') || request()->routeIs('explore')) aria-current="page" @endif
+                class="block px-3 py-2 rounded-lg font-bold transition {{ request()->routeIs('home') || request()->routeIs('explore') ? 'bg-orange-700 text-white' : 'text-slate-950 hover:bg-slate-100' }}"
+            >{{ __('messages.explore_all') }}</a>
+            <a
+                href="{{ route('news.index') }}"
+                @if(request()->routeIs('news.*')) aria-current="page" @endif
+                class="block px-3 py-2 rounded-lg font-bold transition {{ request()->routeIs('news.*') ? 'bg-slate-950 text-white' : 'text-slate-950 hover:bg-slate-100' }}"
+            >{{ __('messages.news_nav') }}</a>
+            <a
+                href="{{ route('proverbs.index') }}"
+                @if(request()->routeIs('proverbs.*')) aria-current="page" @endif
+                class="block px-3 py-2 rounded-lg font-bold transition {{ request()->routeIs('proverbs.*') ? 'bg-slate-950 text-white' : 'text-slate-950 hover:bg-slate-100' }}"
+            >{{ __('messages.proverbs_nav') }}</a>
+            <a
+                href="{{ route('weather.index') }}"
+                @if(request()->routeIs('weather.*')) aria-current="page" @endif
+                class="block px-3 py-2 rounded-lg font-bold transition {{ request()->routeIs('weather.*') ? 'bg-slate-950 text-white' : 'text-slate-950 hover:bg-slate-100' }}"
+            >{{ __('messages.weather_tides_nav') }}</a>
+            <a
+                href="{{ route('phones.index') }}"
+                @if(request()->routeIs('phones.*')) aria-current="page" @endif
+                class="block px-3 py-2 rounded-lg font-bold transition {{ request()->routeIs('phones.*') ? 'bg-slate-950 text-white' : 'text-slate-950 hover:bg-slate-100' }}"
+            >{{ __('messages.phones_nav') }}</a>
+            <a
+                href="{{ route('blog.index') }}"
+                @if(request()->routeIs('blog.*')) aria-current="page" @endif
+                class="block px-3 py-2 rounded-lg font-bold transition {{ request()->routeIs('blog.*') ? 'bg-slate-950 text-white' : 'text-slate-950 hover:bg-slate-100' }}"
+            >{{ __('messages.blog') }}</a>
+            <a
+                href="{{ route('legal') }}"
+                @if(request()->routeIs('legal') || request()->routeIs('about')) aria-current="page" @endif
+                class="block px-3 py-2 rounded-lg font-bold transition {{ request()->routeIs('legal') || request()->routeIs('about') ? 'bg-slate-950 text-white' : 'text-slate-950 hover:bg-slate-100' }}"
+            >{{ __('messages.author_legal_nav') }}</a>
+            <a
+                href="{{ route('contact') }}"
+                @if(request()->routeIs('contact')) aria-current="page" @endif
+                class="block px-3 py-2 rounded-lg font-bold transition {{ request()->routeIs('contact') ? 'bg-slate-950 text-white' : 'text-slate-950 hover:bg-slate-100' }}"
+            >{{ __('messages.contact') }}</a>
             <div class="pt-2">
-                <a href="{{ route('suggestions.create') }}" class="flex items-center justify-center gap-2 w-full rounded-xl bg-violet-800 px-4 py-2.5 text-sm font-bold text-white">
+                <a href="{{ route('suggestions.create') }}" class="flex items-center justify-center gap-2 w-full rounded-xl bg-violet-800 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-900 transition">
                     <span>✍️ {{ __('messages.contribute_btn') }}</span>
                 </a>
             </div>
