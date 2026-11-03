@@ -152,6 +152,7 @@ Consulte la especificación detallada en [commands.md](docs/info/commands.md).
 | `php artisan project:install {--force}` | Instalación guiada o desatendida del entorno, migraciones, seeders y assets |
 | `php artisan project:clear {--force}` | Limpieza profunda de cachés, reinicio de colas, rotación segura de `APP_KEY` y `composer dump-autoload` |
 | `php artisan project:dummy {--fresh}` | Inserción de datos corporativos de muestra en todos los módulos (para clientes y desarrollo) |
+| `php artisan chipiona:import-corpus {--path=} {--clean}` | Importador local del corpus privado de investigación de Chipiona (nunca versionado en git) |
 | `php artisan sitemap:generate` | Generación de `public/sitemap.xml` con alternates hreflang para todas las rutas públicas |
 | `php artisan manual:generate-pdf` | Compilación de los manuales Markdown a PDFs corporativos |
 

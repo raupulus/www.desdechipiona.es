@@ -1,6 +1,6 @@
 # Módulo: Comandos Artisan
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-03*
 
 > Catálogo y especificación técnica exhaustiva de los comandos Artisan personalizados de la plataforma.
 
@@ -8,13 +8,14 @@
 
 ## Resumen
 
-La plataforma incluye 5 comandos Artisan personalizados en `app/Console/Commands/` para automatizar la instalación inicial, la limpieza profunda y rotación segura de claves, la carga de datos corporativos de muestra, la generación del sitemap XML y la compilación de los manuales de usuario en PDF.
+La plataforma incluye 6 comandos Artisan personalizados en `app/Console/Commands/` para automatizar la instalación inicial, la limpieza profunda y rotación segura de claves, la carga de datos corporativos de muestra, la importación del corpus privado de investigación de Chipiona, la generación del sitemap XML y la compilación de los manuales de usuario en PDF.
 
 | Comando | Firma | Archivo | Propósito |
 |---------|-------|---------|-----------|
 | **project:install** | `project:install {--force}` | `app/Console/Commands/ProjectInstall.php` | Instalación inicial guiada o desatendida del entorno, dependencias (`composer` + `pnpm`), migraciones, seeders y compilación de assets |
 | **project:clear** | `project:clear {--force}` | `app/Console/Commands/ProjectClear.php` | Limpieza integral de cachés y colas, rotación segura opcional de `APP_KEY` (preservando `APP_PREVIOUS_KEYS`) y `composer dump-autoload` |
 | **project:dummy** | `project:dummy {--fresh}` | `app/Console/Commands/ProjectDummy.php` | Población de datos corporativos de muestra en todos los módulos (bloqueado en producción) |
+| **chipiona:import-corpus** | `chipiona:import-corpus {--path=} {--clean}` | `app/Console/Commands/ImportChipionaCorpus.php` | Importa, categoriza y relaciona el corpus privado de investigación desde fuera del repositorio git |
 | **sitemap:generate** | `sitemap:generate` | `app/Console/Commands/GenerateSitemap.php` | Generación de `public/sitemap.xml` con alternates `hreflang` para todas las rutas públicas |
 | **manual:generate-pdf** | `manual:generate-pdf` | `app/Console/Commands/GenerateManualPdf.php` | Compilación de los manuales Markdown (`docs/manual/`) a PDFs corporativos con DomPDF |
 

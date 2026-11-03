@@ -19,6 +19,7 @@ class DummyDataSeeder extends Seeder
             UserSeeder::class,
             SettingSeeder::class,
             CategorySeeder::class,
+            ChipionaStructureSeeder::class,
             PageSeeder::class,
             PostSeeder::class,
             SlideSeeder::class,

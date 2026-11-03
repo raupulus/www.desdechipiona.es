@@ -80,3 +80,9 @@ public/docs/api/
 /skills/
 docs/planning/
 docs/auditorias/
+
+# Corpus de investigación privado y activos de fichas (licencia independiente al código AGPLv3)
+/storage/corpus/
+/database/seeders/data/
+/public/images/pages/
+/public/images/news/
