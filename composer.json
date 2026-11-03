@@ -1,11 +1,11 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "raupulus/skeleton-laravel-project",
+    "name": "raupulus/desdechipiona",
     "type": "project",
-    "description": "Plantilla base profesional para aplicaciones Laravel con Filament, Sanctum, traducciones y SEO.",
-    "keywords": ["laravel", "filament", "skeleton", "postgresql", "sanctum"],
-    "homepage": "https://raupulus.dev",
-    "license": "MIT",
+    "description": "Desde Chipiona — Portal de investigación histórica, patrimonio marítimo, naturaleza y memoria oral de Chipiona.",
+    "keywords": ["chipiona", "historia", "patrimonio", "laravel", "filament", "postgresql"],
+    "homepage": "https://desdechipiona.es",
+    "license": "AGPL-3.0-or-later",
     "authors": [
         {
             "name": "Raúl Caro Pastorino",
@@ -21,6 +21,7 @@
         "knuckleswtf/scribe": "^5.9",
         "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.3",
+        "laravel/socialite": "^5.31",
         "laravel/tinker": "^3.0",
         "league/commonmark": "^2.8",
         "spatie/laravel-sitemap": "^8.1",

@@ -128,4 +128,14 @@ class Category extends Model
     {
         return $this->belongsToMany(Page::class);
     }
+
+    /**
+     * Relación muchos-a-muchos con noticias (tabla pivot category_news).
+     *
+     * @return BelongsToMany<News, $this>
+     */
+    public function news(): BelongsToMany
+    {
+        return $this->belongsToMany(News::class, 'category_news');
+    }
 }
