@@ -25,7 +25,7 @@ class ContentSearchService
      */
     public function searchPages(array $filters, int $perPage = 12): LengthAwarePaginator
     {
-        $query = Page::published()->with(['categories', 'relatedPages']);
+        $query = Page::publishedAndActive()->with(['categories', 'relatedPages' => fn ($q) => $q->publishedAndActive()]);
 
         $this->applyFilters($query, $filters);
 
@@ -58,7 +58,7 @@ class ContentSearchService
      */
     public function getGroupCounts(): array
     {
-        $counts = Page::published()
+        $counts = Page::publishedAndActive()
             ->selectRaw('content_group, COUNT(*) as total')
             ->groupBy('content_group')
             ->pluck('total', 'content_group')
@@ -80,7 +80,7 @@ class ContentSearchService
      */
     public function getGeolocatedPages(array $filters = []): Collection
     {
-        $query = Page::published()
+        $query = Page::publishedAndActive()
             ->whereNotNull('latitude')
             ->whereNotNull('longitude');
 

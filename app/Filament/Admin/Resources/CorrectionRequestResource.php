@@ -108,23 +108,28 @@ class CorrectionRequestResource extends Resource
                 ->required()
                 ->default(SuggestionStatus::Pending->value),
             Forms\Components\TextInput::make('oauth_provider')
-                ->label(__('filament.oauth_provider')),
+                ->label(__('filament.oauth_provider'))
+                ->maxLength(30),
             Forms\Components\Textarea::make('quoted_text')
                 ->label(__('filament.quoted_text'))
                 ->rows(3)
+                ->maxLength(1000)
                 ->columnSpanFull(),
             Forms\Components\Textarea::make('proposed_correction')
                 ->label(__('filament.proposed_correction'))
                 ->required()
                 ->rows(4)
+                ->maxLength(5000)
                 ->columnSpanFull(),
             Forms\Components\Textarea::make('sources_info')
                 ->label(__('filament.sources_info'))
                 ->rows(2)
+                ->maxLength(2000)
                 ->columnSpanFull(),
             Forms\Components\Textarea::make('admin_notes')
                 ->label(__('filament.admin_notes'))
                 ->rows(3)
+                ->maxLength(5000)
                 ->columnSpanFull(),
         ]);
     }
@@ -136,6 +141,7 @@ class CorrectionRequestResource extends Resource
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->modifyQueryUsing(fn ($query) => $query->with(['correctable', 'reviewer']))
             ->columns([
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('filament.status'))

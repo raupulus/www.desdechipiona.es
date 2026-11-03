@@ -98,10 +98,16 @@ class ContentSuggestionResource extends Resource
                 ->maxLength(255),
             Forms\Components\TextInput::make('latitude')
                 ->label(__('filament.latitude'))
-                ->numeric(),
+                ->numeric()
+                ->step('0.0000001')
+                ->minValue(-90)
+                ->maxValue(90),
             Forms\Components\TextInput::make('longitude')
                 ->label(__('filament.longitude'))
-                ->numeric(),
+                ->numeric()
+                ->step('0.0000001')
+                ->minValue(-180)
+                ->maxValue(180),
             Forms\Components\TextInput::make('author_name')
                 ->label(__('filament.author_name'))
                 ->required()
@@ -111,10 +117,12 @@ class ContentSuggestionResource extends Resource
                 ->email()
                 ->maxLength(191),
             Forms\Components\TextInput::make('oauth_provider')
-                ->label(__('filament.oauth_provider')),
+                ->label(__('filament.oauth_provider'))
+                ->maxLength(30),
             Forms\Components\Textarea::make('admin_notes')
                 ->label(__('filament.admin_notes'))
                 ->rows(3)
+                ->maxLength(5000)
                 ->columnSpanFull(),
         ]);
     }

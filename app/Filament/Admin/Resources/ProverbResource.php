@@ -65,10 +65,12 @@ class ProverbResource extends Resource
                 ->label(__('filament.proverb_text'))
                 ->required()
                 ->rows(3)
+                ->maxLength(500)
                 ->columnSpanFull(),
             Forms\Components\Textarea::make('meaning')
                 ->label(__('filament.proverb_meaning'))
                 ->rows(3)
+                ->maxLength(2000)
                 ->columnSpanFull(),
             Forms\Components\Select::make('category')
                 ->label(__('filament.category'))

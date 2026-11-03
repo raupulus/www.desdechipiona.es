@@ -75,13 +75,21 @@ class OfficialPhoneResource extends Resource
                 ->maxLength(120),
             Forms\Components\TextInput::make('latitude')
                 ->label(__('filament.latitude'))
-                ->numeric(),
+                ->numeric()
+                ->step('0.0000001')
+                ->minValue(-90)
+                ->maxValue(90),
             Forms\Components\TextInput::make('longitude')
                 ->label(__('filament.longitude'))
-                ->numeric(),
+                ->numeric()
+                ->step('0.0000001')
+                ->minValue(-180)
+                ->maxValue(180),
             Forms\Components\TextInput::make('sort_order')
                 ->label(__('filament.order'))
                 ->numeric()
+                ->minValue(0)
+                ->maxValue(99999)
                 ->default(0),
             Forms\Components\Toggle::make('is_emergency')
                 ->label(__('filament.is_emergency'))

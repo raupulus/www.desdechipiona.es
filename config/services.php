@@ -57,4 +57,8 @@ return [
         'municipality_code' => env('AEMET_MUNICIPALITY_CODE', '11016'),
     ],
 
+    'chipiona' => [
+        'corpus_path' => env('CHIPIONA_CORPUS_PATH'),
+    ],
+
 ];

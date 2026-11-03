@@ -196,6 +196,7 @@ class SitemapService
     private function addPosts(Sitemap $sitemap): void
     {
         Post::publishedAndActive()
+            ->select(['id', 'slug', 'updated_at', 'published_at'])
             ->orderByDesc('published_at')
             ->chunk(200, function ($posts) use ($sitemap): void {
                 foreach ($posts as $post) {
@@ -219,6 +220,7 @@ class SitemapService
     private function addPages(Sitemap $sitemap): void
     {
         Page::publishedAndActive()
+            ->select(['id', 'slug', 'updated_at'])
             ->whereNotIn('slug', self::NOINDEX_PAGE_SLUGS)
             ->chunk(200, function ($pages) use ($sitemap): void {
                 foreach ($pages as $page) {
@@ -242,6 +244,7 @@ class SitemapService
     private function addNews(Sitemap $sitemap): void
     {
         News::publishedAndActive()
+            ->select(['id', 'slug', 'updated_at', 'published_at'])
             ->orderByDesc('published_at')
             ->chunk(200, function ($newsItems) use ($sitemap): void {
                 foreach ($newsItems as $news) {

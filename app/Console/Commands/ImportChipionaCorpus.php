@@ -14,6 +14,7 @@ use App\Models\Proverb;
 use App\Models\User;
 use Database\Seeders\ChipionaStructureSeeder;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
@@ -65,22 +66,27 @@ class ImportChipionaCorpus extends Command
 
         // 2. Comprobar si existe un paquete local curado (gitignored) en database/seeders/data/
         $localCuratedFile = database_path('seeders/data/chipiona_corpus_pages.php');
-        $pagesBySlug = [];
 
-        if (File::exists($localCuratedFile)) {
-            $this->line('→ Importando catálogo curado local (excluido de git)...');
-            /** @var array<int, array<string, mixed>> $curatedPages */
-            $curatedPages = require $localCuratedFile;
-            $pagesBySlug = $this->importCuratedArray($curatedPages, $authorId, $categories->all());
-        }
+        $pagesBySlug = DB::transaction(function () use ($localCuratedFile, $authorId, $categories): array {
+            $pages = [];
 
-        // 3. Si se indica ruta a directorio Markdown externo (o variable CHIPIONA_CORPUS_PATH), importar fichas .md
-        $externalPath = $this->option('path') ?: env('CHIPIONA_CORPUS_PATH');
-        if (is_string($externalPath) && $externalPath !== '' && File::isDirectory($externalPath)) {
-            $this->line("→ Escaneando fichas Markdown en directorio externo: {$externalPath}");
-            $mdPages = $this->importMarkdownDirectory($externalPath, $authorId, $categories->all());
-            $pagesBySlug = array_merge($pagesBySlug, $mdPages);
-        }
+            if (File::exists($localCuratedFile)) {
+                $this->line('→ Importando catálogo curado local (excluido de git)...');
+                /** @var array<int, array<string, mixed>> $curatedPages */
+                $curatedPages = require $localCuratedFile;
+                $pages = $this->importCuratedArray($curatedPages, $authorId, $categories->all());
+            }
+
+            // 3. Si se indica ruta a directorio Markdown externo (o variable services.chipiona.corpus_path), importar fichas .md
+            $externalPath = $this->option('path') ?: config('services.chipiona.corpus_path');
+            if (is_string($externalPath) && $externalPath !== '' && File::isDirectory($externalPath)) {
+                $this->line("→ Escaneando fichas Markdown en directorio externo: {$externalPath}");
+                $mdPages = $this->importMarkdownDirectory($externalPath, $authorId, $categories->all());
+                $pages = array_merge($pages, $mdPages);
+            }
+
+            return $pages;
+        });
 
         if (empty($pagesBySlug)) {
             $this->warn('⚠ No se encontró archivo local en database/seeders/data/ ni directorio externo en --path.');

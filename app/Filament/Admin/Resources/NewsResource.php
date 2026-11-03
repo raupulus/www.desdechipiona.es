@@ -171,11 +171,15 @@ class NewsResource extends Resource
                     Forms\Components\TextInput::make('latitude')
                         ->label(__('filament.latitude'))
                         ->numeric()
-                        ->step('0.0000001'),
+                        ->step('0.0000001')
+                        ->minValue(-90)
+                        ->maxValue(90),
                     Forms\Components\TextInput::make('longitude')
                         ->label(__('filament.longitude'))
                         ->numeric()
-                        ->step('0.0000001'),
+                        ->step('0.0000001')
+                        ->minValue(-180)
+                        ->maxValue(180),
                     Forms\Components\TagsInput::make('source_references')
                         ->label(__('filament.source_references'))
                         ->placeholder('F-0031'),

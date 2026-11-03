@@ -184,10 +184,15 @@ class PageResource extends Resource
                         ->maxLength(120),
                     Forms\Components\TextInput::make('year_start')
                         ->label(__('filament.year_start'))
-                        ->numeric(),
+                        ->numeric()
+                        ->minValue(-5000)
+                        ->maxValue(2100),
                     Forms\Components\TextInput::make('year_end')
                         ->label(__('filament.year_end'))
-                        ->numeric(),
+                        ->numeric()
+                        ->minValue(-5000)
+                        ->maxValue(2100)
+                        ->gte('year_start'),
                     Forms\Components\Select::make('evidence_level')
                         ->label(__('filament.evidence_level'))
                         ->options(EvidenceLevel::class)
@@ -210,11 +215,15 @@ class PageResource extends Resource
                     Forms\Components\TextInput::make('latitude')
                         ->label(__('filament.latitude'))
                         ->numeric()
-                        ->step('0.0000001'),
+                        ->step('0.0000001')
+                        ->minValue(-90)
+                        ->maxValue(90),
                     Forms\Components\TextInput::make('longitude')
                         ->label(__('filament.longitude'))
                         ->numeric()
-                        ->step('0.0000001'),
+                        ->step('0.0000001')
+                        ->minValue(-180)
+                        ->maxValue(180),
                     Forms\Components\TextInput::make('youtube_url')
                         ->label(__('filament.youtube_url'))
                         ->url()

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Seeder de datos corporativos de demostración.
@@ -11,19 +12,21 @@ use Illuminate\Database\Seeder;
 class DummyDataSeeder extends Seeder
 {
     /**
-     * Ejecuta la inserción de datos de muestra para todos los módulos.
+     * Ejecuta la inserción de datos de muestra para todos los módulos dentro de una transacción atómica.
      */
     public function run(): void
     {
-        $this->call([
-            UserSeeder::class,
-            SettingSeeder::class,
-            CategorySeeder::class,
-            ChipionaStructureSeeder::class,
-            PageSeeder::class,
-            PostSeeder::class,
-            SlideSeeder::class,
-            SectionSeeder::class,
-        ]);
+        DB::transaction(function (): void {
+            $this->call([
+                UserSeeder::class,
+                SettingSeeder::class,
+                CategorySeeder::class,
+                ChipionaStructureSeeder::class,
+                PageSeeder::class,
+                PostSeeder::class,
+                SlideSeeder::class,
+                SectionSeeder::class,
+            ]);
+        });
     }
 }
