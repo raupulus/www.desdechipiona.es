@@ -1,8 +1,8 @@
 # Módulo: SitemapService
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-03*
 
-> Generación automática del sitemap XML con todas las URLs públicas del sitio (estáticas, posts y páginas), con soporte de alternates hreflang para multi-idioma (es/en).
+> Generación automática del sitemap XML con todas las URLs públicas del sitio (estáticas, páginas enciclopédicas, noticias, refranes, utilidades y posts), con soporte de alternates hreflang para multi-idioma (es/en).
 
 ---
 
@@ -55,7 +55,13 @@ Genera el sitemap completo y lo guarda en `public/sitemap.xml`.
 |-----|----------------------|:---------:|
 | `/` (home) | weekly | 1.0 |
 | `/blog` | daily | 0.8 |
+| `/news` | daily | 0.8 |
+| `/proverbs` | weekly | 0.7 |
+| `/weather` | hourly | 0.8 |
+| `/phones` | monthly | 0.8 |
+| `/suggestions` | monthly | 0.6 |
 | `/about` | monthly | 0.5 |
+| `/legal` | yearly | 0.4 |
 | `/contact` | monthly | 0.4 |
 
 ### Posts

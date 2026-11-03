@@ -1,8 +1,8 @@
 # Módulo: SeoService
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-03*
 
-> Servicio para la gestión dinámica de meta tags SEO (title, description, OG, Twitter Cards, JSON-LD) con soporte para carga automática desde modelos.
+> Servicio para la gestión dinámica de meta tags SEO (title, description, OG, Twitter Cards, JSON-LD) con soporte para carga automática desde modelos (`Page`, `News`, `Post`).
 
 ---
 
@@ -57,7 +57,7 @@ Cuando un campo SEO no se establece explícitamente, se usan estos fallbacks:
 | keywords | `setting('default_meta_keywords')` → `''` |
 | url | `url()->current()` |
 | type | `website` |
-| image | `asset('images/redes-sociales/social-network-1200x1200.webp')` |
+| image | `asset('images/redes-sociales/og-image.png')` |
 | robots | `index,follow` |
 
 ---

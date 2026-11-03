@@ -3,7 +3,7 @@
     $seoData = $seoInstance->toArray();
     $pageTitle = $seoData['title'] ?? setting('site_title', config('app.name'));
     $pageDescription = $seoData['description'] ?? setting('site_description', '');
-    $pageImage = $seoData['image'] ?? asset('images/redes-sociales/social-network-1200x1200.webp');
+    $pageImage = $seoData['image'] ?? asset('images/redes-sociales/og-image.png');
     $baseUrl = $seoData['baseUrl'] ?? url()->current();
     $pageUrl = $seoData['url'] ?? url()->current();
     $pageType = $seoData['type'] ?? 'website';
@@ -16,7 +16,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="csrf-token" content="{{ csrf_token() }}" />
-<meta name="theme-color" content="#4f46e5" />
+<meta name="theme-color" content="#020617" />
 <title>{{ $pageTitle }}</title>
 <meta name="description" content="{{ $pageDescription }}" />
 <meta name="author" content="{{ $seoData['author'] ?? setting('site_title', config('app.name')) }}" />

@@ -112,6 +112,72 @@ class SitemapService
             )
         );
 
+        $newsUrl = route('news.index');
+        $sitemap->add(
+            $this->addHreflangAlternates(
+                Url::create($newsUrl)
+                    ->setLastModificationDate($lastMod)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                    ->setPriority(0.8),
+                $newsUrl
+            )
+        );
+
+        $proverbsUrl = route('proverbs.index');
+        $sitemap->add(
+            $this->addHreflangAlternates(
+                Url::create($proverbsUrl)
+                    ->setLastModificationDate($lastMod)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                    ->setPriority(0.7),
+                $proverbsUrl
+            )
+        );
+
+        $weatherUrl = route('weather.index');
+        $sitemap->add(
+            $this->addHreflangAlternates(
+                Url::create($weatherUrl)
+                    ->setLastModificationDate(now())
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_HOURLY)
+                    ->setPriority(0.8),
+                $weatherUrl
+            )
+        );
+
+        $phonesUrl = route('phones.index');
+        $sitemap->add(
+            $this->addHreflangAlternates(
+                Url::create($phonesUrl)
+                    ->setLastModificationDate($lastMod)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                    ->setPriority(0.8),
+                $phonesUrl
+            )
+        );
+
+        $suggestionsUrl = route('suggestions.create');
+        $sitemap->add(
+            $this->addHreflangAlternates(
+                Url::create($suggestionsUrl)
+                    ->setLastModificationDate($lastMod)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                    ->setPriority(0.6),
+                $suggestionsUrl
+            )
+        );
+
+        $legalUrl = route('legal');
+        $sitemap->add(
+            $this->addHreflangAlternates(
+                Url::create($legalUrl)
+                    ->setLastModificationDate($lastMod)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY)
+                    ->setPriority(0.4),
+                $legalUrl
+            )
+        );
+
         $contactUrl = route('contact');
         $sitemap->add(
             $this->addHreflangAlternates(
