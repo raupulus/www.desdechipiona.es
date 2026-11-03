@@ -49,13 +49,13 @@ class ProjectClearTest extends TestCase
     }
 
     /**
-     * Comprueba que project:clear --force rota APP_KEY preservando la anterior en APP_PREVIOUS_KEYS.
+     * Comprueba que project:clear --rotate-key rota APP_KEY preservando la anterior en APP_PREVIOUS_KEYS.
      */
-    public function test_project_clear_with_force_rotates_and_preserves_previous_keys(): void
+    public function test_project_clear_with_rotate_key_rotates_and_preserves_previous_keys(): void
     {
         $oldKey = 'base64:dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleXRlc3Q=';
 
-        $this->artisan('project:clear', ['--force' => true])
+        $this->artisan('project:clear', ['--rotate-key' => true])
             ->expectsOutputToContain('Clave anterior preservada en APP_PREVIOUS_KEYS')
             ->expectsOutputToContain('Clave APP_KEY regenerada exitosamente')
             ->assertSuccessful();
@@ -64,5 +64,18 @@ class ProjectClearTest extends TestCase
         $this->assertMatchesRegularExpression('/^APP_KEY=base64:/m', $content);
         $this->assertStringContainsString('APP_PREVIOUS_KEYS='.$oldKey, $content);
         $this->assertStringNotContainsString('APP_KEY='.$oldKey, $content);
+    }
+
+    /**
+     * Comprueba que project:clear --force sin --rotate-key limpia de forma desatendida sin rotar la clave.
+     */
+    public function test_project_clear_with_force_only_skips_key_rotation(): void
+    {
+        $this->artisan('project:clear', ['--force' => true])
+            ->expectsOutputToContain('Rotación de APP_KEY omitida')
+            ->assertSuccessful();
+
+        $content = File::get($this->tempEnvDir.'/.env');
+        $this->assertStringNotContainsString('APP_PREVIOUS_KEYS=', $content);
     }
 }

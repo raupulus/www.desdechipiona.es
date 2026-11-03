@@ -5,6 +5,7 @@ namespace App\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 /**
@@ -49,13 +50,26 @@ class ChipionaWeatherService
         if (! empty($apiKey)) {
             try {
                 $metaResponse = Http::withHeaders(['api_key' => $apiKey])
-                    ->timeout(4)
+                    ->connectTimeout(4)
+                    ->timeout(8)
                     ->get("https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/diaria/{$municipality}");
 
-                if ($metaResponse->successful() && $metaResponse->json('datos')) {
-                    $dataResponse = Http::timeout(4)->get((string) $metaResponse->json('datos'));
+                if ($metaResponse->successful() && (int) $metaResponse->json('estado') === 200 && $metaResponse->json('datos')) {
+                    $dataUrl = (string) $metaResponse->json('datos');
+                    $dataResponse = Http::connectTimeout(4)->timeout(8)->get($dataUrl);
+
                     if ($dataResponse->successful()) {
-                        $payload = $dataResponse->json('0.prediccion.dia.0');
+                        $rawBody = $dataResponse->body();
+
+                        // AEMET OpenData a menudo entrega las predicciones en ISO-8859-15
+                        if (! mb_check_encoding($rawBody, 'UTF-8')) {
+                            $rawBody = mb_convert_encoding($rawBody, 'UTF-8', 'ISO-8859-15, WINDOWS-1252, ISO-8859-1');
+                        }
+
+                        /** @var array<int, array<string, mixed>>|null $decoded */
+                        $decoded = json_decode($rawBody, true);
+                        $payload = $decoded[0]['prediccion']['dia'][0] ?? null;
+
                         if (is_array($payload)) {
                             return [
                                 'source' => 'AEMET OpenData Oficial (11016)',
@@ -71,8 +85,10 @@ class ChipionaWeatherService
                         }
                     }
                 }
-            } catch (Throwable) {
-                // Fallback seguro si AEMET OpenData no responde
+            } catch (Throwable $e) {
+                Log::warning('Error al consultar AEMET OpenData para Chipiona', [
+                    'error' => $e->getMessage(),
+                ]);
             }
         }
 

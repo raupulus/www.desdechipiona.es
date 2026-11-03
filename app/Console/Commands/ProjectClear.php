@@ -17,14 +17,16 @@ class ProjectClear extends Command
      *
      * @var string
      */
-    protected $signature = 'project:clear {--force : Ejecutar sin confirmación (incluye rotación de APP_KEY)}';
+    protected $signature = 'project:clear
+                            {--force : Ejecutar sin confirmación interactiva}
+                            {--rotate-key : Rota la clave APP_KEY preservando la anterior en APP_PREVIOUS_KEYS}';
 
     /**
      * La descripción del comando.
      *
      * @var string
      */
-    protected $description = 'Limpia todo el caché, colas, regenera opcionalmente la clave del .env de forma segura y recompone el autoload';
+    protected $description = 'Limpia todo el caché, colas, recompone el autoload y opcionalmente rota la clave de cifrado';
 
     /**
      * Ejecuta el comando.
@@ -39,11 +41,11 @@ class ProjectClear extends Command
         // 2. Limpiar y reiniciar colas
         $this->clearQueues();
 
-        // 3. Rotar clave .env solo si se pasa --force o el usuario lo confirma en consola interactiva
+        // 3. Rotar clave .env solo si se pasa explícitamente --rotate-key o se confirma interactivamente
         if ($this->shouldRotateKey()) {
             $this->regenerateKeySecurely();
         } else {
-            $this->line('→ Rotación de APP_KEY omitida (pasa --force para rotarla sin preguntar).');
+            $this->line('→ Rotación de APP_KEY omitida (usa --rotate-key para rotarla).');
         }
 
         // 4. Recomponer el autoload de Composer
@@ -60,8 +62,12 @@ class ProjectClear extends Command
      */
     protected function shouldRotateKey(): bool
     {
-        if ($this->option('force')) {
+        if ($this->option('rotate-key')) {
             return true;
+        }
+
+        if ($this->option('force')) {
+            return false;
         }
 
         if (! $this->input->isInteractive()) {
