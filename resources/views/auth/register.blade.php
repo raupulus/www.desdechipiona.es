@@ -42,6 +42,7 @@
         </div>
 
         <x-recaptcha-script action="register" />
+        <x-turnstile-widget action="register" />
         <x-input-error :messages="$errors->get('g-recaptcha-response')" class="mt-2" />
 
         <div class="flex items-center justify-end mt-4">

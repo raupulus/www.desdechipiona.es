@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Web;
 
 use App\Rules\Recaptcha;
+use App\Rules\Turnstile;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -33,6 +34,7 @@ class ContactRequest extends FormRequest
             'message' => ['required', 'string', 'max:5000'],
             'privacy' => ['required', 'accepted'],
             'g-recaptcha-response' => [new Recaptcha('contact')],
+            'cf-turnstile-response' => [new Turnstile],
         ];
     }
 

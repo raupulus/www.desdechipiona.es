@@ -8,40 +8,47 @@ use App\Services\SeoService;
 use Illuminate\Contracts\View\View;
 
 /**
- * Controlador para las páginas dinámicas del frontend.
- * Las páginas son contenido editable desde el backend Filament.
+ * Controlador para las páginas enciclopédicas y estáticas del frontend.
+ * Carga las páginas enlazadas (directas e inversas), noticias relacionadas y comentarios aprobados.
  */
 class PageController extends Controller
 {
     /**
      * Muestra el detalle de una página dinámica por su slug.
      * Devuelve 404 si la página no existe, no está publicada o no está activa.
-     *
-     * @param  string  $slug  El slug de la página
-     * @param  SeoService  $seo  Servicio para gestión de meta tags SEO
-     * @return View Vista del detalle de la página
      */
     public function show(string $slug, SeoService $seo): View
     {
-        // Buscar página publicada y activa por slug
         $page = Page::where('slug', $slug)
             ->publishedAndActive()
+            ->with([
+                'categories',
+                'relatedPages' => fn ($q) => $q->publishedAndActive(),
+                'linkedFromPages' => fn ($q) => $q->publishedAndActive(),
+                'news' => fn ($q) => $q->publishedAndActive()->limit(4),
+                'comments' => fn ($q) => $q->approved(),
+            ])
             ->firstOrFail();
 
-        // Configurar SEO dinámico a partir de los campos de la página
+        $allLinkedPages = $page->relatedPages
+            ->merge($page->linkedFromPages)
+            ->unique('id')
+            ->values();
+
         $pageUrl = route('pages.show', $page->slug);
         $seo->fromModel($page)
-            ->setType('website')
+            ->setType('article')
+            ->setAuthor('Raúl Caro Pastorino')
             ->setUrl($pageUrl)
             ->setBreadcrumbs([
                 ['name' => __('messages.home'), 'url' => route('home')],
                 ['name' => $page->title, 'url' => $pageUrl],
             ]);
 
-        if (in_array($page->slug, ['privacy', 'cookies', 'terms'], true)) {
+        if (in_array($page->slug, ['privacy', 'cookies', 'terms', 'legal-notice'], true)) {
             $seo->setRobots('noindex,follow');
         }
 
-        return view('pages.show', compact('page', 'seo'));
+        return view('pages.show', compact('page', 'allLinkedPages', 'seo'));
     }
 }

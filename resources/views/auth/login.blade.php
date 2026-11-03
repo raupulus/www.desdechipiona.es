@@ -35,6 +35,7 @@
         </div>
 
         <x-recaptcha-script action="login" />
+        <x-turnstile-widget action="login" />
         <x-input-error :messages="$errors->get('g-recaptcha-response')" class="mt-2" />
 
         <div class="flex items-center justify-end mt-4">

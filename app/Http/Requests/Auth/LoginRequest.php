@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Rules\Recaptcha;
+use App\Rules\Turnstile;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -32,6 +33,7 @@ class LoginRequest extends FormRequest
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
             'password' => ['required', 'string'],
             'g-recaptcha-response' => [new Recaptcha('login')],
+            'cf-turnstile-response' => [new Turnstile],
         ];
     }
 

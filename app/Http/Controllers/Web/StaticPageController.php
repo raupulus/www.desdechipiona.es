@@ -85,4 +85,20 @@ class StaticPageController extends Controller
 
         return view('cookies', compact('sections', 'seo'));
     }
+
+    /**
+     * Muestra la página de Aviso Legal, Autoría (Raúl Caro Pastorino) y Licencia AGPLv3.
+     */
+    public function legal(SeoService $seo): View
+    {
+        $seo->setTitle('Autoría, Aviso Legal y Licencia AGPLv3 - '.setting('site_title', config('app.name')))
+            ->setDescription('Iniciativa privada y trabajo de investigación histórica y documental de Raúl Caro Pastorino (raupulus.dev) sobre Chipiona.')
+            ->setUrl(route('legal'))
+            ->setBreadcrumbs([
+                ['name' => __('messages.home'), 'url' => route('home')],
+                ['name' => 'Autoría y Aviso Legal', 'url' => route('legal')],
+            ]);
+
+        return view('legal', compact('seo'));
+    }
 }

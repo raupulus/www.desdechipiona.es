@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\News;
 use App\Models\Page;
 use App\Models\Post;
 use Illuminate\Support\Carbon;
@@ -42,6 +43,9 @@ class SitemapService
 
         // Añadir páginas dinámicas publicadas (excluyendo páginas legales noindex)
         $this->addPages($sitemap);
+
+        // Añadir noticias publicadas
+        $this->addNews($sitemap);
 
         // Guardar el sitemap en el directorio público
         $sitemap->writeToFile(public_path('sitemap.xml'));
@@ -158,8 +162,31 @@ class SitemapService
                             Url::create($pageUrl)
                                 ->setLastModificationDate($page->updated_at ?? now())
                                 ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
-                                ->setPriority(0.6),
+                                ->setPriority(0.8),
                             $pageUrl
+                        )
+                    );
+                }
+            });
+    }
+
+    /**
+     * Añade todas las noticias publicadas al sitemap.
+     */
+    private function addNews(Sitemap $sitemap): void
+    {
+        News::publishedAndActive()
+            ->orderByDesc('published_at')
+            ->chunk(200, function ($newsItems) use ($sitemap): void {
+                foreach ($newsItems as $news) {
+                    $newsUrl = route('news.show', $news->slug);
+                    $sitemap->add(
+                        $this->addHreflangAlternates(
+                            Url::create($newsUrl)
+                                ->setLastModificationDate($news->updated_at ?? now())
+                                ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                                ->setPriority(0.7),
+                            $newsUrl
                         )
                     );
                 }

@@ -12,8 +12,11 @@ Este directorio contiene la documentación técnica viva y detallada de cada mó
 |--------|---------|-------------|
 | [Usuarios](usuarios.md) | `usuarios.md` | Gestión de usuarios, roles y autenticación |
 | [Posts](posts.md) | `posts.md` | Sistema de blog con artículos traducibles |
-| [Páginas](paginas.md) | `paginas.md` | Páginas de contenido estático/dinámico traducibles |
-| [Categorías](categorias.md) | `categorias.md` | Taxonomía compartida entre posts y páginas |
+| [Páginas](paginas.md) | `paginas.md` | Páginas enciclopédicas y patrimoniales con Markdown, GPS, fuentes y páginas enlazadas |
+| [Noticias](noticias.md) | `noticias.md` | CRUD independiente de noticias y hallazgos documentales de Chipiona |
+| [Participación y Refranes](participacion-ciudadana.md) | `participacion-ciudadana.md` | Correcciones sugeridas, propuestas de contenido, refranero popular y comentarios con OAuth ligero y Turnstile |
+| [Utilidades de Chipiona](utilidades-chipiona.md) | `utilidades-chipiona.md` | El Tiempo y Mareas (AEMET 11016), Teléfonos Oficiales y Buscador Multicriterio |
+| [Categorías](categorias.md) | `categorias.md` | Taxonomía compartida entre posts, páginas y noticias |
 | [Slides](slides.md) | `slides.md` | Carruseles de imágenes agrupados por zona |
 | [Secciones](secciones.md) | `secciones.md` | Bloques de contenido dinámico del frontend |
 | [Configuración](configuracion.md) | `configuracion.md` | Ajustes globales del sistema (key-value) |

@@ -202,6 +202,9 @@ La documentación de cada módulo se encuentra en `docs/info/`. **Es obligatorio
 | [usuarios.md](docs/info/usuarios.md) | Gestión de usuarios, roles y autenticación |
 | [posts.md](docs/info/posts.md) | Sistema de blog con artículos traducibles |
 | [paginas.md](docs/info/paginas.md) | Páginas de contenido estático/dinámico |
+| [noticias.md](docs/info/noticias.md) | Noticias y hallazgos documentales de Chipiona (CRUD independiente) |
+| [participacion-ciudadana.md](docs/info/participacion-ciudadana.md) | Correcciones, sugerencias de contenido, refranero y comentarios con OAuth ligero y Turnstile |
+| [utilidades-chipiona.md](docs/info/utilidades-chipiona.md) | El Tiempo y Mareas (AEMET 11016), Teléfonos Oficiales y Buscador Multicriterio |
 | [categorias.md](docs/info/categorias.md) | Taxonomía compartida entre posts y páginas |
 | [slides.md](docs/info/slides.md) | Carruseles de imágenes agrupados por zona |
 | [secciones.md](docs/info/secciones.md) | Bloques de contenido dinámico del frontend |

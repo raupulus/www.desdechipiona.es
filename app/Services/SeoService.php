@@ -169,7 +169,11 @@ class SeoService
         if (method_exists($model, 'getSeoKeywordsText')) {
             $this->keywords = $model->getSeoKeywordsText() ?: $this->keywords;
         }
-        if (! empty($model->image)) {
+        if (! empty($model->social_image_url)) {
+            $this->image = $model->social_image_url;
+        } elseif (! empty($model->image_url)) {
+            $this->image = $model->image_url;
+        } elseif (! empty($model->image)) {
             $this->image = asset('storage/'.$model->image);
         } elseif (! empty($model->featured_image)) {
             $this->image = $model->featured_image;
@@ -211,7 +215,7 @@ class SeoService
             'baseUrl' => $baseUrl,
             'url' => $canonicalUrl,
             'type' => $this->type,
-            'image' => $this->image ?: asset('images/redes-sociales/social-network-1200x1200.webp'),
+            'image' => $this->image ?: asset('images/redes-sociales/og-image.png'),
             'robots' => $this->robots,
             'author' => $this->author ?: $siteTitle,
             'publishedAt' => $this->publishedAt,

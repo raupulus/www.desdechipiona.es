@@ -30,8 +30,9 @@
         </div>
         @error('privacy')<p id="privacy-error" role="alert" class="text-sm text-red-600">{{ $message }}</p>@enderror
         <x-recaptcha-script action="contact" />
+        <x-turnstile-widget action="contact" />
         @error('g-recaptcha-response')<p role="alert" class="text-sm text-red-600">{{ $message }}</p>@enderror
-        <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition font-medium">{{ __('messages.contact_send') }}</button>
+        <button type="submit" class="w-full bg-orange-700 text-white py-3 rounded-xl hover:bg-orange-800 transition font-bold">{{ __('messages.contact_send') }}</button>
     </form>
 </div>
 @endsection

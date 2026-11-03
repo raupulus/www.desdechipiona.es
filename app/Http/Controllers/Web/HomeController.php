@@ -3,46 +3,84 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\News;
 use App\Models\Post;
+use App\Models\Proverb;
 use App\Models\Section;
 use App\Models\Slide;
+use App\Services\ContentSearchService;
 use App\Services\SeoService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * Controlador para la página de inicio del sitio web.
- * Carga las secciones dinámicas, slides y últimos posts publicados.
+ * Controlador para la página de inicio y explorador principal de Desde Chipiona.
+ * Integra el buscador multicriterio (por apartado, época, rango de años, rigor documental y mapa GPS),
+ * junto con las secciones dinámicas, slides, últimas noticias y refrán destacado.
  */
 class HomeController extends Controller
 {
     /**
-     * Muestra la página principal del sitio.
-     *
-     * @param  SeoService  $seo  Servicio para gestión de meta tags SEO
-     * @return View Vista de la página de inicio
+     * Muestra la página principal con el explorador facetado de Chipiona.
      */
-    public function index(SeoService $seo): View
+    public function index(Request $request, ContentSearchService $searchService, SeoService $seo): View
     {
-        // Cargar secciones de la zona home con caché de IDs (1 hora)
+        $filters = $request->only([
+            'q',
+            'group',
+            'era',
+            'evidence',
+            'category',
+            'year_from',
+            'year_to',
+            'map',
+            'sort',
+        ]);
+
+        $pages = $searchService->searchPages($filters, 12);
+        $groupCounts = $searchService->getGroupCounts();
+        $categories = Category::active()->ordered()->get();
+
         $sectionIds = Cache::remember('sections_home_ids', 3600, fn () => Section::forZone('home')->pluck('id')->all());
         $sections = Section::whereIn('id', $sectionIds)->orderBy('order')->get();
 
-        // Cargar slides de la zona home con caché de IDs (1 hora)
         $slideIds = Cache::remember('slides_home_ids', 3600, fn () => Slide::forZone('home')->pluck('id')->all());
         $slides = Slide::whereIn('id', $slideIds)->orderBy('order')->get();
 
-        // Obtener los últimos 6 posts publicados con sus categorías (eager loading para evitar N+1)
         $latestPosts = Post::publishedAndActive()
             ->with('categories:id,slug,name')
             ->orderByDesc('published_at')
             ->limit(6)
             ->get();
 
-        // Configurar meta tags SEO con los datos del sitio
-        $seo->setTitle(setting('site_title', config('app.name')))
-            ->setDescription(setting('site_description', ''));
+        $latestNews = News::publishedAndActive()
+            ->with(['categories:id,slug,name', 'relatedPages:id,slug,title'])
+            ->orderByDesc('published_at')
+            ->limit(3)
+            ->get();
 
-        return view('home', compact('sections', 'slides', 'latestPosts', 'seo'));
+        $featuredProverb = Proverb::approved()
+            ->with('relatedPage:id,slug,title')
+            ->orderByDesc('featured')
+            ->latest()
+            ->first();
+
+        $seo->setTitle(setting('site_title', config('app.name')))
+            ->setDescription(setting('site_description', 'Historia, Mar, Tierra y Memoria Viva de Chipiona contrastada documento a documento.'));
+
+        return view('home', compact(
+            'pages',
+            'filters',
+            'groupCounts',
+            'categories',
+            'sections',
+            'slides',
+            'latestPosts',
+            'latestNews',
+            'featuredProverb',
+            'seo'
+        ));
     }
 }

@@ -1,0 +1,85 @@
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\Enums\SuggestionStatus;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\ProverbSubmissionRequest;
+use App\Models\Page;
+use App\Models\Proverb;
+use App\Services\SeoService;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+
+/**
+ * Controlador público del Refranero Popular de Chipiona.
+ * Permite consultar y filtrar los dichos marineros y agrícolas, así como subir nuevos refranes.
+ */
+class ProverbController extends Controller
+{
+    /**
+     * Muestra el refranero popular y el formulario para subir refranes.
+     */
+    public function index(Request $request, SeoService $seo): View
+    {
+        $category = (string) $request->query('category', '');
+        $search = trim((string) $request->query('q', ''));
+
+        $query = Proverb::approved()
+            ->with('relatedPage:id,slug,title')
+            ->orderByDesc('featured')
+            ->latest();
+
+        if ($category !== '' && $category !== 'all') {
+            $query->where('category', $category);
+        }
+
+        if ($search !== '') {
+            $likeOp = $query->getConnection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $term = '%'.$search.'%';
+            $query->where(function ($sub) use ($likeOp, $term): void {
+                $sub->where('text', $likeOp, $term)
+                    ->orWhere('meaning', $likeOp, $term)
+                    ->orWhere('author_name', $likeOp, $term);
+            });
+        }
+
+        $proverbs = $query->paginate(12)->withQueryString();
+        $pages = Page::publishedAndActive()->orderBy('slug')->get(['id', 'slug', 'title']);
+
+        $seo->setTitle('Refranero Popular y Dichos de Chipiona - '.setting('site_title', config('app.name')))
+            ->setDescription('Sabiduría oral de la mar, los corrales de pesca, los vientos y las viñas de moscatel de Chipiona.')
+            ->setUrl(route('proverbs.index'));
+
+        return view('proverbs.index', compact('proverbs', 'pages', 'category', 'search', 'seo'));
+    }
+
+    /**
+     * Registra un nuevo refrán enviado por un vecino (pendiente de moderación).
+     */
+    public function store(ProverbSubmissionRequest $request): RedirectResponse
+    {
+        $validated = $request->validated();
+        /** @var array<string, string|null>|null $social */
+        $social = $request->session()->get('public_social_identity');
+
+        Proverb::create([
+            'text' => $validated['text'],
+            'meaning' => $validated['meaning'] ?? null,
+            'category' => $validated['category'],
+            'source_code' => $validated['source_code'] ?? 'Tradición oral vecinal',
+            'related_page_id' => $validated['related_page_id'] ?? null,
+            'author_name' => $social['name'] ?? ($validated['author_name'] ?? null) ?: 'Vecino de Chipiona',
+            'author_email' => $social['email'] ?? ($validated['author_email'] ?? null),
+            'oauth_provider' => $social['provider'] ?? null,
+            'oauth_id' => $social['id'] ?? null,
+            'status' => SuggestionStatus::Pending,
+            'featured' => false,
+        ]);
+
+        return redirect()
+            ->route('proverbs.index')
+            ->with('success', __('messages.proverb_sent_success'));
+    }
+}

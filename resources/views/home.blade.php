@@ -1,211 +1,480 @@
 @extends('layouts.app')
+
 @section('content')
+@php
+    $activeGroup = (string) ($filters['group'] ?? 'all');
+    $activeEra = (string) ($filters['era'] ?? 'all');
+    $activeEvidence = (string) ($filters['evidence'] ?? 'all');
+    $searchQuery = (string) ($filters['q'] ?? '');
+    $onlyMap = !empty($filters['map']);
+    $activeSort = (string) ($filters['sort'] ?? 'featured');
+
+    $groupMeta = [
+        'all' => ['label' => '📚 Todo el catálogo', 'border' => 'border-t-orange-600'],
+        'historia' => ['label' => '🏛️ Historia', 'border' => 'border-t-amber-600'],
+        'monumentos' => ['label' => '🗼 Monumentos', 'border' => 'border-t-blue-700'],
+        'playas' => ['label' => '🏖️ Playas y Corrales', 'border' => 'border-t-sky-600'],
+        'fauna' => ['label' => '🦎 Fauna', 'border' => 'border-t-emerald-700'],
+        'flora' => ['label' => '🌲 Flora y Pinares', 'border' => 'border-t-green-700'],
+        'gastronomia' => ['label' => '🍷 Recetas y Vino', 'border' => 'border-t-purple-700'],
+        'personajes' => ['label' => '👤 Personajes', 'border' => 'border-t-rose-700'],
+        'fiestas' => ['label' => '🎭 Fiestas', 'border' => 'border-t-red-700'],
+        'refranes' => ['label' => '🗣️ Refranes', 'border' => 'border-t-indigo-700'],
+    ];
+@endphp
 
 {{-- ============================================================
-     HERO
+     HERO NOCTURNO ATLÁNTICO + BUSCADOR MULTICRITERIO
      ============================================================ --}}
-<div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white">
-    <div class="max-w-7xl mx-auto px-4 py-20 sm:py-28 text-center">
-        <span class="inline-block bg-white/15 text-white text-xs font-semibold uppercase tracking-widest px-4 py-1 rounded-full mb-6">
-            {{ __('messages.home_hero_badge') }}
-        </span>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
-            {{ __('messages.home_hero_title') }}
-        </h1>
-        <p class="max-w-2xl mx-auto text-lg sm:text-xl text-indigo-100 mb-10">
-            {{ __('messages.home_hero_description') }}
-        </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="{{ route('blog.index') }}"
-               class="inline-flex items-center gap-2 bg-white text-indigo-700 font-semibold px-8 py-3 rounded-xl shadow hover:bg-indigo-50 transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                {{ __('messages.home_hero_btn_docs') }}
-            </a>
-            <a href="{{ route('filament.admin.pages.dashboard') }}"
-               class="inline-flex items-center gap-2 bg-indigo-900 text-white font-semibold px-8 py-3 rounded-xl shadow hover:bg-indigo-800 transition border border-white/20">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                {{ __('messages.home_hero_btn_admin') }}
-            </a>
-            <a href="{{ route('scribe') }}"
-               class="inline-flex items-center gap-2 bg-transparent text-white font-semibold px-8 py-3 rounded-xl border border-white/40 hover:bg-white/10 transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                {{ __('messages.home_hero_btn_api') }}
-            </a>
+<section class="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-violet-950 text-white border-b-4 border-orange-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
+        <div class="text-center max-w-4xl mx-auto mb-8">
+            <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/90 px-4 py-1.5 text-xs font-bold text-amber-300 mb-5">
+                <span aria-hidden="true">🦎</span>
+                <span>Archivo abierto, riguroso y cercano sobre nuestra tierra</span>
+            </span>
+            <h1 class="font-serif text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight mb-4">
+                Todo lo que <span class="text-amber-300">Chipiona</span> fue, es y guarda en su memoria
+            </h1>
+            <p class="text-base sm:text-lg text-slate-200 max-w-2xl mx-auto leading-relaxed">
+                Busca de forma sencilla entre siglos de historia documentada, monumentos, playas, corrales de pesca, fauna, flora, refranes y personajes.
+            </p>
         </div>
-    </div>
-</div>
 
-{{-- ============================================================
-     QUICK START
-     ============================================================ --}}
-<div class="bg-gray-900 text-gray-100">
-    <div class="max-w-4xl mx-auto px-4 py-10">
-        <p class="text-gray-300 text-sm font-semibold uppercase tracking-wider mb-3">{{ __('messages.home_quickstart_title') }}</p>
-        <div class="bg-gray-800 rounded-xl p-5 font-mono text-sm overflow-x-auto">
-            <span class="text-green-400">$</span> git clone https://github.com/raupulus/skeleton-laravel-project.git &amp;&amp; cd skeleton-laravel-project<br>
-            <span class="text-green-400">$</span> cp .env.example .env &amp;&amp; composer install &amp;&amp; pnpm install<br>
-            <span class="text-green-400">$</span> php artisan project:install<br>
-            <span class="text-green-400">$</span> php artisan serve &amp;&amp; pnpm run dev
-        </div>
-    </div>
-</div>
+        {{-- Tarjeta Blanca del Buscador Cómodo y Filtrable --}}
+        <form
+            action="{{ route('home') }}"
+            method="GET"
+            role="search"
+            aria-label="Buscador y filtrador de contenidos de Chipiona"
+            class="max-w-4xl mx-auto rounded-2xl border-2 border-amber-500/70 bg-white p-5 sm:p-7 text-slate-950 shadow-2xl space-y-5"
+        >
+            <div>
+                <label for="search-q" class="block text-sm font-extrabold text-slate-950 mb-2">
+                    🔎 ¿Qué quieres descubrir hoy sobre Chipiona?
+                </label>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input
+                        type="search"
+                        id="search-q"
+                        name="q"
+                        value="{{ $searchQuery }}"
+                        placeholder="Escribe por ejemplo: Faro, Camaleón, Regla, Maremoto de 1755, Moscatel..."
+                        class="flex-1 rounded-xl border-2 border-slate-300 bg-white px-4 py-3 text-base font-medium text-slate-950 placeholder:text-slate-600 focus:border-orange-700 focus:ring-2 focus:ring-orange-700"
+                    >
+                    <button
+                        type="submit"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-orange-700 px-7 py-3 text-base font-extrabold text-white shadow-md hover:bg-orange-800 transition cursor-pointer"
+                    >
+                        <span>Buscar ahora</span>
+                    </button>
+                </div>
+            </div>
 
-{{-- ============================================================
-     FUNCIONALIDADES PRINCIPALES
-     ============================================================ --}}
-<div class="bg-white py-20">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="text-center mb-14">
-            <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{{ __('messages.home_features_title') }}</h2>
-            <p class="max-w-2xl mx-auto text-gray-600 text-lg">{{ __('messages.home_features_description') }}</p>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {{-- 1. Filtrar por tema o apartado --}}
+            <div>
+                <span class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-2.5">
+                    1. Filtrar por tema o apartado:
+                </span>
+                <input type="hidden" name="group" id="filter-group-input" value="{{ $activeGroup }}">
+                <div class="flex flex-wrap gap-2">
+                    @foreach($groupMeta as $key => $meta)
+                        @php
+                            $isSelected = ($activeGroup === $key) || ($activeGroup === '' && $key === 'all');
+                            $count = $groupCounts[$key] ?? 0;
+                        @endphp
+                        <button
+                            type="submit"
+                            name="group"
+                            value="{{ $key }}"
+                            class="inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs sm:text-sm font-bold transition cursor-pointer {{ $isSelected ? 'border-slate-950 bg-slate-950 text-white shadow-xs' : 'border-slate-300 bg-slate-50 text-slate-900 hover:bg-slate-200' }}"
+                        >
+                            <span>{{ $meta['label'] }}</span>
+                            @if($count > 0)
+                                <span class="rounded-full px-1.5 py-0.2 text-[11px] {{ $isSelected ? 'bg-amber-400 text-slate-950 font-extrabold' : 'bg-slate-200 text-slate-800' }}">{{ $count }}</span>
+                            @endif
+                        </button>
+                    @endforeach
+                </div>
+            </div>
 
-            @php
-                $features = [
-                    ['key' => 'auth',     'icon' => 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z', 'bgClass' => 'bg-indigo-100', 'textClass' => 'text-indigo-600'],
-                    ['key' => 'filament', 'icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z', 'bgClass' => 'bg-orange-100', 'textClass' => 'text-orange-600'],
-                    ['key' => 'api',      'icon' => 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'bgClass' => 'bg-green-100', 'textClass' => 'text-green-600'],
-                    ['key' => 'i18n',     'icon' => 'M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129', 'bgClass' => 'bg-blue-100', 'textClass' => 'text-blue-600'],
-                    ['key' => 'seo',      'icon' => 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z', 'bgClass' => 'bg-pink-100', 'textClass' => 'text-pink-600'],
-                    ['key' => 'content',  'icon' => 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z', 'bgClass' => 'bg-yellow-100', 'textClass' => 'text-yellow-600'],
-                    ['key' => 'settings', 'icon' => 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4', 'bgClass' => 'bg-teal-100', 'textClass' => 'text-teal-600'],
-                    ['key' => 'docker',   'icon' => 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4', 'bgClass' => 'bg-sky-100', 'textClass' => 'text-sky-600'],
-                    ['key' => 'tests',    'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', 'bgClass' => 'bg-violet-100', 'textClass' => 'text-violet-600'],
-                ];
-            @endphp
+            {{-- 2. Filtrar por época/fechas y 3. Filtrar por rigor documental --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-slate-200">
+                <div>
+                    <label for="filter-era" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
+                        2. Época o siglo:
+                    </label>
+                    <select
+                        id="filter-era"
+                        name="era"
+                        onchange="this.form.submit()"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
+                    >
+                        <option value="all">⏳ Todas las épocas (Prehistoria — Actualidad)</option>
+                        @foreach(\App\Enums\HistoricalEra::cases() as $eraCase)
+                            <option value="{{ $eraCase->value }}" @selected($activeEra === $eraCase->value)>
+                                {{ $eraCase->label() }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-            @foreach($features as $feat)
-                <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6 hover:shadow-md transition">
-                    <div class="w-11 h-11 {{ $feat['bgClass'] }} rounded-xl flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 {{ $feat['textClass'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $feat['icon'] }}"/></svg>
+                <div>
+                    <label for="filter-evidence" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
+                        3. Rigor (Hechos vs. Leyendas):
+                    </label>
+                    <select
+                        id="filter-evidence"
+                        name="evidence"
+                        onchange="this.form.submit()"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
+                    >
+                        <option value="all">⚖️ Todos los niveles de verificación</option>
+                        @foreach(\App\Enums\EvidenceLevel::cases() as $evCase)
+                            <option value="{{ $evCase->value }}" @selected($activeEvidence === $evCase->value)>
+                                {{ $evCase->label() }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="filter-year-from" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
+                        4. Rango de años:
+                    </label>
+                    <div class="flex items-center gap-1.5">
+                        <input
+                            type="number"
+                            id="filter-year-from"
+                            name="year_from"
+                            value="{{ $filters['year_from'] ?? '' }}"
+                            placeholder="Desde (ej. 1477)"
+                            class="w-1/2 rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold text-slate-950"
+                        >
+                        <input
+                            type="number"
+                            name="year_to"
+                            aria-label="Hasta el año"
+                            value="{{ $filters['year_to'] ?? '' }}"
+                            placeholder="Hasta (ej. 1900)"
+                            class="w-1/2 rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold text-slate-950"
+                        >
                     </div>
-                    <h3 class="font-bold text-gray-900 mb-2">{{ __('messages.home_feat_' . $feat['key'] . '_title') }}</h3>
-                    <p class="text-gray-600 text-sm">{{ __('messages.home_feat_' . $feat['key'] . '_desc') }}</p>
                 </div>
+
+                <div>
+                    <label for="filter-sort" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
+                        5. Ordenar por:
+                    </label>
+                    <select
+                        id="filter-sort"
+                        name="sort"
+                        onchange="this.form.submit()"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
+                    >
+                        <option value="featured" @selected($activeSort === 'featured')>⭐ Destacados e importantes</option>
+                        <option value="chronological_asc" @selected($activeSort === 'chronological_asc')>📜 Más antiguos primero</option>
+                        <option value="chronological_desc" @selected($activeSort === 'chronological_desc')>🕰️ Más recientes en la historia</option>
+                        <option value="recent" @selected($activeSort === 'recent')>🆕 Últimos publicados</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+{{-- ============================================================
+     BANDA DE ADVERTENCIA METODOLÓGICA: HECHOS VS. MITOS Y LEYENDAS
+     ============================================================ --}}
+<section aria-label="Compromiso con la verdad histórica" class="border-b border-amber-200 bg-amber-50/90 py-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div class="flex items-start gap-3">
+            <span class="text-xl shrink-0" aria-hidden="true">🧭</span>
+            <p class="text-xs sm:text-sm text-slate-900 leading-relaxed">
+                <strong class="font-extrabold text-slate-950">Nuestro compromiso con la verdad histórica:</strong>
+                En <strong>Desde Chipiona</strong> jamás mezclamos leyendas con datos de archivo sin avisarte claramente al principio de cada página.
+            </p>
+        </div>
+        <div class="flex flex-wrap gap-2 shrink-0">
+            <a href="{{ route('home', ['evidence' => 'consolidado']) }}" class="inline-flex items-center gap-1.5 rounded-lg border border-sky-800 bg-sky-50 px-3 py-1 text-xs font-extrabold text-sky-950 hover:bg-sky-100">
+                <span>🛡️ Contrastado con fuentes [F-XXXX]</span>
+            </a>
+            <a href="{{ route('home', ['evidence' => 'tradicion']) }}" class="inline-flex items-center gap-1.5 rounded-lg border border-amber-800 bg-amber-100/80 px-3 py-1 text-xs font-extrabold text-amber-950 hover:bg-amber-200">
+                <span>🗣️ Mito, Leyenda o Tradición Oral</span>
+            </a>
+            <a href="{{ route('home', ['evidence' => 'discutido']) }}" class="inline-flex items-center gap-1.5 rounded-lg border border-rose-800 bg-rose-50 px-3 py-1 text-xs font-extrabold text-rose-950 hover:bg-rose-100">
+                <span>⚠️ Dato Discutido o Sin Contrastar</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+{{-- ============================================================
+     EXPLORADOR DE TARJETAS CON PÁGINAS ENLAZADAS Y COORDENADAS
+     ============================================================ --}}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+            <h2 class="font-serif text-2xl sm:text-3xl font-extrabold text-slate-950">
+                Explorador de Contenidos de Chipiona
+            </h2>
+            <p class="text-sm text-slate-800 mt-1">
+                Mostrando <strong class="text-orange-800 font-extrabold">{{ $pages->total() }}</strong> páginas documentadas y enlazadas según tus filtros.
+            </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+            <a
+                href="{{ route('home', array_merge($filters, ['map' => $onlyMap ? null : 1])) }}"
+                class="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs sm:text-sm font-bold transition {{ $onlyMap ? 'border-slate-950 bg-slate-950 text-white' : 'border-slate-300 bg-white text-slate-900 hover:bg-slate-100' }}"
+            >
+                <span aria-hidden="true">📍</span>
+                <span>{{ $onlyMap ? 'Mostrando solo lugares con mapa GPS' : 'Ver solo lugares con mapa GPS' }}</span>
+            </a>
+            @if(!empty(array_filter($filters)))
+                <a
+                    href="{{ route('home') }}"
+                    class="inline-flex items-center gap-1.5 rounded-xl border border-rose-300 bg-rose-50 px-3.5 py-2 text-xs sm:text-sm font-bold text-rose-950 hover:bg-rose-100"
+                >
+                    <span>Limpiar filtros</span>
+                </a>
+            @endif
+        </div>
+    </div>
+
+    @if($pages->count() > 0)
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+            @foreach($pages as $pageItem)
+                @php
+                    $groupValue = $pageItem->content_group?->value ?? 'historia';
+                    $borderClass = $groupMeta[$groupValue]['border'] ?? 'border-t-orange-600';
+                    $evidence = $pageItem->evidence_level ?? \App\Enums\EvidenceLevel::Consolidated;
+                    $badgeClasses = match ($evidence) {
+                        \App\Enums\EvidenceLevel::Consolidated, \App\Enums\EvidenceLevel::Documented => 'border-sky-800 bg-sky-50 text-sky-950',
+                        \App\Enums\EvidenceLevel::Tradition => 'border-amber-800 bg-amber-50 text-amber-950',
+                        \App\Enums\EvidenceLevel::Disputed => 'border-rose-800 bg-rose-50 text-rose-950',
+                    };
+                    $sources = is_array($pageItem->source_references) && count($pageItem->source_references) > 0
+                        ? implode(', ', array_slice($pageItem->source_references, 0, 2))
+                        : null;
+                @endphp
+                <article class="flex flex-col justify-between rounded-2xl border border-slate-200 border-t-4 {{ $borderClass }} bg-white shadow-sm hover:shadow-md transition overflow-hidden">
+                    <div>
+                        {{-- Cabecera visual de la tarjeta --}}
+                        <a href="{{ route('pages.show', $pageItem->slug) }}" class="block relative overflow-hidden bg-slate-950 group">
+                            @if($pageItem->image_url)
+                                <img
+                                    src="{{ $pageItem->image_url }}"
+                                    alt="{{ $pageItem->getTranslation('title', app()->getLocale()) }}"
+                                    loading="lazy"
+                                    class="h-48 w-full object-cover opacity-90 group-hover:scale-105 transition duration-300"
+                                >
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>
+                            @else
+                                <div class="h-44 w-full bg-gradient-to-br from-slate-950 via-blue-950 to-orange-900"></div>
+                            @endif
+
+                            <div class="absolute inset-0 p-5 flex flex-col justify-end">
+                                <div class="flex flex-wrap items-center gap-1.5 mb-2">
+                                    @if($pageItem->content_group)
+                                        <span class="rounded-md bg-slate-950/90 border border-white/20 px-2.5 py-0.5 text-[11px] font-bold text-white">
+                                            {{ $pageItem->content_group->label() }}
+                                        </span>
+                                    @endif
+                                    @if($pageItem->period_label)
+                                        <span class="rounded-md bg-amber-400 px-2.5 py-0.5 text-[11px] font-extrabold text-slate-950">
+                                            {{ $pageItem->period_label }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <h3 class="font-serif text-lg font-extrabold text-white leading-snug group-hover:text-amber-300 transition">
+                                    {{ $pageItem->getTranslation('title', app()->getLocale()) }}
+                                </h3>
+                            </div>
+                        </a>
+
+                        {{-- Cuerpo de la tarjeta --}}
+                        <div class="p-5 space-y-4">
+                            {{-- Sello de nivel de evidencia documental --}}
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-xs font-extrabold {{ $badgeClasses }}">
+                                    <span>{{ $evidence->label() }}</span>
+                                    @if($sources)
+                                        <span class="font-mono">[{{ $sources }}]</span>
+                                    @endif
+                                </span>
+                            </div>
+
+                            <p class="text-sm text-slate-900 leading-relaxed line-clamp-3">
+                                {{ $pageItem->getTranslation('excerpt', app()->getLocale()) ?: \Illuminate\Support\Str::limit(strip_tags($pageItem->rendered_content), 160) }}
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- Pie de tarjeta: Coordenadas GPS, Vídeo, Páginas enlazadas y CTA --}}
+                    <div class="px-5 pb-5 pt-3 border-t border-slate-100 space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-slate-800">
+                            @if($pageItem->hasCoordinates())
+                                <span class="inline-flex items-center gap-1 text-slate-800">
+                                    <span aria-hidden="true">📍</span>
+                                    <span>{{ $pageItem->location_name ?: number_format($pageItem->latitude, 4).'° N, '.number_format(abs($pageItem->longitude), 4).'° O' }}</span>
+                                </span>
+                            @endif
+                            @if($pageItem->youtube_url)
+                                <span class="inline-flex items-center gap-1 rounded bg-rose-50 px-2 py-0.5 text-rose-950 border border-rose-200">
+                                    <span aria-hidden="true">▶️</span>
+                                    <span>Incluye vídeo</span>
+                                </span>
+                            @endif
+                        </div>
+
+                        @if($pageItem->relatedPages->count() > 0)
+                            <div>
+                                <span class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-700 mb-1.5">
+                                    Páginas enlazadas:
+                                </span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    @foreach($pageItem->relatedPages->take(3) as $relPage)
+                                        <a
+                                            href="{{ route('pages.show', $relPage->slug) }}"
+                                            class="inline-flex items-center rounded-md border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-xs font-bold text-indigo-950 hover:bg-indigo-100"
+                                        >
+                                            {{ \Illuminate\Support\Str::limit($relPage->getTranslation('title', app()->getLocale()), 28) }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        <a
+                            href="{{ route('pages.show', $pageItem->slug) }}"
+                            class="flex items-center justify-center gap-2 w-full rounded-xl bg-slate-950 px-4 py-2.5 text-xs sm:text-sm font-extrabold text-white hover:bg-orange-800 transition"
+                        >
+                            <span>Leer reportaje completo</span>
+                            <span aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                </article>
             @endforeach
-
         </div>
-    </div>
-</div>
 
-{{-- ============================================================
-     STACK TECNOLÓGICO
-     ============================================================ --}}
-<div class="bg-gray-50 border-y border-gray-200 py-14">
-    <div class="max-w-7xl mx-auto px-4">
-        <p class="text-center text-gray-600 text-sm font-semibold uppercase tracking-widest mb-8">{{ __('messages.home_stack_title') }}</p>
-        <div class="flex flex-wrap justify-center gap-3">
-            @foreach([
-                ['PHP 8.5', 'bg-violet-100 text-violet-800'],
-                ['Laravel 13', 'bg-red-100 text-red-800'],
-                ['Filament 5', 'bg-orange-100 text-orange-800'],
-                ['Livewire 4', 'bg-pink-100 text-pink-800'],
-                ['Tailwind CSS 4', 'bg-cyan-100 text-cyan-800'],
-                ['Alpine.js 3', 'bg-blue-100 text-blue-800'],
-                ['Vue 3', 'bg-green-100 text-green-800'],
-                ['PostgreSQL', 'bg-sky-100 text-sky-800'],
-                ['Sanctum', 'bg-indigo-100 text-indigo-800'],
-                ['Spatie Translatable', 'bg-yellow-100 text-yellow-800'],
-                ['Spatie Sitemap', 'bg-lime-100 text-lime-800'],
-                ['Scribe API Docs', 'bg-teal-100 text-teal-800'],
-                ['Docker', 'bg-blue-100 text-blue-900'],
-                ['Vite 8', 'bg-purple-100 text-purple-800'],
-            ] as [$tech, $cls])
-                <span class="inline-block {{ $cls }} text-sm font-medium px-4 py-1.5 rounded-full">{{ $tech }}</span>
-            @endforeach
+        <div class="mt-10">
+            {{ $pages->links() }}
         </div>
-    </div>
-</div>
+    @else
+        <div class="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-12 text-center max-w-2xl mx-auto">
+            <p class="text-lg font-extrabold text-slate-950 mb-2">{{ __('messages.no_results') }}</p>
+            <p class="text-sm text-slate-700 mb-6">
+                Prueba con otra palabra clave, limpia los filtros o sugiere tú mismo este tema para que lo investiguemos e incorporemos al archivo.
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="{{ route('home') }}" class="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-bold text-white hover:bg-slate-800">
+                    Ver todo el catálogo
+                </a>
+                <a href="{{ route('suggestions.create') }}" class="rounded-xl bg-orange-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-orange-800">
+                    ✍️ Proponer este contenido
+                </a>
+            </div>
+        </div>
+    @endif
+</section>
 
 {{-- ============================================================
-     PANELES DE ACCESO
+     REFRÁN DESTACADO Y ÚLTIMAS NOTICIAS DE CHIPIONA
      ============================================================ --}}
-<div class="bg-white py-20">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-3">{{ __('messages.home_panels_title') }}</h2>
-            <p class="text-gray-600">{{ __('messages.home_panels_description') }}</p>
+<section class="bg-white border-t border-slate-200 py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {{-- Refrán popular destacado --}}
+        <div class="rounded-2xl border-2 border-amber-500/70 bg-amber-50/60 p-6 flex flex-col justify-between">
+            <div>
+                <span class="inline-flex items-center gap-1.5 rounded-lg bg-amber-200/80 px-3 py-1 text-xs font-extrabold text-amber-950 mb-4">
+                    🗣️ Sabiduría y Refranero de Chipiona
+                </span>
+                @if($featuredProverb)
+                    <blockquote class="font-serif text-xl font-extrabold text-slate-950 leading-snug mb-3">
+                        «{{ $featuredProverb->text }}»
+                    </blockquote>
+                    @if($featuredProverb->meaning)
+                        <p class="text-sm text-slate-800 leading-relaxed mb-4">
+                            {{ $featuredProverb->meaning }}
+                        </p>
+                    @endif
+                @else
+                    <blockquote class="font-serif text-xl font-extrabold text-slate-950 leading-snug mb-3">
+                        «Con marea de aguaje, el corral se sale y el marisco se coge a puñados.»
+                    </blockquote>
+                    <p class="text-sm text-slate-800 leading-relaxed mb-4">
+                        Dicho marinero sobre las grandes mareas vivas que dejan al descubierto los corrales de pesca de Chipiona.
+                    </p>
+                @endif
+            </div>
+            <div class="flex flex-wrap gap-2 pt-4 border-t border-amber-200">
+                <a href="{{ route('proverbs.index') }}" class="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800">
+                    <span>Ver todos los refranes</span>
+                    <span aria-hidden="true">→</span>
+                </a>
+                <a href="{{ route('proverbs.index') }}#subir-refran" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-900 bg-white px-4 py-2 text-xs font-bold text-slate-950 hover:bg-amber-100">
+                    <span>Subir mi refrán</span>
+                </a>
+            </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <a href="{{ route('filament.admin.pages.dashboard') }}" class="group bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 rounded-2xl p-7 hover:shadow-lg transition text-center">
-                <div class="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+
+        {{-- Últimas noticias y hallazgos documentales --}}
+        <div class="lg:col-span-2 space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="font-serif text-2xl font-extrabold text-slate-950">Noticias y Nuevos Legajos</h2>
+                    <p class="text-sm text-slate-700">Actualizaciones del archivo histórico, crónicas y novedades locales.</p>
                 </div>
-                <h3 class="font-bold text-gray-900 text-lg mb-1">{{ __('messages.home_panel_admin_title') }}</h3>
-                <p class="text-gray-600 text-sm mb-3">{{ __('messages.home_panel_admin_desc') }}</p>
-                <code class="text-xs bg-orange-200 text-orange-800 px-3 py-1 rounded-lg">admin@example.com</code>
-            </a>
-            <a href="{{ route('filament.panel.pages.dashboard') }}" class="group bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-200 rounded-2xl p-7 hover:shadow-lg transition text-center">
-                <div class="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                </div>
-                <h3 class="font-bold text-gray-900 text-lg mb-1">{{ __('messages.home_panel_user_title') }}</h3>
-                <p class="text-gray-600 text-sm mb-3">{{ __('messages.home_panel_user_desc') }}</p>
-                <code class="text-xs bg-indigo-200 text-indigo-800 px-3 py-1 rounded-lg">/panel</code>
-            </a>
-            <a href="{{ route('scribe') }}" class="group bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl p-7 hover:shadow-lg transition text-center">
-                <div class="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-                </div>
-                <h3 class="font-bold text-gray-900 text-lg mb-1">{{ __('messages.home_panel_api_title') }}</h3>
-                <p class="text-gray-600 text-sm mb-3">{{ __('messages.home_panel_api_desc') }}</p>
-                <code class="text-xs bg-green-200 text-green-800 px-3 py-1 rounded-lg">/docs</code>
-            </a>
+                <a href="{{ route('news.index') }}" class="text-sm font-extrabold text-orange-800 hover:underline">
+                    Ver todas las noticias →
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @forelse($latestNews as $newsItem)
+                    <article class="rounded-2xl border border-slate-200 bg-stone-50 p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-2 text-xs font-bold text-slate-700 mb-2">
+                                <span>{{ format_date($newsItem->published_at ?? $newsItem->created_at) }}</span>
+                                @if($newsItem->location_name)
+                                    <span>· 📍 {{ $newsItem->location_name }}</span>
+                                @endif
+                            </div>
+                            <h3 class="font-serif text-lg font-extrabold text-slate-950 mb-2">
+                                <a href="{{ route('news.show', $newsItem->slug) }}" class="hover:text-orange-800">
+                                    {{ $newsItem->getTranslation('title', app()->getLocale()) }}
+                                </a>
+                            </h3>
+                            <p class="text-sm text-slate-800 line-clamp-2">
+                                {{ $newsItem->getTranslation('excerpt', app()->getLocale()) ?: \Illuminate\Support\Str::limit(strip_tags($newsItem->rendered_content), 120) }}
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
+                            <a href="{{ route('news.show', $newsItem->slug) }}" class="text-xs font-extrabold text-blue-900 hover:underline">
+                                Leer noticia completa →
+                            </a>
+                        </div>
+                    </article>
+                @empty
+                    <div class="md:col-span-2 rounded-2xl border border-slate-200 bg-stone-50 p-6 text-sm text-slate-800">
+                        Consulta las novedades documentales y hallazgos de archivo en la sección de <a href="{{ route('news.index') }}" class="font-bold underline text-blue-900">Noticias de Chipiona</a>.
+                    </div>
+                @endforelse
+            </div>
         </div>
     </div>
-</div>
+</section>
 
-{{-- ============================================================
-     SECCIONES DINÁMICAS (desde BD, editables en Filament)
-     ============================================================ --}}
+{{-- Secciones dinámicas editables en Filament si existen --}}
 @if($sections->count())
-<div class="bg-gray-50 py-16">
-    <div class="max-w-7xl mx-auto px-4">
+<section class="bg-stone-50 py-12 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @foreach($sections as $sectionItem)
             <x-section-block :block="$sectionItem" />
         @endforeach
     </div>
-</div>
+</section>
 @endif
-
-{{-- ============================================================
-     SLIDES / CARRUSEL ZONA HOME
-     ============================================================ --}}
-<div class="max-w-7xl mx-auto px-4 py-12">
-    <x-slide-carousel zone="home" :slides="$slides ?? null" />
-</div>
-
-{{-- ============================================================
-     ÚLTIMOS POSTS (documentación)
-     ============================================================ --}}
-<div class="bg-white py-20">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="flex items-end justify-between mb-10">
-            <div>
-                <p class="text-indigo-600 font-semibold text-sm uppercase tracking-wider mb-2">{{ __('messages.home_blog_subtitle') }}</p>
-                <h2 class="text-3xl font-bold text-gray-900">{{ __('messages.blog') }}</h2>
-            </div>
-            <a href="{{ route('blog.index') }}"
-               class="hidden sm:inline-flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-700 transition">
-                {{ __('messages.read_more') }}
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-            </a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @forelse($latestPosts as $post)
-                <x-post-card :post="$post" />
-            @empty
-                <p class="text-gray-600 col-span-3 text-center py-10">{{ __('messages.no_results') }}</p>
-            @endforelse
-        </div>
-        <div class="mt-10 text-center sm:hidden">
-            <a href="{{ route('blog.index') }}"
-               class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
-                {{ __('messages.read_more') }}
-            </a>
-        </div>
-    </div>
-</div>
 
 @endsection
