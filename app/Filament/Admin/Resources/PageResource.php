@@ -2,7 +2,11 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Enums\ContentGroup;
 use App\Enums\ContentStatus;
+use App\Enums\EvidenceLevel;
+use App\Enums\HistoricalEra;
+use App\Filament\Admin\Resources\RelationManagers\CorrectionRequestsRelationManager;
 use App\Filament\Components\ImageCropField;
 use App\Models\Category;
 use App\Models\Page;
@@ -17,6 +21,7 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Forms;
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
@@ -28,7 +33,9 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 
 /**
- * Recurso Filament para gestionar las páginas de contenido en el panel admin.
+ * Recurso Filament para gestionar las páginas enciclopédicas y estáticas en el panel admin.
+ * Incluye editor Markdown cuidado, metadatos SEO/redes sociales, nivel de evidencia documental,
+ * época histórica, coordenadas GPS, vídeo de YouTube, páginas enlazadas y pestaña de sugerencias.
  */
 class PageResource extends Resource
 {
@@ -47,7 +54,7 @@ class PageResource extends Resource
      */
     public static function getGloballySearchableAttributes(): array
     {
-        return ['slug', 'title'];
+        return ['slug', 'title', 'location_name'];
     }
 
     /**
@@ -91,26 +98,65 @@ class PageResource extends Resource
     public static function form(Schema $form): Schema
     {
         return $form->schema([
-            // 1. Imagen con cropper 16:9 — primer campo, ancho completo
+            // 1. Imágenes de encabezado (16:9) y redes sociales (1200x630)
             ImageCropField::make16x9('image', 'pages'),
+            ImageCropField::make16x9('social_image', 'pages/social')
+                ->label(__('filament.social_image')),
 
-            // 2. Traducciones con labels correctos (incluidos SEO)
+            // 2. Traducciones con editor Markdown cuidado, advertencias de rigor y SEO
             Tabs::make(__('filament.translations'))->tabs([
                 Tab::make(__('filament.tab_spanish'))->schema([
-                    Forms\Components\TextInput::make('title.es')->label(__('filament.title').' (ES)')->required()->maxLength(255),
-                    Forms\Components\RichEditor::make('content.es')->label(__('filament.content').' (ES)'),
-                    Forms\Components\Textarea::make('excerpt.es')->label(__('filament.excerpt').' (ES)')->maxLength(1000),
-                    Forms\Components\TextInput::make('seo_title.es')->label(__('filament.seo_title').' (ES)')->maxLength(160),
-                    Forms\Components\Textarea::make('seo_description.es')->label(__('filament.seo_description').' (ES)')->maxLength(320),
-                    Forms\Components\TextInput::make('seo_keywords.es')->label(__('filament.seo_keywords').' (ES)')->maxLength(255),
+                    Forms\Components\TextInput::make('title.es')
+                        ->label(__('filament.title').' (ES)')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\MarkdownEditor::make('content.es')
+                        ->label(__('filament.content').' (ES)')
+                        ->fileAttachmentsDisk('public')
+                        ->fileAttachmentsDirectory('pages/attachments'),
+                    Forms\Components\Textarea::make('excerpt.es')
+                        ->label(__('filament.excerpt').' (ES)')
+                        ->rows(3)
+                        ->maxLength(1000),
+                    Forms\Components\Textarea::make('evidence_note.es')
+                        ->label(__('filament.evidence_note').' (ES)')
+                        ->rows(2)
+                        ->maxLength(1000),
+                    Forms\Components\TextInput::make('seo_title.es')
+                        ->label(__('filament.seo_title').' (ES)')
+                        ->maxLength(160),
+                    Forms\Components\Textarea::make('seo_description.es')
+                        ->label(__('filament.seo_description').' (ES)')
+                        ->maxLength(320),
+                    Forms\Components\TextInput::make('seo_keywords.es')
+                        ->label(__('filament.seo_keywords').' (ES)')
+                        ->maxLength(255),
                 ]),
                 Tab::make(__('filament.tab_english'))->schema([
-                    Forms\Components\TextInput::make('title.en')->label(__('filament.title').' (EN)')->maxLength(255),
-                    Forms\Components\RichEditor::make('content.en')->label(__('filament.content').' (EN)'),
-                    Forms\Components\Textarea::make('excerpt.en')->label(__('filament.excerpt').' (EN)')->maxLength(1000),
-                    Forms\Components\TextInput::make('seo_title.en')->label(__('filament.seo_title').' (EN)')->maxLength(160),
-                    Forms\Components\Textarea::make('seo_description.en')->label(__('filament.seo_description').' (EN)')->maxLength(320),
-                    Forms\Components\TextInput::make('seo_keywords.en')->label(__('filament.seo_keywords').' (EN)')->maxLength(255),
+                    Forms\Components\TextInput::make('title.en')
+                        ->label(__('filament.title').' (EN)')
+                        ->maxLength(255),
+                    Forms\Components\MarkdownEditor::make('content.en')
+                        ->label(__('filament.content').' (EN)')
+                        ->fileAttachmentsDisk('public')
+                        ->fileAttachmentsDirectory('pages/attachments'),
+                    Forms\Components\Textarea::make('excerpt.en')
+                        ->label(__('filament.excerpt').' (EN)')
+                        ->rows(3)
+                        ->maxLength(1000),
+                    Forms\Components\Textarea::make('evidence_note.en')
+                        ->label(__('filament.evidence_note').' (EN)')
+                        ->rows(2)
+                        ->maxLength(1000),
+                    Forms\Components\TextInput::make('seo_title.en')
+                        ->label(__('filament.seo_title').' (EN)')
+                        ->maxLength(160),
+                    Forms\Components\Textarea::make('seo_description.en')
+                        ->label(__('filament.seo_description').' (EN)')
+                        ->maxLength(320),
+                    Forms\Components\TextInput::make('seo_keywords.en')
+                        ->label(__('filament.seo_keywords').' (EN)')
+                        ->maxLength(255),
                 ]),
             ])->columnSpanFull(),
 
@@ -121,7 +167,75 @@ class PageResource extends Resource
                 ->unique(ignoreRecord: true, modifyRuleUsing: fn (Unique $rule) => $rule->whereNull('deleted_at'))
                 ->columnSpanFull(),
 
-            // 4. Status y Categories al mismo nivel (50%-50%)
+            // 4. Clasificación, Época Histórica y Rigor Documental
+            Section::make(__('filament.section_classification'))
+                ->columns(3)
+                ->schema([
+                    Forms\Components\Select::make('content_group')
+                        ->label(__('filament.content_group'))
+                        ->options(ContentGroup::class)
+                        ->default(ContentGroup::Historia->value)
+                        ->required(),
+                    Forms\Components\Select::make('historical_era')
+                        ->label(__('filament.historical_era'))
+                        ->options(HistoricalEra::class),
+                    Forms\Components\TextInput::make('period_label')
+                        ->label(__('filament.period_label'))
+                        ->maxLength(120),
+                    Forms\Components\TextInput::make('year_start')
+                        ->label(__('filament.year_start'))
+                        ->numeric(),
+                    Forms\Components\TextInput::make('year_end')
+                        ->label(__('filament.year_end'))
+                        ->numeric(),
+                    Forms\Components\Select::make('evidence_level')
+                        ->label(__('filament.evidence_level'))
+                        ->options(EvidenceLevel::class)
+                        ->default(EvidenceLevel::Consolidated->value)
+                        ->required(),
+                    Forms\Components\TagsInput::make('source_references')
+                        ->label(__('filament.source_references'))
+                        ->placeholder('F-0071')
+                        ->columnSpanFull(),
+                ])
+                ->columnSpanFull(),
+
+            // 5. Multimedia (YouTube), Coordenadas GPS y Páginas Enlazadas
+            Section::make(__('filament.section_media_map'))
+                ->columns(3)
+                ->schema([
+                    Forms\Components\TextInput::make('location_name')
+                        ->label(__('filament.location_name'))
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('latitude')
+                        ->label(__('filament.latitude'))
+                        ->numeric()
+                        ->step('0.0000001'),
+                    Forms\Components\TextInput::make('longitude')
+                        ->label(__('filament.longitude'))
+                        ->numeric()
+                        ->step('0.0000001'),
+                    Forms\Components\TextInput::make('youtube_url')
+                        ->label(__('filament.youtube_url'))
+                        ->url()
+                        ->maxLength(512)
+                        ->columnSpanFull(),
+                    Forms\Components\Select::make('relatedPages')
+                        ->label(__('filament.related_pages'))
+                        ->relationship(
+                            name: 'relatedPages',
+                            titleAttribute: 'slug',
+                            modifyQueryUsing: fn ($query) => $query->reorder('slug')
+                        )
+                        ->getOptionLabelFromRecordUsing(fn (Page $record) => $record->getTranslation('title', app()->getLocale()).' ('.$record->slug.')')
+                        ->multiple()
+                        ->preload()
+                        ->searchable()
+                        ->columnSpanFull(),
+                ])
+                ->columnSpanFull(),
+
+            // 6. Status y Categories al mismo nivel (50%-50%)
             Forms\Components\Select::make('status')
                 ->label(__('filament.status'))
                 ->options(ContentStatus::class)
@@ -184,14 +298,14 @@ class PageResource extends Resource
                     return $category->id;
                 }),
 
-            // 5. is_active y featured debajo de status/categories (al mismo nivel, 50%-50%)
+            // 7. is_active y featured debajo de status/categories (al mismo nivel, 50%-50%)
             Forms\Components\Toggle::make('is_active')
                 ->label(__('filament.is_active'))
                 ->default(true),
             Forms\Components\Toggle::make('featured')
                 ->label(__('filament.featured')),
 
-            // 6. Fecha de publicación
+            // 8. Fecha de publicación
             Forms\Components\DateTimePicker::make('published_at')
                 ->label(__('filament.published_at')),
         ]);
@@ -213,6 +327,14 @@ class PageResource extends Resource
                 ->label(__('filament.title'))
                 ->searchable()
                 ->limit(45),
+            Tables\Columns\TextColumn::make('content_group')
+                ->label(__('filament.content_group'))
+                ->badge()
+                ->sortable(),
+            Tables\Columns\TextColumn::make('evidence_level')
+                ->label(__('filament.evidence_level'))
+                ->badge()
+                ->toggleable(),
             Tables\Columns\TextColumn::make('status')
                 ->label(__('filament.status'))
                 ->badge(),
@@ -226,6 +348,12 @@ class PageResource extends Resource
                 ->sortable()
                 ->toggleable(),
         ])->filters([
+            Tables\Filters\SelectFilter::make('content_group')
+                ->label(__('filament.content_group'))
+                ->options(ContentGroup::class),
+            Tables\Filters\SelectFilter::make('evidence_level')
+                ->label(__('filament.evidence_level'))
+                ->options(EvidenceLevel::class),
             Tables\Filters\SelectFilter::make('status')
                 ->label(__('filament.status'))
                 ->options(ContentStatus::class),
@@ -242,6 +370,18 @@ class PageResource extends Resource
             RestoreBulkAction::make(),
             ForceDeleteBulkAction::make(),
         ]);
+    }
+
+    /**
+     * Registra la pestaña «Sugerencias del contenido» (solicitudes de corrección).
+     *
+     * @return array<class-string>
+     */
+    public static function getRelations(): array
+    {
+        return [
+            CorrectionRequestsRelationManager::class,
+        ];
     }
 
     /**

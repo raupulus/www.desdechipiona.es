@@ -37,6 +37,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 NavigationGroup::make(fn () => __('filament.nav_content')),
+                NavigationGroup::make(fn () => __('filament.nav_participation')),
+                NavigationGroup::make(fn () => __('filament.nav_chipiona_utility')),
                 NavigationGroup::make(fn () => __('filament.nav_media')),
                 NavigationGroup::make(fn () => __('filament.nav_frontend')),
                 NavigationGroup::make(fn () => __('filament.nav_system')),
