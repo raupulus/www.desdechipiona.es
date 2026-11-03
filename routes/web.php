@@ -53,11 +53,14 @@ Route::post('/comments', [CommentController::class, 'store'])
     ->name('comments.store');
 
 // --- Identificación pública ligera con Facebook / Google (sin cuentas en plataforma) ---
-Route::get('/auth/social/disconnect', [SocialIdentityController::class, 'disconnect'])
+Route::post('/auth/social/disconnect', [SocialIdentityController::class, 'disconnect'])
+    ->middleware('throttle:15,1')
     ->name('social.disconnect');
 Route::get('/auth/social/{provider}/redirect', [SocialIdentityController::class, 'redirect'])
+    ->middleware('throttle:15,1')
     ->name('social.redirect');
 Route::get('/auth/social/{provider}/callback', [SocialIdentityController::class, 'callback'])
+    ->middleware('throttle:15,1')
     ->name('social.callback');
 
 // --- Utilidades de Chipiona: El Tiempo y Mareas (AEMET) + Teléfonos Oficiales ---

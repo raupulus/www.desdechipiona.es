@@ -37,7 +37,7 @@ class ProverbController extends Controller
 
         if ($search !== '') {
             $likeOp = $query->getConnection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
-            $term = '%'.$search.'%';
+            $term = '%'.addcslashes($search, '%_\\').'%';
             $query->where(function ($sub) use ($likeOp, $term): void {
                 $sub->where('text', $likeOp, $term)
                     ->orWhere('meaning', $likeOp, $term)
@@ -61,6 +61,11 @@ class ProverbController extends Controller
     public function store(ProverbSubmissionRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+
+        if (! empty($validated['related_page_id'])) {
+            Page::publishedAndActive()->findOrFail((int) $validated['related_page_id']);
+        }
+
         /** @var array<string, string|null>|null $social */
         $social = $request->session()->get('public_social_identity');
 

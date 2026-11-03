@@ -94,6 +94,14 @@
 
             <x-turnstile-widget action="content_suggestion" />
 
+            <div class="flex items-start gap-2 pt-1">
+                <input type="checkbox" id="sugg-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
+                <label for="sugg-privacy" class="text-xs text-slate-700">
+                    {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
+                </label>
+            </div>
+            @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
+
             <button type="submit" class="w-full rounded-xl bg-orange-700 px-6 py-4 text-base font-extrabold text-white shadow-md hover:bg-orange-800 transition cursor-pointer">
                 Enviar aportación al equipo de Desde Chipiona
             </button>

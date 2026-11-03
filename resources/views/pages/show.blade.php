@@ -251,6 +251,14 @@
 
                         <x-turnstile-widget action="correction" />
 
+                        <div class="flex items-start gap-2 pt-1">
+                            <input type="checkbox" id="page-corr-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
+                            <label for="page-corr-privacy" class="text-xs text-slate-700">
+                                {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
+                            </label>
+                        </div>
+                        @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
+
                         <div class="flex justify-end gap-3 pt-2">
                             <button type="button" onclick="document.getElementById('correction-dialog').close()" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-800 hover:bg-slate-100">
                                 Cancelar
@@ -323,6 +331,14 @@
                         </div>
 
                         <x-turnstile-widget action="comment" />
+
+                        <div class="flex items-start gap-2 pt-1">
+                            <input type="checkbox" id="page-comment-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
+                            <label for="page-comment-privacy" class="text-xs text-slate-700">
+                                {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
+                            </label>
+                        </div>
+                        @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
 
                         <button type="submit" class="rounded-xl bg-slate-950 px-6 py-3 text-sm font-extrabold text-white hover:bg-orange-800 transition cursor-pointer">
                             Publicar comentario

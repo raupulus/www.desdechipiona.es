@@ -32,11 +32,11 @@ class CorrectionRequestPolicy
 
     public function delete(User $user, CorrectionRequest $model): bool
     {
-        return $user->isAdmin();
+        return $user->isSuperAdmin();
     }
 
     public function deleteAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isSuperAdmin();
     }
 }

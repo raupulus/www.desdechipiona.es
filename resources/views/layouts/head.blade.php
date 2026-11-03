@@ -62,7 +62,7 @@
 @endif
 @unless($isErrorPage)
 <script type="application/ld+json">
-{!! json_encode($seoInstance->toJsonLd(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+{!! json_encode($seoInstance->toJsonLd(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>
 @endunless
 <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />

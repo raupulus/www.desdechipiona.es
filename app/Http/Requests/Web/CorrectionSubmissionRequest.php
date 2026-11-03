@@ -16,6 +16,13 @@ class CorrectionSubmissionRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('privacy_accepted') && ! $this->has('privacy')) {
+            $this->merge(['privacy' => $this->input('privacy_accepted')]);
+        }
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -29,7 +36,18 @@ class CorrectionSubmissionRequest extends FormRequest
             'sources_info' => ['nullable', 'string', 'max:2000'],
             'author_name' => ['nullable', 'string', 'max:150'],
             'author_email' => ['nullable', 'email', 'max:191'],
+            'privacy' => ['required', 'accepted'],
             'cf-turnstile-response' => [new Turnstile],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'privacy' => 'política de privacidad',
         ];
     }
 }

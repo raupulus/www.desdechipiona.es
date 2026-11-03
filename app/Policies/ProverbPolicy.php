@@ -32,11 +32,11 @@ class ProverbPolicy
 
     public function delete(User $user, Proverb $model): bool
     {
-        return $user->isAdmin();
+        return $user->isSuperAdmin();
     }
 
     public function deleteAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isSuperAdmin();
     }
 }

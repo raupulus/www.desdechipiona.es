@@ -32,11 +32,11 @@ class OfficialPhonePolicy
 
     public function delete(User $user, OfficialPhone $model): bool
     {
-        return $user->isAdmin();
+        return $user->isSuperAdmin();
     }
 
     public function deleteAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isSuperAdmin();
     }
 }

@@ -29,7 +29,7 @@ class OfficialPhoneController extends Controller
 
         if ($search !== '') {
             $likeOp = $query->getConnection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
-            $term = '%'.$search.'%';
+            $term = '%'.addcslashes($search, '%_\\').'%';
             $query->where(function ($sub) use ($likeOp, $term): void {
                 $sub->where('name', $likeOp, $term)
                     ->orWhere('phone', $likeOp, $term)

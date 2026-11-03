@@ -24,7 +24,9 @@ class CommentController extends Controller
         $social = $request->session()->get('public_social_identity');
 
         $targetClass = $validated['commentable_type'] === 'news' ? News::class : Page::class;
-        $target = $targetClass::query()->findOrFail((int) $validated['commentable_id']);
+        $target = $validated['commentable_type'] === 'news'
+            ? News::publishedAndActive()->findOrFail((int) $validated['commentable_id'])
+            : Page::publishedAndActive()->findOrFail((int) $validated['commentable_id']);
 
         Comment::create([
             'commentable_type' => $target->getMorphClass(),
@@ -35,7 +37,7 @@ class CommentController extends Controller
             'oauth_provider' => $social['provider'] ?? null,
             'oauth_id' => $social['id'] ?? null,
             'author_avatar' => $social['avatar'] ?? null,
-            'is_approved' => true,
+            'is_approved' => false,
         ]);
 
         return redirect()

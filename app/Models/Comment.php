@@ -45,6 +45,12 @@ class Comment extends Model
         'is_approved',
     ];
 
+    /** @var array<string> Campos ocultos en la serialización JSON por privacidad (RGPD) */
+    protected $hidden = [
+        'author_email',
+        'oauth_id',
+    ];
+
     /**
      * Definición de casts de atributos.
      *

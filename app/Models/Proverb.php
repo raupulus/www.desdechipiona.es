@@ -51,6 +51,12 @@ class Proverb extends Model
         'related_page_id',
     ];
 
+    /** @var array<string> Campos ocultos en la serialización JSON por privacidad (RGPD) */
+    protected $hidden = [
+        'author_email',
+        'oauth_id',
+    ];
+
     /**
      * Definición de casts de atributos.
      *

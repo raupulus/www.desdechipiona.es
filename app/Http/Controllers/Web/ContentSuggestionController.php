@@ -38,6 +38,11 @@ class ContentSuggestionController extends Controller
     public function store(ContentSuggestionSubmissionRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+
+        if (! empty($validated['related_page_id'])) {
+            Page::publishedAndActive()->findOrFail((int) $validated['related_page_id']);
+        }
+
         /** @var array<string, string|null>|null $social */
         $social = $request->session()->get('public_social_identity');
 

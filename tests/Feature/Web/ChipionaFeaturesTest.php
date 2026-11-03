@@ -131,6 +131,7 @@ class ChipionaFeaturesTest extends TestCase
             'quoted_text' => 'Dato antiguo',
             'proposed_correction' => 'El dato documental exacto figura en el pleito de 1536.',
             'sources_info' => 'Archivo Ducal, F-0042',
+            'privacy' => '1',
             'cf-turnstile-response' => 'test-token',
         ])->assertRedirect();
 
@@ -140,17 +141,19 @@ class ChipionaFeaturesTest extends TestCase
             'status' => SuggestionStatus::Pending->value,
         ]);
 
-        // 3. Enviar comentario en la página
+        // 3. Enviar comentario en la página (queda pendiente de moderación: is_approved = false)
         $this->post(route('comments.store'), [
             'commentable_type' => 'page',
             'commentable_id' => $page->id,
             'body' => 'Qué gran recuerdo de los corrales con mi abuelo.',
+            'privacy' => '1',
             'cf-turnstile-response' => 'test-token',
         ])->assertRedirect();
 
         $this->assertDatabaseHas('comments', [
             'commentable_id' => $page->id,
             'oauth_provider' => 'facebook',
+            'is_approved' => false,
         ]);
 
         // 4. Enviar sugerencia de nuevo contenido
@@ -159,6 +162,7 @@ class ChipionaFeaturesTest extends TestCase
             'title' => 'Receta tradicional de la telera en sarmientos',
             'related_page_id' => $page->id,
             'body' => 'Se prepara con sarmientos de las viñas de moscatel y pescado fresco de roca.',
+            'privacy' => '1',
             'cf-turnstile-response' => 'test-token',
         ])->assertRedirect(route('suggestions.create'));
 
@@ -172,6 +176,7 @@ class ChipionaFeaturesTest extends TestCase
             'text' => 'Con Levante en la punta, el pescado se junta.',
             'meaning' => 'Cuando sopla Levante templado entra pescado al corral.',
             'category' => 'mar',
+            'privacy' => '1',
             'cf-turnstile-response' => 'test-token',
         ])->assertRedirect(route('proverbs.index'));
 
@@ -179,6 +184,10 @@ class ChipionaFeaturesTest extends TestCase
             'text' => 'Con Levante en la punta, el pescado se junta.',
             'status' => SuggestionStatus::Pending->value,
         ]);
+
+        // 6. Desconectar la identidad social ligera mediante POST
+        $this->post(route('social.disconnect'))->assertRedirect();
+        $this->assertNull(session('public_social_identity'));
     }
 
     public function test_utility_and_legal_pages_are_accessible(): void

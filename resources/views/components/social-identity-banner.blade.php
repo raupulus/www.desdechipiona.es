@@ -25,12 +25,13 @@
                     <p class="text-xs text-slate-700">Sin cuenta ni contraseña en la web · Identidad verificada en tu sesión actual</p>
                 </div>
             </div>
-            <a
-                href="{{ route('social.disconnect') }}"
-                class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-900 hover:bg-slate-100"
+            <button
+                type="button"
+                onclick="event.preventDefault(); var f = document.createElement('form'); f.method = 'POST'; f.action = '{{ route('social.disconnect') }}'; var csrf = document.createElement('input'); csrf.type = 'hidden'; csrf.name = '_token'; csrf.value = '{{ csrf_token() }}'; f.appendChild(csrf); document.body.appendChild(f); f.submit();"
+                class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-900 hover:bg-slate-100 cursor-pointer"
             >
                 {{ __('messages.social_disconnect') }}
-            </a>
+            </button>
         </div>
         <input type="hidden" name="author_name" value="{{ $socialIdentity['name'] }}">
         @if(!empty($socialIdentity['email']))

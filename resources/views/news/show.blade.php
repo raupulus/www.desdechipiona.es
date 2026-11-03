@@ -76,6 +76,13 @@
                     <textarea id="news-proposed" name="proposed_correction" rows="3" required minlength="10" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm"></textarea>
                 </div>
                 <x-turnstile-widget action="news_correction" />
+                <div class="flex items-start gap-2 pt-1">
+                    <input type="checkbox" id="news-corr-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
+                    <label for="news-corr-privacy" class="text-xs text-slate-700">
+                        {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
+                    </label>
+                </div>
+                @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
                 <button type="submit" class="rounded-xl bg-orange-700 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800">
                     Enviar corrección
                 </button>
@@ -110,6 +117,13 @@
                     <textarea id="news-comm-body" name="body" rows="3" required minlength="5" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"></textarea>
                 </div>
                 <x-turnstile-widget action="news_comment" />
+                <div class="flex items-start gap-2 pt-1">
+                    <input type="checkbox" id="news-comm-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
+                    <label for="news-comm-privacy" class="text-xs text-slate-700">
+                        {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
+                    </label>
+                </div>
+                @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
                 <button type="submit" class="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800">
                     Publicar comentario
                 </button>

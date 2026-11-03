@@ -69,10 +69,10 @@ class User extends Authenticatable implements FilamentUser
                 $user->email = mb_strtolower(trim($user->email));
             }
 
-            // Bloquear escalada vertical a SuperAdmin por parte de un Admin no-SuperAdmin
+            // Bloquear alteración o escalada de rol SuperAdmin por parte de un usuario que no sea SuperAdmin
             if (
                 $user->isDirty('role')
-                && $user->role === Role::SuperAdmin
+                && ($user->role === Role::SuperAdmin || $user->getOriginal('role') === Role::SuperAdmin)
                 && auth()->check()
                 && ! auth()->user()?->isSuperAdmin()
             ) {

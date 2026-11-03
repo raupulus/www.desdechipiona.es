@@ -25,11 +25,11 @@ class ViewLogs extends Page
     public ?string $logContent = null;
 
     /**
-     * Solo los administradores pueden acceder a la página de logs.
+     * Solo los superadministradores pueden acceder a la página de logs.
      */
     public static function canAccess(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        return auth()->user()?->isSuperAdmin() ?? false;
     }
 
     /**

@@ -24,8 +24,9 @@ class CorrectionRequestController extends Controller
         /** @var array<string, string|null>|null $social */
         $social = $request->session()->get('public_social_identity');
 
-        $targetClass = $validated['correctable_type'] === 'news' ? News::class : Page::class;
-        $target = $targetClass::query()->findOrFail((int) $validated['correctable_id']);
+        $target = $validated['correctable_type'] === 'news'
+            ? News::publishedAndActive()->findOrFail((int) $validated['correctable_id'])
+            : Page::publishedAndActive()->findOrFail((int) $validated['correctable_id']);
 
         CorrectionRequest::create([
             'correctable_type' => $target->getMorphClass(),

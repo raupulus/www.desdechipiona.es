@@ -61,6 +61,12 @@ class ContentSuggestion extends Model
         'admin_notes',
     ];
 
+    /** @var array<string> Campos ocultos en la serialización JSON por privacidad (RGPD) */
+    protected $hidden = [
+        'author_email',
+        'oauth_id',
+    ];
+
     /**
      * Definición de casts de atributos.
      *

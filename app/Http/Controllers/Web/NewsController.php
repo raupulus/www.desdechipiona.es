@@ -27,7 +27,7 @@ class NewsController extends Controller
         $search = trim((string) $request->query('q', ''));
         if ($search !== '') {
             $likeOp = $query->getConnection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
-            $term = '%'.$search.'%';
+            $term = '%'.addcslashes($search, '%_\\').'%';
             $query->where(function ($sub) use ($likeOp, $term): void {
                 $sub->where('title', $likeOp, $term)
                     ->orWhere('excerpt', $likeOp, $term)

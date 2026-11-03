@@ -114,4 +114,16 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Public User Registration
+    |--------------------------------------------------------------------------
+    |
+    | Defines whether public local account registration is enabled.
+    | Disabled by default in Desde Chipiona ([UX-01]).
+    |
+    */
+
+    'registration_enabled' => (bool) env('AUTH_REGISTRATION_ENABLED', false),
+
 ];

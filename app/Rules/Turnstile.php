@@ -5,6 +5,8 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * Regla de validación para Cloudflare Turnstile.
@@ -17,6 +19,13 @@ class Turnstile implements ValidationRule
      * Indica que la regla debe evaluarse aunque el atributo no esté presente o esté vacío.
      */
     public bool $implicit = true;
+
+    /**
+     * @param  string|null  $expectedAction  Acción esperada del widget Turnstile (opcional)
+     */
+    public function __construct(
+        protected ?string $expectedAction = null
+    ) {}
 
     /**
      * Ejecuta la validación del token cf-turnstile-response contra Cloudflare.
@@ -52,8 +61,22 @@ class Turnstile implements ValidationRule
 
             if (! $response->successful() || ! ($response->json('success') ?? false)) {
                 $fail(__('messages.turnstile_failed'));
+
+                return;
             }
-        } catch (\Throwable) {
+
+            if ($this->expectedAction !== null) {
+                $returnedAction = $response->json('action');
+                if ($returnedAction !== null && $returnedAction !== $this->expectedAction) {
+                    $fail(__('messages.turnstile_failed'));
+                }
+            }
+        } catch (Throwable $e) {
+            Log::warning('Error comunicando con el validador de Cloudflare Turnstile', [
+                'error' => $e->getMessage(),
+                'ip' => request()->ip(),
+            ]);
+
             if (app()->isProduction()) {
                 $fail(__('messages.turnstile_failed'));
             }

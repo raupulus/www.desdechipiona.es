@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 use Throwable;
 
@@ -27,12 +28,24 @@ class SocialIdentityController extends Controller
     {
         abort_unless(in_array($provider, self::ALLOWED_PROVIDERS, true), 404);
 
-        $request->session()->put('social_intended_url', url()->previous(route('home')));
+        $previousUrl = url()->previous(route('home'));
+        $appHost = parse_url(config('app.url'), PHP_URL_HOST);
+        $prevHost = parse_url($previousUrl, PHP_URL_HOST);
+
+        if (! empty($prevHost) && $prevHost !== $appHost && $prevHost !== $request->getHost()) {
+            $previousUrl = route('home');
+        }
+
+        $request->session()->put('social_intended_url', $previousUrl);
 
         $clientId = config("services.{$provider}.client_id");
         $clientSecret = config("services.{$provider}.client_secret");
 
         if (empty($clientId) || empty($clientSecret)) {
+            if (! app()->environment(['local', 'testing'])) {
+                abort(503, 'El servicio de autenticación social no está configurado.');
+            }
+
             $request->session()->put('public_social_identity', [
                 'provider' => $provider,
                 'id' => 'local-'.$provider.'-visitor',
@@ -41,7 +54,7 @@ class SocialIdentityController extends Controller
                 'avatar' => null,
             ]);
 
-            return redirect()->to($request->session()->pull('social_intended_url', route('home')));
+            return redirect()->to($this->safeIntendedUrl($request));
         }
 
         return Socialite::driver($provider)->redirect();
@@ -64,13 +77,18 @@ class SocialIdentityController extends Controller
                 'email' => $socialUser->getEmail(),
                 'avatar' => $socialUser->getAvatar(),
             ]);
-        } catch (Throwable) {
+        } catch (Throwable $e) {
+            Log::warning('Fallo en autenticación social con proveedor: '.$provider, [
+                'error' => $e->getMessage(),
+                'ip' => $request->ip(),
+            ]);
+
             return redirect()
-                ->to($request->session()->pull('social_intended_url', route('home')))
+                ->to($this->safeIntendedUrl($request))
                 ->with('error', 'No se pudo completar la identificación con '.ucfirst($provider).'.');
         }
 
-        return redirect()->to($request->session()->pull('social_intended_url', route('home')));
+        return redirect()->to($this->safeIntendedUrl($request));
     }
 
     /**
@@ -80,6 +98,22 @@ class SocialIdentityController extends Controller
     {
         $request->session()->forget('public_social_identity');
 
-        return redirect()->back();
+        return redirect()->back(fallback: route('home'));
+    }
+
+    /**
+     * Obtiene y valida la URL de retorno almacenada para prevenir Open Redirect.
+     */
+    private function safeIntendedUrl(Request $request): string
+    {
+        $url = (string) $request->session()->pull('social_intended_url', route('home'));
+        $appHost = parse_url(config('app.url'), PHP_URL_HOST);
+        $urlHost = parse_url($url, PHP_URL_HOST);
+
+        if (! empty($urlHost) && $urlHost !== $appHost && $urlHost !== $request->getHost()) {
+            return route('home');
+        }
+
+        return $url;
     }
 }

@@ -41,8 +41,9 @@
             <x-language-switcher />
 
             @auth
-                <a href="{{ route('filament.admin.pages.dashboard') }}" class="font-bold text-amber-300 hover:text-white">Intranet</a>
-                <a href="{{ route('filament.panel.pages.dashboard') }}" class="text-slate-200 hover:text-white">{{ __('messages.profile') }}</a>
+                @if (auth()->user()->isAdmin())
+                    <a href="{{ route('filament.admin.pages.dashboard') }}" class="font-bold text-amber-300 hover:text-white">Intranet</a>
+                @endif
                 <form method="POST" action="{{ route('logout') }}" class="inline">
                     @csrf
                     <button type="submit" class="text-slate-300 hover:text-white">{{ __('messages.logout') }}</button>
