@@ -1,8 +1,8 @@
 # Datos y Kit de Difusión para Redes Sociales y Repositorios — Desde Chipiona
 
-*Última actualización: 2026-11-03*
+*Última actualización: 2026-11-04*
 
-> Guía maestra de textos, descripciones con gancho (*copywriting*), especificaciones de imagen y etiquetas oficiales para configurar perfiles sociales y repositorios del proyecto **Desde Chipiona**.
+> Guía maestra de textos, descripciones con gancho (*copywriting*), especificaciones de imagen y etiquetas oficiales para configurar perfiles sociales y repositorios del proyecto **Desde Chipiona** (creado originalmente en 2008 y reconstruido íntegramente desde cero en 2026).
 
 ---
 

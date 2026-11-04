@@ -17,13 +17,13 @@
 
 </div>
 
-*Última actualización: 2026-11-03*
+*Última actualización: 2026-11-04*
 
 ## 📖 Sobre el Proyecto
 
 **Desde Chipiona** es una plataforma digital abierta y rigurosa dedicada a la investigación, verificación y divulgación de la historia, el patrimonio marítimo y la naturaleza de Chipiona (Cádiz).
 
-El proyecto abarca desde la prehistoria y la Antigüedad romana (*Caepionis Turris*, alfares de salazón y pecios) hasta los siglos XIX, XX y la actualidad (el Faro de Jaime Font, el Sanatorio marítimo de Santa Clara, los corrales de pesca y la memoria comunitaria). Cada artículo y afirmación se apoya en fondos documentales de archivo (PARES, AHN, AGS, AHPC y archivos municipales) identificados mediante códigos unívocos `[F-XXXX]`, separando con total transparencia los hechos documentados de la tradición oral y las hipótesis académicas.
+Fundado originalmente en **2008** como portal pionero sobre la localidad y renovado íntegramente desde cero en **2026**, el proyecto abarca desde la prehistoria y la Antigüedad romana (*Caepionis Turris*, alfares de salazón y pecios) hasta los siglos XIX, XX y la actualidad (el Faro de Jaime Font, el Sanatorio marítimo de Santa Clara, los corrales de pesca y la memoria comunitaria). Cada artículo y afirmación se apoya en fondos documentales de archivo (PARES, AHN, AGS, AHPC y archivos municipales) y fuentes oficiales contrastadas, separando con total transparencia los hechos documentados de la tradición oral y las hipótesis académicas.
 
 ---
 

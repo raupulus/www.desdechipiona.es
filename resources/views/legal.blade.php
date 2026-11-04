@@ -22,10 +22,11 @@
             1. Autoría e Iniciativa Privada: Raúl Caro Pastorino
         </h2>
         <p class="text-base text-slate-900 leading-relaxed">
-            <strong>Desde Chipiona</strong> (<code class="font-bold text-orange-900">https://desdechipiona.es</code>) es una obra divulgativa y documental de <strong>iniciativa estrictamente privada e independiente</strong>. No depende de ningún organismo público ni partido político; es fruto del trabajo personal de investigación histórica, documental y técnica de su autor:
+            <strong>Desde Chipiona</strong> (<code class="font-bold text-orange-900">https://desdechipiona.es</code>) es una obra divulgativa y documental de <strong>iniciativa estrictamente privada e independiente</strong>. Fundada originalmente en <strong>2008</strong> y renovada íntegramente desde cero en <strong>2026</strong> sobre una nueva infraestructura tecnológica y un catálogo documental profundamente ampliado, no depende de ningún organismo público ni partido político; es fruto del trabajo continuado de investigación histórica, documental y técnica de su autor:
         </p>
         <div class="rounded-xl border border-slate-200 bg-stone-50 p-5 space-y-2 text-sm text-slate-900">
             <p><strong>Autor e investigador titular:</strong> Raúl Caro Pastorino</p>
+            <p><strong>Año de creación original:</strong> 2008 (reconstrucción integral y actualización tecnológica desde cero en 2026)</p>
             <p><strong>Sitio web personal y porfolio profesional:</strong> <a href="https://raupulus.dev" target="_blank" rel="noopener noreferrer" class="font-extrabold text-blue-900 underline">https://raupulus.dev</a></p>
             <p><strong>Correo público del autor:</strong> <a href="mailto:public@raupulus.dev" class="font-extrabold text-blue-900 underline">public@raupulus.dev</a></p>
             <p><strong>Correo de contacto del portal:</strong> <a href="mailto:info@desdechipiona.es" class="font-extrabold text-blue-900 underline">info@desdechipiona.es</a></p>

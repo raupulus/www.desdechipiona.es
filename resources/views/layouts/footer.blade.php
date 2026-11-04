@@ -65,7 +65,7 @@
         </div>
 
         <div class="border-t border-slate-800 mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-300">
-            <p>&copy; {{ date('Y') }} {{ setting('site_title', config('app.name')) }} · Raúl Caro Pastorino. {{ __('messages.all_rights_reserved') }}.</p>
+            <p>&copy; 2008 – {{ date('Y') }} {{ setting('site_title', config('app.name')) }} · Raúl Caro Pastorino. {{ __('messages.all_rights_reserved') }}.</p>
             <p>{{ __('messages.contact') }}: <a href="mailto:info@desdechipiona.es" class="underline hover:text-white">info@desdechipiona.es</a></p>
         </div>
     </div>

@@ -6,7 +6,7 @@
     <div style="background-color: #4f46e5; padding: 20px; text-align: center;"><h1 style="color: #ffffff; margin: 0; font-size: 24px;">{{ setting('site_title', config('app.name')) }}</h1></div>
     <div style="padding: 30px;">@yield('content')</div>
     <div style="background-color: #f9fafb; padding: 15px; text-align: center; font-size: 12px; color: #6b7280;">
-        <p>&copy; {{ date('Y') }} {{ setting('site_title', config('app.name')) }}.</p>
+        <p>&copy; 2008 – {{ date('Y') }} {{ setting('site_title', config('app.name')) }}.</p>
     </div>
 </div>
 </body>
