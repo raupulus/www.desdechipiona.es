@@ -116,7 +116,7 @@
         aria-haspopup="listbox"
         class="w-full flex items-center justify-between gap-2 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-left text-base sm:text-sm font-bold text-slate-950 shadow-xs hover:border-slate-400 focus:border-orange-700 focus:ring-2 focus:ring-orange-700 transition cursor-pointer"
     >
-        <span class="truncate" x-text="selectedLabel || '{{ $placeholder }}'" :class="!selectedLabel ? 'text-slate-500 font-medium' : 'text-slate-950 font-bold'"></span>
+        <span class="truncate" :title="selectedLabel" x-text="selectedLabel || '{{ $placeholder }}'" :class="!selectedLabel ? 'text-slate-500 font-medium' : 'text-slate-950 font-bold'"></span>
         <div class="flex items-center gap-1 shrink-0 text-slate-600">
             <template x-if="selected && !{{ $required ? 'true' : 'false' }}">
                 <span
@@ -182,7 +182,7 @@
                         'text-slate-950 hover:bg-slate-100': selected !== opt.value && focusedIndex !== idx
                     }"
                 >
-                    <span x-text="opt.label" class="truncate"></span>
+                    <span x-text="opt.label" class="leading-snug break-words pr-2"></span>
                     <template x-if="selected === opt.value">
                         <svg class="h-4 w-4 shrink-0 text-white" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />

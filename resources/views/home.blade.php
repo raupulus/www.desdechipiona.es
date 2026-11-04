@@ -99,86 +99,101 @@
                 </div>
             </div>
 
-            {{-- 2. Filtrar por época/fechas y 3. Filtrar por rigor documental --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-slate-200">
-                <div>
-                    <label for="filter-era" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
-                        {{ __('messages.home_filter_era_title') }}
-                    </label>
-                    @php
-                        $eraOptions = ['all' => '⏳ ' . __('messages.home_filter_era_all')];
-                        foreach(\App\Enums\HistoricalEra::cases() as $eraCase) {
-                            $eraOptions[$eraCase->value] = $eraCase->label();
-                        }
-                    @endphp
-                    <x-searchable-select
-                        name="era"
-                        id="filter-era"
-                        :options="$eraOptions"
-                        :value="$activeEra ?: 'all'"
-                    />
-                </div>
+            {{-- Filtros secundarios organizados en 2 filas limpias y espaciosas --}}
+            <div class="space-y-4 pt-3 border-t border-slate-200">
+                {{-- Fila 1: Época histórica y Rigor documental --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="filter-era" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
+                            {{ __('messages.home_filter_era_title') }}
+                        </label>
+                        @php
+                            $eraOptions = ['all' => '⏳ ' . __('messages.home_filter_era_all')];
+                            foreach(\App\Enums\HistoricalEra::cases() as $eraCase) {
+                                $eraOptions[$eraCase->value] = $eraCase->label();
+                            }
+                        @endphp
+                        <x-searchable-select
+                            name="era"
+                            id="filter-era"
+                            :options="$eraOptions"
+                            :value="$activeEra ?: 'all'"
+                        />
+                    </div>
 
-                <div>
-                    <label for="filter-evidence" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
-                        {{ __('messages.home_filter_evidence_title') }}
-                    </label>
-                    @php
-                        $evidenceOptions = ['all' => '⚖️ ' . __('messages.home_filter_evidence_all')];
-                        foreach(\App\Enums\EvidenceLevel::cases() as $evCase) {
-                            $evidenceOptions[$evCase->value] = $evCase->label();
-                        }
-                    @endphp
-                    <x-searchable-select
-                        name="evidence"
-                        id="filter-evidence"
-                        :options="$evidenceOptions"
-                        :value="$activeEvidence ?: 'all'"
-                    />
-                </div>
-
-                <div>
-                    <label for="filter-year-from" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
-                        {{ __('messages.home_filter_year_label') }}
-                    </label>
-                    <div class="flex items-center gap-1.5">
-                        <input
-                            type="number"
-                            id="filter-year-from"
-                            name="year_from"
-                            min="-10000"
-                            max="2100"
-                            value="{{ $filters['year_from'] ?? '' }}"
-                            placeholder="{{ __('messages.home_filter_year_from_placeholder') }}"
-                            class="w-1/2 rounded-xl border border-slate-300 px-2.5 py-2 text-base sm:text-sm font-bold text-slate-950"
-                        >
-                        <input
-                            type="number"
-                            name="year_to"
-                            min="-10000"
-                            max="2100"
-                            aria-label="{{ __('messages.home_filter_year_to_aria') }}"
-                            value="{{ $filters['year_to'] ?? '' }}"
-                            placeholder="{{ __('messages.home_filter_year_to_placeholder') }}"
-                            class="w-1/2 rounded-xl border border-slate-300 px-2.5 py-2 text-base sm:text-sm font-bold text-slate-950"
-                        >
+                    <div>
+                        <label for="filter-evidence" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
+                            {{ __('messages.home_filter_evidence_title') }}
+                        </label>
+                        @php
+                            $evidenceOptions = ['all' => '⚖️ ' . __('messages.home_filter_evidence_all')];
+                            foreach(\App\Enums\EvidenceLevel::cases() as $evCase) {
+                                $evidenceOptions[$evCase->value] = $evCase->label();
+                            }
+                        @endphp
+                        <x-searchable-select
+                            name="evidence"
+                            id="filter-evidence"
+                            :options="$evidenceOptions"
+                            :value="$activeEvidence ?: 'all'"
+                        />
                     </div>
                 </div>
 
-                <div>
-                    <label for="filter-sort" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
-                        {{ __('messages.home_filter_sort_label') }}
-                    </label>
-                    <select
-                        id="filter-sort"
-                        name="sort"
-                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
-                    >
-                        <option value="featured" @selected($activeSort === 'featured')>{{ __('messages.home_sort_featured') }}</option>
-                        <option value="chronological_asc" @selected($activeSort === 'chronological_asc')>{{ __('messages.home_sort_chronological_asc') }}</option>
-                        <option value="chronological_desc" @selected($activeSort === 'chronological_desc')>{{ __('messages.home_sort_chronological_desc') }}</option>
-                        <option value="recent" @selected($activeSort === 'recent')>{{ __('messages.home_sort_recent') }}</option>
-                    </select>
+                {{-- Fila 2: Rango cronológico y Ordenar resultados --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="filter-year-from" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
+                            {{ __('messages.home_filter_year_label') }}
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <div class="relative flex-1">
+                                <input
+                                    type="number"
+                                    id="filter-year-from"
+                                    name="year_from"
+                                    min="-10000"
+                                    max="2100"
+                                    value="{{ $filters['year_from'] ?? '' }}"
+                                    placeholder="{{ __('messages.home_filter_year_from_placeholder') }}"
+                                    class="w-full rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-base sm:text-sm font-bold text-slate-950 placeholder:text-slate-500 focus:border-orange-700 focus:ring-2 focus:ring-orange-700 shadow-xs"
+                                >
+                            </div>
+                            <span class="text-slate-400 font-bold shrink-0 select-none">—</span>
+                            <div class="relative flex-1">
+                                <input
+                                    type="number"
+                                    name="year_to"
+                                    min="-10000"
+                                    max="2100"
+                                    aria-label="{{ __('messages.home_filter_year_to_aria') }}"
+                                    value="{{ $filters['year_to'] ?? '' }}"
+                                    placeholder="{{ __('messages.home_filter_year_to_placeholder') }}"
+                                    class="w-full rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-base sm:text-sm font-bold text-slate-950 placeholder:text-slate-500 focus:border-orange-700 focus:ring-2 focus:ring-orange-700 shadow-xs"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="filter-sort" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
+                            {{ __('messages.home_filter_sort_label') }}
+                        </label>
+                        @php
+                            $sortOptions = [
+                                'featured' => __('messages.home_sort_featured'),
+                                'chronological_asc' => __('messages.home_sort_chronological_asc'),
+                                'chronological_desc' => __('messages.home_sort_chronological_desc'),
+                                'recent' => __('messages.home_sort_recent'),
+                            ];
+                        @endphp
+                        <x-searchable-select
+                            name="sort"
+                            id="filter-sort"
+                            :options="$sortOptions"
+                            :value="$activeSort ?: 'featured'"
+                        />
+                    </div>
                 </div>
             </div>
 
