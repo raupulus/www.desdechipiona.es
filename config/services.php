@@ -52,14 +52,9 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
-    'aemet' => [
-        'api_key' => env('AEMET_API_KEY'),
-        'municipality_code' => env('AEMET_MUNICIPALITY_CODE', '11016'),
-    ],
-
     'raupulus_weather' => [
         'url' => env('RAUPULUS_WEATHER_API_URL', 'https://api.raupulus.dev/api/v2/weather-station-official/cities/chipiona'),
-        'token' => env('RAUPULUS_WEATHER_API_TOKEN'),
+        'token' => env('RAUPULUS_WEATHER_API_TOKEN', env('AEMET_API_KEY')),
         'timeout' => (int) env('RAUPULUS_WEATHER_TIMEOUT', 4),
     ],
 

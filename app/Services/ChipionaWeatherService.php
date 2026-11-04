@@ -45,7 +45,7 @@ class ChipionaWeatherService
 
         $fallbackData = [
             'municipality' => 'Chipiona (Cádiz)',
-            'aemet_code' => (string) config('services.aemet.municipality_code', '11016'),
+            'aemet_code' => null,
             'updated_at' => Carbon::now('Europe/Madrid')->format('d/m/Y H:i'),
             'weather' => $weather,
             'tides' => $tides,
@@ -127,7 +127,7 @@ class ChipionaWeatherService
     private function fallbackWeather(): array
     {
         return [
-            'source' => 'Referencia Meteorológica Oficial Chipiona (11016)',
+            'source' => 'Referencia Meteorológica Oficial Chipiona',
             'temp_max' => 22,
             'temp_min' => 15,
             'sky_state' => 'Despejado con brisa atlántica de Poniente',

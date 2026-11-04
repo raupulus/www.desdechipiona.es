@@ -30,7 +30,11 @@
                     <h2 class="font-serif text-2xl font-extrabold text-slate-950">{{ __('messages.weather_today_title') }}</h2>
                     <p class="text-xs font-bold text-slate-700">{{ __('messages.weather_updated', ['date' => $summary['updated_at'] ?? '']) }}</p>
                 </div>
-                <span class="rounded-xl bg-blue-950 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-300">AEMET {{ $summary['aemet_code'] ?? '11016' }}</span>
+                @if(!empty($summary['aemet_code']))
+                    <span class="rounded-xl bg-blue-950 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-300">AEMET {{ $summary['aemet_code'] }}</span>
+                @else
+                    <span class="rounded-xl bg-blue-950 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-300">Oficial</span>
+                @endif
             </div>
 
             <div class="grid grid-cols-2 {{ isset($weather['current_temp']) ? 'sm:grid-cols-3' : '' }} gap-4">

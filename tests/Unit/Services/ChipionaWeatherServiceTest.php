@@ -26,10 +26,10 @@ class ChipionaWeatherServiceTest extends TestCase
         $summary = $service->getTodaySummary();
 
         $this->assertEquals('Chipiona (Cádiz)', $summary['municipality']);
-        $this->assertEquals('11016', $summary['aemet_code']);
+        $this->assertNull($summary['aemet_code']);
         $this->assertArrayHasKey('weather', $summary);
         $this->assertArrayHasKey('tides', $summary);
-        $this->assertStringContainsString('Chipiona (11016)', $summary['weather']['source']);
+        $this->assertStringContainsString('Chipiona', $summary['weather']['source']);
         $this->assertEquals(22, $summary['weather']['temp_max']);
         $this->assertEquals(15, $summary['weather']['temp_min']);
     }
