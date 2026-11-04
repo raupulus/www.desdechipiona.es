@@ -2,7 +2,7 @@
 @props(['paginator'])
 
 @if ($paginator->hasPages())
-    <nav aria-label="{{ __('messages.pagination') }}" class="mt-8 flex justify-center">
+    <div class="mt-8 flex justify-center">
         {{ $paginator->links() }}
-    </nav>
+    </div>
 @endif

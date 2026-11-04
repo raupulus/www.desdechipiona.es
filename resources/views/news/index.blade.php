@@ -13,17 +13,27 @@
             Crónicas de investigación, nuevos documentos localizados en archivos históricos y actualidad del patrimonio natural y cultural de Chipiona.
         </p>
 
-        <form action="{{ route('news.index') }}" method="GET" class="mt-6 max-w-2xl flex flex-col sm:flex-row gap-3">
+        <form action="{{ route('news.index') }}" method="GET" role="search" aria-label="Buscar noticias" class="mt-6 max-w-2xl flex flex-col sm:flex-row gap-3">
+            @if(!empty($category))
+                <input type="hidden" name="category" value="{{ $category }}">
+            @endif
+            <label for="news-search-q" class="sr-only">Buscar en noticias y hallazgos</label>
             <input
                 type="search"
+                id="news-search-q"
                 name="q"
                 value="{{ $search }}"
                 placeholder="Buscar en noticias y hallazgos..."
-                class="flex-1 rounded-xl border-2 border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-950 placeholder:text-slate-600"
+                class="flex-1 rounded-xl border-2 border-slate-300 bg-white px-4 py-2.5 text-base sm:text-sm font-bold text-slate-950 placeholder:text-slate-600"
             >
             <button type="submit" class="rounded-xl bg-orange-700 px-6 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 cursor-pointer">
                 Buscar
             </button>
+            @if($search !== '' || !empty($category))
+                <a href="{{ route('news.index') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-500 bg-slate-900 px-4 py-2.5 text-xs font-extrabold text-amber-300 hover:bg-slate-800">
+                    Limpiar filtros
+                </a>
+            @endif
         </form>
     </div>
 </header>
@@ -32,10 +42,23 @@
     @if($newsItems->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
             @foreach($newsItems as $news)
-                <article class="flex flex-col justify-between rounded-2xl border border-slate-200 border-t-4 border-t-orange-700 bg-white p-6 shadow-xs hover:shadow-md transition">
+                <article class="flex flex-col justify-between rounded-2xl border border-slate-200 border-t-4 border-t-orange-700 bg-white p-6 shadow-xs hover:shadow-md transition overflow-hidden">
                     <div class="space-y-3">
+                        @if($news->image_url)
+                            <a href="{{ route('news.show', $news->slug) }}" class="block -mx-6 -mt-6 mb-3 overflow-hidden bg-slate-950">
+                                <img
+                                    src="{{ $news->image_url }}"
+                                    alt="{{ $news->getTranslation('title', app()->getLocale()) }}"
+                                    width="1200"
+                                    height="675"
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="h-44 w-full object-cover hover:scale-105 transition duration-300"
+                                >
+                            </a>
+                        @endif
                         <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-slate-700">
-                            <span>📅 {{ format_date($news->published_at ?? $news->created_at) }}</span>
+                            <time datetime="{{ ($news->published_at ?? $news->created_at)?->toIso8601String() }}">📅 {{ format_date($news->published_at ?? $news->created_at) }}</time>
                             @if($news->evidence_level)
                                 <span class="rounded bg-sky-50 border border-sky-800 px-2 py-0.5 text-sky-950 font-extrabold">
                                     {{ $news->evidence_level->label() }}

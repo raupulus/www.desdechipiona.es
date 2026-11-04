@@ -87,11 +87,12 @@
                             type="submit"
                             name="group"
                             value="{{ $key }}"
+                            aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
                             class="inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs sm:text-sm font-bold transition cursor-pointer {{ $isSelected ? 'border-slate-950 bg-slate-950 text-white shadow-xs' : 'border-slate-300 bg-slate-50 text-slate-900 hover:bg-slate-200' }}"
                         >
                             <span>{{ $meta['label'] }}</span>
                             @if($count > 0)
-                                <span class="rounded-full px-1.5 py-0.2 text-xs {{ $isSelected ? 'bg-amber-400 text-slate-950 font-extrabold' : 'bg-slate-200 text-slate-800' }}">{{ $count }}</span>
+                                <span class="rounded-full px-1.5 py-0.5 text-xs {{ $isSelected ? 'bg-amber-400 text-slate-950 font-extrabold' : 'bg-slate-200 text-slate-800' }}">{{ $count }}</span>
                             @endif
                         </button>
                     @endforeach
@@ -109,7 +110,7 @@
                         name="era"
                         class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
                     >
-                        <option value="all">⏳ Todas las épocas (Prehistoria — Actualidad)</option>
+                        <option value="all">⏳ Todas las épocas</option>
                         @foreach(\App\Enums\HistoricalEra::cases() as $eraCase)
                             <option value="{{ $eraCase->value }}" @selected($activeEra === $eraCase->value)>
                                 {{ $eraCase->label() }}
@@ -127,7 +128,7 @@
                         name="evidence"
                         class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
                     >
-                        <option value="all">⚖️ Todos los niveles de verificación</option>
+                        <option value="all">⚖️ Todos los niveles</option>
                         @foreach(\App\Enums\EvidenceLevel::cases() as $evCase)
                             <option value="{{ $evCase->value }}" @selected($activeEvidence === $evCase->value)>
                                 {{ $evCase->label() }}
@@ -284,7 +285,10 @@
                                 <img
                                     src="{{ $pageItem->image_url }}"
                                     alt="{{ $pageItem->getTranslation('title', app()->getLocale()) }}"
+                                    width="1200"
+                                    height="675"
                                     loading="lazy"
+                                    decoding="async"
                                     class="h-48 w-full object-cover opacity-90 group-hover:scale-105 transition duration-300"
                                 >
                                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>

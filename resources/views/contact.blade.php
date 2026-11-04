@@ -1,38 +1,48 @@
 @extends('layouts.app')
 @section('content')
-<div class="max-w-2xl mx-auto px-4 py-12">
-    <h1 class="text-4xl font-bold text-gray-800 mb-8">{{ __('messages.contact') }}</h1>
-    <form action="{{ route('contact.send') }}" method="POST" class="space-y-6">
-        @csrf
-        <div>
-            <label for="name" class="block text-sm font-medium text-gray-700">{{ __('messages.contact_name') }}</label>
-            <input type="text" name="name" id="name" value="{{ old('name') }}" required maxlength="255" autocomplete="name" @error('name') aria-invalid="true" aria-describedby="name-error" @enderror class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base sm:text-sm" />
-            @error('name')<p id="name-error" role="alert" class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-        </div>
-        <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">{{ __('messages.contact_email') }}</label>
-            <input type="email" name="email" id="email" value="{{ old('email') }}" required maxlength="255" autocomplete="email" @error('email') aria-invalid="true" aria-describedby="email-error" @enderror class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base sm:text-sm" />
-            @error('email')<p id="email-error" role="alert" class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-        </div>
-        <div>
-            <label for="subject" class="block text-sm font-medium text-gray-700">{{ __('messages.contact_subject') }}</label>
-            <input type="text" name="subject" id="subject" value="{{ old('subject') }}" required maxlength="255" @error('subject') aria-invalid="true" aria-describedby="subject-error" @enderror class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base sm:text-sm" />
-            @error('subject')<p id="subject-error" role="alert" class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-        </div>
-        <div>
-            <label for="message" class="block text-sm font-medium text-gray-700">{{ __('messages.contact_message') }}</label>
-            <textarea name="message" id="message" rows="5" required maxlength="5000" @error('message') aria-invalid="true" aria-describedby="message-error" @enderror class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base sm:text-sm">{{ old('message') }}</textarea>
-            @error('message')<p id="message-error" role="alert" class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-        </div>
-        <div class="flex items-center">
-            <input type="checkbox" name="privacy" id="privacy" value="1" required @error('privacy') aria-invalid="true" aria-describedby="privacy-error" @enderror class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-            <label for="privacy" class="ml-2 text-sm text-gray-600">{{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" class="text-indigo-600 underline">{{ __('messages.contact_privacy_link') }}</a></label>
-        </div>
-        @error('privacy')<p id="privacy-error" role="alert" class="text-sm text-red-600">{{ $message }}</p>@enderror
-        <x-recaptcha-script action="contact" />
-        <x-turnstile-widget action="contact" />
-        @error('g-recaptcha-response')<p role="alert" class="text-sm text-red-600">{{ $message }}</p>@enderror
-        <button type="submit" class="w-full bg-orange-700 text-white py-3 rounded-xl hover:bg-orange-800 transition font-bold">{{ __('messages.contact_send') }}</button>
-    </form>
+<header class="bg-gradient-to-br from-slate-950 via-blue-950 to-violet-950 text-white border-b-4 border-orange-700">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3.5 py-1 text-xs font-extrabold text-amber-300 mb-4">
+            ✉️ {{ __('messages.contact') }}
+        </span>
+        <h1 class="font-serif text-3xl sm:text-5xl font-extrabold text-white mb-4">{{ __('messages.contact') }}</h1>
+        <p class="text-base sm:text-lg text-slate-200 leading-relaxed">{{ __('messages.contact_seo_description') }}</p>
+    </div>
+</header>
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="rounded-2xl border-2 border-slate-200 bg-white p-6 sm:p-10 shadow-xs">
+        <form action="{{ route('contact.send') }}" method="POST" class="space-y-6">
+            @csrf
+            <div>
+                <label for="name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.contact_name') }}</label>
+                <input type="text" name="name" id="name" value="{{ old('name') }}" required maxlength="255" autocomplete="name" @error('name') aria-invalid="true" aria-describedby="name-error" @enderror class="block w-full rounded-xl border-slate-300 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base sm:text-sm" />
+                @error('name')<p id="name-error" role="alert" class="mt-1 text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
+            </div>
+            <div>
+                <label for="email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.contact_email') }}</label>
+                <input type="email" name="email" id="email" value="{{ old('email') }}" required maxlength="255" autocomplete="email" @error('email') aria-invalid="true" aria-describedby="email-error" @enderror class="block w-full rounded-xl border-slate-300 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base sm:text-sm" />
+                @error('email')<p id="email-error" role="alert" class="mt-1 text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
+            </div>
+            <div>
+                <label for="subject" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.contact_subject') }}</label>
+                <input type="text" name="subject" id="subject" value="{{ old('subject') }}" required maxlength="255" @error('subject') aria-invalid="true" aria-describedby="subject-error" @enderror class="block w-full rounded-xl border-slate-300 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base sm:text-sm" />
+                @error('subject')<p id="subject-error" role="alert" class="mt-1 text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
+            </div>
+            <div>
+                <label for="message" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.contact_message') }}</label>
+                <textarea name="message" id="message" rows="5" required maxlength="5000" @error('message') aria-invalid="true" aria-describedby="message-error" @enderror class="block w-full rounded-xl border-slate-300 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base sm:text-sm">{{ old('message') }}</textarea>
+                @error('message')<p id="message-error" role="alert" class="mt-1 text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
+            </div>
+            <div class="flex items-center">
+                <input type="checkbox" name="privacy" id="privacy" value="1" required @error('privacy') aria-invalid="true" aria-describedby="privacy-error" @enderror class="rounded border-slate-300 text-orange-700 focus:ring-orange-600" />
+                <label for="privacy" class="ml-2 text-sm text-slate-700">{{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" class="text-orange-800 font-bold underline">{{ __('messages.contact_privacy_link') }}</a></label>
+            </div>
+            @error('privacy')<p id="privacy-error" role="alert" class="text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
+            <x-recaptcha-script action="contact" />
+            <x-turnstile-widget action="contact" />
+            @error('g-recaptcha-response')<p role="alert" class="text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
+            <button type="submit" class="w-full bg-orange-700 text-white py-3.5 rounded-xl hover:bg-orange-800 transition font-extrabold">{{ __('messages.contact_send') }}</button>
+        </form>
+    </div>
 </div>
 @endsection

@@ -81,14 +81,15 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto" tabindex="0" role="region" aria-label="Tabla de mareas y estado de los corrales de pesca">
                 <table class="w-full text-left border-collapse">
+                    <caption class="sr-only">Horarios diarios de pleamar y bajamar, altura en metros y estado de los corrales de pesca de Chipiona</caption>
                     <thead>
                         <tr class="border-b-2 border-slate-300 text-xs font-extrabold uppercase text-slate-800">
-                            <th class="py-3 pr-4">Marea</th>
-                            <th class="py-3 px-4">Hora local</th>
-                            <th class="py-3 px-4">Altura</th>
-                            <th class="py-3 pl-4">Estado de los Corrales de Pesca</th>
+                            <th scope="col" class="py-3 pr-4">Marea</th>
+                            <th scope="col" class="py-3 px-4">Hora local</th>
+                            <th scope="col" class="py-3 px-4">Altura</th>
+                            <th scope="col" class="py-3 pl-4">Estado de los Corrales de Pesca</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 text-sm">

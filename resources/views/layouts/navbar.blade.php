@@ -62,79 +62,80 @@
     class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs"
     x-data="{ open: false }"
     @keydown.escape.window="open = false"
+    @click.outside="open = false"
 >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-20 gap-4">
+        <div class="flex justify-between items-center h-20 gap-3">
             {{-- Marca oficial con medallón heráldico --}}
-            <a href="{{ route('home') }}" class="flex items-center gap-3 group shrink-0">
+            <a href="{{ route('home') }}" class="flex items-center gap-3 group min-w-0 shrink">
                 <img
                     src="{{ asset('images/logo.png') }}"
                     alt="{{ setting('site_title', config('app.name')) }}"
                     width="48"
                     height="48"
-                    class="h-12 w-12 rounded-full border-2 border-amber-500/70 shadow-sm object-cover"
+                    class="h-11 w-11 sm:h-12 sm:w-12 shrink-0 rounded-full border-2 border-amber-500/70 shadow-sm object-cover"
                 >
-                <div>
-                    <span class="block font-serif text-xl font-extrabold tracking-tight text-slate-950 group-hover:text-orange-800 transition">
+                <div class="min-w-0">
+                    <span class="block truncate font-serif text-lg sm:text-xl font-extrabold tracking-tight text-slate-950 group-hover:text-orange-800 transition">
                         {{ setting('site_title', config('app.name')) }}
                     </span>
-                    <span class="block text-xs font-semibold text-slate-700">
+                    <span class="hidden sm:block truncate text-xs font-semibold text-slate-700">
                         {{ __('messages.brand_subtitle') }}
                     </span>
                 </div>
             </a>
 
             {{-- Enlaces de escritorio --}}
-            <div class="hidden lg:flex lg:items-center lg:gap-1.5">
+            <div class="hidden lg:flex lg:items-center lg:gap-1">
                 <a
                     href="{{ route('home') }}"
                     @if(request()->routeIs('home') || request()->routeIs('explore')) aria-current="page" @endif
-                    class="px-3.5 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('home') || request()->routeIs('explore') ? 'bg-orange-700 text-white shadow-xs' : 'text-slate-900 hover:bg-slate-100' }}"
+                    class="whitespace-nowrap px-3 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('home') || request()->routeIs('explore') ? 'bg-orange-700 text-white shadow-xs' : 'text-slate-900 hover:bg-slate-100' }}"
                 >
                     {{ __('messages.explore_all') }}
                 </a>
                 <a
                     href="{{ route('news.index') }}"
                     @if(request()->routeIs('news.*')) aria-current="page" @endif
-                    class="px-3 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('news.*') ? 'bg-slate-950 text-white' : 'text-slate-900 hover:bg-slate-100' }}"
+                    class="whitespace-nowrap px-3 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('news.*') ? 'bg-slate-950 text-white' : 'text-slate-900 hover:bg-slate-100' }}"
                 >
                     {{ __('messages.news_nav') }}
                 </a>
                 <a
                     href="{{ route('proverbs.index') }}"
                     @if(request()->routeIs('proverbs.*')) aria-current="page" @endif
-                    class="px-3 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('proverbs.*') ? 'bg-slate-950 text-white' : 'text-slate-900 hover:bg-slate-100' }}"
+                    class="whitespace-nowrap px-3 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('proverbs.*') ? 'bg-slate-950 text-white' : 'text-slate-900 hover:bg-slate-100' }}"
                 >
                     {{ __('messages.proverbs_nav') }}
                 </a>
                 <a
                     href="{{ route('weather.index') }}"
                     @if(request()->routeIs('weather.*')) aria-current="page" @endif
-                    class="px-3 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('weather.*') ? 'bg-slate-950 text-white' : 'text-slate-900 hover:bg-slate-100' }}"
+                    class="whitespace-nowrap px-3 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('weather.*') ? 'bg-slate-950 text-white' : 'text-slate-900 hover:bg-slate-100' }}"
                 >
                     {{ __('messages.weather_tides_nav') }}
                 </a>
                 <a
                     href="{{ route('phones.index') }}"
                     @if(request()->routeIs('phones.*')) aria-current="page" @endif
-                    class="px-3 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('phones.*') ? 'bg-slate-950 text-white' : 'text-slate-900 hover:bg-slate-100' }}"
+                    class="whitespace-nowrap px-3 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('phones.*') ? 'bg-slate-950 text-white' : 'text-slate-900 hover:bg-slate-100' }}"
                 >
                     {{ __('messages.phones_nav') }}
                 </a>
                 <a
                     href="{{ route('legal') }}"
                     @if(request()->routeIs('legal') || request()->routeIs('about')) aria-current="page" @endif
-                    class="px-3 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('legal') || request()->routeIs('about') ? 'bg-slate-950 text-white' : 'text-slate-900 hover:bg-slate-100' }}"
+                    class="whitespace-nowrap px-3 py-2 rounded-xl text-sm font-bold transition {{ request()->routeIs('legal') || request()->routeIs('about') ? 'bg-slate-950 text-white' : 'text-slate-900 hover:bg-slate-100' }}"
                 >
                     {{ __('messages.author_legal_nav') }}
                 </a>
             </div>
 
             {{-- CTA Aportar Contenido --}}
-            <div class="hidden lg:flex lg:items-center lg:gap-2">
+            <div class="hidden lg:flex lg:items-center lg:gap-2 shrink-0">
                 <a
                     href="{{ route('suggestions.create') }}"
-                    class="inline-flex items-center gap-2 rounded-xl bg-violet-800 px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-violet-900 transition"
+                    class="whitespace-nowrap inline-flex items-center gap-2 rounded-xl bg-violet-800 px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-violet-900 transition"
                 >
                     <span aria-hidden="true">✍️</span>
                     <span>{{ __('messages.contribute_btn') }}</span>
@@ -142,7 +143,7 @@
             </div>
 
             {{-- Botón móvil --}}
-            <div class="flex items-center lg:hidden">
+            <div class="flex items-center lg:hidden shrink-0">
                 <button
                     type="button"
                     @click="open = !open"
@@ -160,7 +161,7 @@
     </div>
 
     {{-- Menú desplegable móvil --}}
-    <div id="mobile-menu" x-cloak x-show="open" class="lg:hidden border-t border-slate-200 bg-white">
+    <div id="mobile-menu" x-cloak x-show="open" class="lg:hidden max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain border-t border-slate-200 bg-white">
         <div class="px-4 py-4 space-y-1.5">
             <a
                 href="{{ route('home') }}"

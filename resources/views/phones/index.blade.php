@@ -24,10 +24,33 @@
             Directorio claro y con botones de llamada directa pensado para que cualquier vecino o visitante encuentre al instante el teléfono oficial que necesita.
         </p>
 
-        <div class="mt-6 flex flex-wrap gap-2">
+        <form action="{{ route('phones.index') }}" method="GET" role="search" aria-label="Buscar teléfonos oficiales" class="mt-6 max-w-2xl flex flex-col sm:flex-row gap-3">
+            @if($category !== '' && $category !== 'all')
+                <input type="hidden" name="category" value="{{ $category }}">
+            @endif
+            <label for="phones-search-q" class="sr-only">Buscar teléfono o servicio municipal</label>
+            <input
+                type="search"
+                id="phones-search-q"
+                name="q"
+                value="{{ $search ?? '' }}"
+                placeholder="Buscar servicio, urgencia, farmacia, taxi..."
+                class="flex-1 rounded-xl border-2 border-slate-300 bg-white px-4 py-2.5 text-base sm:text-sm font-bold text-slate-950 placeholder:text-slate-600"
+            >
+            <button type="submit" class="rounded-xl bg-orange-700 px-6 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 cursor-pointer">
+                Buscar
+            </button>
+            @if(($search ?? '') !== '' || ($category !== '' && $category !== 'all'))
+                <a href="{{ route('phones.index') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-500 bg-slate-900 px-4 py-2.5 text-xs font-extrabold text-amber-300 hover:bg-slate-800">
+                    Limpiar
+                </a>
+            @endif
+        </form>
+
+        <div class="mt-5 flex flex-wrap gap-2">
             @foreach($categories as $catKey => $catLabel)
                 <a
-                    href="{{ route('phones.index', ['category' => $catKey === 'all' ? null : $catKey]) }}"
+                    href="{{ route('phones.index', ['category' => $catKey === 'all' ? null : $catKey, 'q' => ($search ?? '') ?: null]) }}"
                     class="rounded-xl px-4 py-2 text-xs sm:text-sm font-extrabold transition {{ ($category === $catKey || ($category === '' && $catKey === 'all')) ? 'bg-amber-400 text-slate-950' : 'bg-slate-900/90 text-white border border-slate-700 hover:bg-slate-800' }}"
                 >
                     {{ $catLabel }}

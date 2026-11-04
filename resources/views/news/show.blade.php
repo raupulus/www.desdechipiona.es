@@ -18,9 +18,9 @@
 
         <div class="flex flex-wrap items-center gap-2 text-xs font-extrabold">
             <span class="rounded-lg bg-orange-700 px-3 py-1 text-white">📰 Noticia Documental</span>
-            <span class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1 text-amber-300">
+            <time datetime="{{ ($news->published_at ?? $news->created_at)?->toIso8601String() }}" class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1 text-amber-300">
                 📅 {{ format_date($news->published_at ?? $news->created_at) }}
-            </span>
+            </time>
             @if($news->evidence_level)
                 <span class="rounded-lg bg-sky-900/90 border border-sky-400 px-3 py-1 text-white">
                     {{ $news->evidence_level->label() }}
@@ -38,6 +38,20 @@
 
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
     <article class="lg:col-span-8 space-y-8">
+        @if($news->image_url)
+            <figure class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-xs">
+                <img
+                    src="{{ $news->image_url }}"
+                    alt="{{ $title }}"
+                    width="1200"
+                    height="675"
+                    fetchpriority="high"
+                    decoding="async"
+                    class="w-full max-h-96 object-cover"
+                >
+            </figure>
+        @endif
+
         <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-xs prose-chipiona max-w-none">
             {!! $news->rendered_content !!}
         </div>
@@ -63,17 +77,20 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label for="news-corr-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre</label>
-                            <input type="text" id="news-corr-name" name="author_name" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">
+                            <input type="text" id="news-corr-name" name="author_name" value="{{ old('author_name') }}" autocomplete="name" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">
+                            <x-input-error :messages="$errors->get('author_name')" class="mt-1" />
                         </div>
                         <div>
                             <label for="news-corr-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu correo (opcional)</label>
-                            <input type="email" id="news-corr-email" name="author_email" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">
+                            <input type="email" id="news-corr-email" name="author_email" value="{{ old('author_email') }}" autocomplete="email" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">
+                            <x-input-error :messages="$errors->get('author_email')" class="mt-1" />
                         </div>
                     </div>
                 @endif
                 <div>
                     <label for="news-proposed" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Corrección propuesta *</label>
-                    <textarea id="news-proposed" name="proposed_correction" rows="3" required minlength="10" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm"></textarea>
+                    <textarea id="news-proposed" name="proposed_correction" rows="3" required minlength="10" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">{{ old('proposed_correction') }}</textarea>
+                    <x-input-error :messages="$errors->get('proposed_correction')" class="mt-1" />
                 </div>
                 <x-turnstile-widget action="news_correction" />
                 <div class="flex items-start gap-2 pt-1">
@@ -96,7 +113,7 @@
                 <div class="rounded-xl border border-slate-200 bg-stone-50 p-4">
                     <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
                         <span class="text-slate-950">{{ $comment->author_name }}</span>
-                        <span>{{ format_date($comment->created_at) }}</span>
+                        <time datetime="{{ $comment->created_at?->toIso8601String() }}">{{ format_date($comment->created_at) }}</time>
                     </div>
                     <p class="text-sm text-slate-900">{{ $comment->body }}</p>
                 </div>
@@ -109,12 +126,14 @@
                 @if(!session('public_social_identity'))
                     <div>
                         <label for="news-comm-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre</label>
-                        <input type="text" id="news-comm-name" name="author_name" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">
+                        <input type="text" id="news-comm-name" name="author_name" value="{{ old('author_name') }}" autocomplete="name" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">
+                        <x-input-error :messages="$errors->get('author_name')" class="mt-1" />
                     </div>
                 @endif
                 <div>
                     <label for="news-comm-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu comentario *</label>
-                    <textarea id="news-comm-body" name="body" rows="3" required minlength="5" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm"></textarea>
+                    <textarea id="news-comm-body" name="body" rows="3" required minlength="5" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">{{ old('body') }}</textarea>
+                    <x-input-error :messages="$errors->get('body')" class="mt-1" />
                 </div>
                 <x-turnstile-widget action="news_comment" />
                 <div class="flex items-start gap-2 pt-1">
@@ -136,7 +155,7 @@
             <div class="rounded-2xl border border-slate-200 bg-white p-5 space-y-3">
                 <h2 class="font-serif text-lg font-extrabold text-slate-950">📍 Lugar de la noticia</h2>
                 <p class="text-sm font-bold text-slate-900">{{ $news->location_name }}</p>
-                <a href="https://www.google.com/maps/search/?api=1&query={{ $news->latitude }},{{ $news->longitude }}" target="_blank" rel="noopener noreferrer" class="block text-center rounded-xl bg-blue-900 px-4 py-2.5 text-xs font-extrabold text-white hover:bg-blue-950">
+                <a href="https://www.google.com/maps/search/?api=1&amp;query={{ $news->latitude }},{{ $news->longitude }}" target="_blank" rel="noopener noreferrer" class="block text-center rounded-xl bg-blue-900 px-4 py-2.5 text-xs font-extrabold text-white hover:bg-blue-950">
                     🗺️ Ver en Google Maps
                 </a>
             </div>

@@ -198,11 +198,11 @@
             </section>
 
             {{-- Modal nativo <dialog> para enviar solicitud de corrección --}}
-            <dialog id="correction-dialog" class="m-auto w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border-2 border-slate-900 bg-white p-0 text-slate-950 shadow-2xl backdrop:bg-slate-950/75">
+            <dialog id="correction-dialog" aria-labelledby="correction-dialog-title" class="m-auto w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border-2 border-slate-900 bg-white p-0 text-slate-950 shadow-2xl backdrop:bg-slate-950/75">
                 <div class="p-6 sm:p-8 space-y-5">
                     <div class="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
                         <div>
-                            <h3 class="font-serif text-2xl font-extrabold text-slate-950">Proponer corrección documental</h3>
+                            <h3 id="correction-dialog-title" class="font-serif text-2xl font-extrabold text-slate-950">Proponer corrección documental</h3>
                             <p class="text-xs font-bold text-slate-700 mt-1">Página: {{ $title }}</p>
                         </div>
                         <button
@@ -225,11 +225,13 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label for="corr-author-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre</label>
-                                    <input type="text" id="corr-author-name" name="author_name" value="{{ old('author_name') }}" placeholder="Ej. María Gómez" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                    <input type="text" id="corr-author-name" name="author_name" value="{{ old('author_name') }}" autocomplete="name" placeholder="Ej. María Gómez" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                    <x-input-error :messages="$errors->get('author_name')" class="mt-1" />
                                 </div>
                                 <div>
                                     <label for="corr-author-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu correo (opcional)</label>
-                                    <input type="email" id="corr-author-email" name="author_email" value="{{ old('author_email') }}" placeholder="Para avisarte al aprobarla" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                    <input type="email" id="corr-author-email" name="author_email" value="{{ old('author_email') }}" autocomplete="email" placeholder="Para avisarte al aprobarla" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                    <x-input-error :messages="$errors->get('author_email')" class="mt-1" />
                                 </div>
                             </div>
                         @endif
@@ -237,16 +239,19 @@
                         <div>
                             <label for="quoted_text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Frase o dato actual que deseas corregir (opcional)</label>
                             <input type="text" id="quoted_text" name="quoted_text" value="{{ old('quoted_text') }}" placeholder="Copia aquí la frase o fecha que aparece en el texto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                            <x-input-error :messages="$errors->get('quoted_text')" class="mt-1" />
                         </div>
 
                         <div>
                             <label for="proposed_correction" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">¿Cuál es la corrección o aclaración propuesta? *</label>
                             <textarea id="proposed_correction" name="proposed_correction" rows="4" required minlength="10" placeholder="Explica con detalle el dato correcto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('proposed_correction') }}</textarea>
+                            <x-input-error :messages="$errors->get('proposed_correction')" class="mt-1" />
                         </div>
 
                         <div>
                             <label for="sources_info" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Fuente documental, libro o testimonio (opcional)</label>
                             <input type="text" id="sources_info" name="sources_info" value="{{ old('sources_info') }}" placeholder="Ej. Archivo Municipal, libro de bautismos, fotografía familiar..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                            <x-input-error :messages="$errors->get('sources_info')" class="mt-1" />
                         </div>
 
                         <x-turnstile-widget action="correction" />
@@ -295,7 +300,7 @@
                                             </span>
                                         @endif
                                     </div>
-                                    <span class="text-xs font-semibold text-slate-700">{{ format_date($comment->created_at) }}</span>
+                                    <time datetime="{{ $comment->created_at?->toIso8601String() }}" class="text-xs font-semibold text-slate-700">{{ format_date($comment->created_at) }}</time>
                                 </div>
                                 <p class="text-sm text-slate-900 leading-relaxed">{{ $comment->body }}</p>
                             </div>
@@ -316,11 +321,13 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label for="comment-author-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre</label>
-                                    <input type="text" id="comment-author-name" name="author_name" value="{{ old('author_name') }}" placeholder="Ej. Juan Camacho" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                    <input type="text" id="comment-author-name" name="author_name" value="{{ old('author_name') }}" autocomplete="name" placeholder="Ej. Juan Camacho" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                    <x-input-error :messages="$errors->get('author_name')" class="mt-1" />
                                 </div>
                                 <div>
                                     <label for="comment-author-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu correo (opcional)</label>
-                                    <input type="email" id="comment-author-email" name="author_email" value="{{ old('author_email') }}" placeholder="No se publicará" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                    <input type="email" id="comment-author-email" name="author_email" value="{{ old('author_email') }}" autocomplete="email" placeholder="No se publicará" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                    <x-input-error :messages="$errors->get('author_email')" class="mt-1" />
                                 </div>
                             </div>
                         @endif
@@ -328,6 +335,7 @@
                         <div>
                             <label for="comment-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu comentario o recuerdo *</label>
                             <textarea id="comment-body" name="body" rows="3" required minlength="5" placeholder="Escribe aquí tu comentario con respeto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('body') }}</textarea>
+                            <x-input-error :messages="$errors->get('body')" class="mt-1" />
                         </div>
 
                         <x-turnstile-widget action="comment" />
@@ -364,7 +372,7 @@
                         Lat: {{ number_format($page->latitude, 5) }} · Lng: {{ number_format($page->longitude, 5) }}
                     </p>
                     <a
-                        href="https://www.google.com/maps/search/?api=1&query={{ $page->latitude }},{{ $page->longitude }}"
+                        href="https://www.google.com/maps/search/?api=1&amp;query={{ $page->latitude }},{{ $page->longitude }}"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="flex items-center justify-center gap-2 w-full rounded-xl bg-blue-900 px-4 py-2.5 text-xs font-extrabold text-white hover:bg-blue-950 transition"

@@ -47,7 +47,7 @@
                 <div class="flex flex-wrap gap-2">
                     <a
                         href="{{ route('social.redirect', ['provider' => 'facebook']) }}"
-                        class="inline-flex items-center gap-2 rounded-lg bg-[#1877F2] px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#145dbf]"
+                        class="inline-flex items-center gap-2 rounded-lg bg-[#145dbf] px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#0f4896]"
                     >
                         <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
                         <span>{{ __('messages.social_connect_facebook') }}</span>

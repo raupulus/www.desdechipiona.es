@@ -1,6 +1,6 @@
 {
-    "name": "Skeleton Laravel Project",
-    "short_name": "Skeleton",
+    "name": "Desde Chipiona — Historia, Mar y Memoria Viva",
+    "short_name": "Desde Chipiona",
     "icons": [
         {
             "src": "/images/logos/logo-180x180.png",
@@ -13,8 +13,8 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#4f46e5",
-    "background_color": "#ffffff",
+    "theme_color": "#020617",
+    "background_color": "#fafaf9",
     "display": "standalone",
     "start_url": "/"
 }

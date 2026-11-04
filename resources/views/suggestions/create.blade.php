@@ -26,11 +26,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="sugg-author-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre</label>
-                        <input type="text" id="sugg-author-name" name="author_name" value="{{ old('author_name') }}" placeholder="Ej. Antonio Mellado" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">
+                        <input type="text" id="sugg-author-name" name="author_name" value="{{ old('author_name') }}" autocomplete="name" placeholder="Ej. Antonio Mellado" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                        <x-input-error :messages="$errors->get('author_name')" class="mt-1" />
                     </div>
                     <div>
                         <label for="sugg-author-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu correo electrónico (opcional)</label>
-                        <input type="email" id="sugg-author-email" name="author_email" value="{{ old('author_email') }}" placeholder="Para consultarte dudas o avisarte al publicar" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium">
+                        <input type="email" id="sugg-author-email" name="author_email" value="{{ old('author_email') }}" autocomplete="email" placeholder="Para consultarte dudas o avisarte al publicar" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                        <x-input-error :messages="$errors->get('author_email')" class="mt-1" />
                     </div>
                 </div>
             @endif

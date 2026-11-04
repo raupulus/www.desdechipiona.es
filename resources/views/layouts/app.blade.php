@@ -12,6 +12,7 @@
     x-init="document.documentElement.setAttribute('data-font-scale', fontScale)"
 >
     <head>
+        <script>document.documentElement.setAttribute('data-font-scale', localStorage.getItem('chipiona_font_scale') || 'normal');</script>
         @include('layouts.head')
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @stack('head_css')
