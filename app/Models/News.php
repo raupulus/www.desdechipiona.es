@@ -195,7 +195,8 @@ class News extends Model
     }
 
     /**
-     * Renderiza el contenido del idioma activo a HTML seguro (soporta Markdown y HTML).
+     * Renderiza el contenido del idioma activo a HTML seguro (soporta Markdown y HTML)
+     * y envuelve tablas de datos en un contenedor accesible con scroll horizontal.
      */
     public function getRenderedContentAttribute(): string
     {
@@ -211,13 +212,15 @@ class News extends Model
         }
 
         if (preg_match('/<(p|div|section|article|h2|h3|ul|ol|table)\b/i', $text)) {
-            return static::sanitizeHtmlString($text);
+            $html = static::sanitizeHtmlString($text);
+        } else {
+            $html = static::sanitizeHtmlString(Str::markdown($text, [
+                'html_input' => 'strip',
+                'allow_unsafe_links' => false,
+            ]));
         }
 
-        return static::sanitizeHtmlString(Str::markdown($text, [
-            'html_input' => 'strip',
-            'allow_unsafe_links' => false,
-        ]));
+        return Page::wrapTablesInResponsiveContainer($html);
     }
 
     // =========================================================

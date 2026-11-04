@@ -214,7 +214,8 @@ class Page extends Model
     }
 
     /**
-     * Renderiza el contenido del idioma activo a HTML seguro (soporta Markdown y HTML).
+     * Renderiza el contenido del idioma activo a HTML seguro (soporta Markdown y HTML)
+     * y envuelve tablas de datos en un contenedor accesible con scroll horizontal.
      */
     public function getRenderedContentAttribute(): string
     {
@@ -231,13 +232,40 @@ class Page extends Model
 
         // Si ya contiene bloques HTML principales, devolver saneado directamente
         if (preg_match('/<(p|div|section|article|h2|h3|ul|ol|table)\b/i', $text)) {
-            return static::sanitizeHtmlString($text);
+            $html = static::sanitizeHtmlString($text);
+        } else {
+            $html = static::sanitizeHtmlString(Str::markdown($text, [
+                'html_input' => 'strip',
+                'allow_unsafe_links' => false,
+            ]));
         }
 
-        return static::sanitizeHtmlString(Str::markdown($text, [
-            'html_input' => 'strip',
-            'allow_unsafe_links' => false,
-        ]));
+        return static::wrapTablesInResponsiveContainer($html);
+    }
+
+    /**
+     * Envuelve tablas de datos en un contenedor accesible con scroll horizontal.
+     */
+    public static function wrapTablesInResponsiveContainer(string $html): string
+    {
+        if (! str_contains($html, '<table')) {
+            return $html;
+        }
+
+        return (string) preg_replace_callback(
+            '#(<div\s+class="[^"]*table-responsive-wrapper[^"]*"[^>]*>\s*)?<table\b([^>]*)>(.*?)<\/table>(\s*<\/div>)?#si',
+            function (array $matches): string {
+                if (! empty($matches[1]) && ! empty($matches[4])) {
+                    return $matches[0];
+                }
+
+                $attrs = $matches[2];
+                $inner = $matches[3];
+
+                return '<div class="table-responsive-wrapper" tabindex="0" role="region" aria-label="Tabla de datos"><table'.$attrs.'>'.$inner.'</table></div>';
+            },
+            $html
+        );
     }
 
     // =========================================================
