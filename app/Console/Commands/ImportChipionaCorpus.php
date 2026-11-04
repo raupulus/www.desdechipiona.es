@@ -147,6 +147,13 @@ class ImportChipionaCorpus extends Command
                     $termsMap[$titleEs] = $slug;
                 }
             }
+
+            // Eliminar páginas antiguas que ya no forman parte del corpus real
+            if (! empty($pagesBySlug)) {
+                Page::whereNotNull('content_group')
+                    ->whereNotIn('slug', array_keys($pagesBySlug))
+                    ->forceDelete();
+            }
         });
 
         // 5. Aplicar auto-enlazador enciclopédico sobre el contenido de cada página
@@ -189,7 +196,7 @@ class ImportChipionaCorpus extends Command
         if (File::exists($extraFile)) {
             $this->line('→ Sincronizando noticias y refranes del catálogo...');
             $extras = require $extraFile;
-            $this->importExtras($extras, $authorId, $categories->all(), $pagesBySlug);
+            $this->importExtras($extras, $authorId, $categories->all(), $pagesBySlug, $officialSources);
         }
 
         // 8. Asegurar que las noticias tampoco tengan vídeos ajenos
@@ -385,14 +392,29 @@ class ImportChipionaCorpus extends Command
                     $longitude = (float) $meta['longitud'];
                 }
 
-                // Asegurar existencia de imagen WebP de cabecera y social
-                $this->ensureWebpImageExists($slug, $group);
+                $cleanImage = $this->resolveCleanImagePath($slug, $group);
+
+                $featuredSlugs = [
+                    'faro-de-chipiona',
+                    'santuario-nuestra-senora-de-regla',
+                    'corrales-de-pesca-panorama',
+                    'castillo-de-chipiona',
+                    'moscatel',
+                    'carnaval-de-chipiona',
+                    'rocio-jurado',
+                    'camaleon-comun',
+                    'pinar-de-la-villa',
+                    'playa-de-regla',
+                    'arrecife-y-piedra-de-salmedina',
+                    'turris-caepionis',
+                ];
 
                 $titleEs = (string) $meta['titulo'];
                 $titleEn = $enTranslations[$slug]['title_en'] ?? $titleEs;
-                $excerptEn = $enTranslations[$slug]['excerpt_en'] ?? $excerpt;
-                $contentEn = $enTranslations[$slug]['content_en'] ?? $cleanBody;
-                $evidenceNoteEn = $enTranslations[$slug]['evidence_note_en'] ?? (string) ($meta['nota_evidencia'] ?? '');
+                $excerptEn = $this->cleanMarkdownBody((string) ($enTranslations[$slug]['excerpt_en'] ?? $excerpt));
+                $contentEn = $this->cleanMarkdownBody((string) ($enTranslations[$slug]['content_en'] ?? $cleanBody));
+                $evidenceNoteEs = $this->cleanMarkdownBody((string) ($meta['nota_evidencia'] ?? ''));
+                $evidenceNoteEn = $this->cleanMarkdownBody((string) ($enTranslations[$slug]['evidence_note_en'] ?? $evidenceNoteEs));
 
                 $items[] = [
                     'slug' => $slug,
@@ -408,17 +430,17 @@ class ImportChipionaCorpus extends Command
                     'year_start' => $yearStart,
                     'year_end' => $yearEnd,
                     'evidence_level' => $evidence,
-                    'evidence_note' => ['es' => (string) ($meta['nota_evidencia'] ?? ''), 'en' => $evidenceNoteEn],
+                    'evidence_note' => ['es' => $evidenceNoteEs, 'en' => $evidenceNoteEn],
                     'source_references' => $resolvedSources,
-                    'image' => "images/pages/{$slug}-header.webp",
-                    'social_image' => "images/pages/{$slug}-social.webp",
+                    'image' => $cleanImage,
+                    'social_image' => $cleanImage,
                     'youtube_url' => null, // Vídeos desactivados hasta que el autor publique los propios
                     'latitude' => $latitude,
                     'longitude' => $longitude,
                     'location_name' => (string) ($meta['lugar'] ?? 'Chipiona (Cádiz)'),
                     'status' => ContentStatus::Published,
                     'is_active' => true,
-                    'featured' => (bool) ($meta['destacado'] ?? false),
+                    'featured' => in_array($slug, $featuredSlugs, true) || (bool) ($meta['destacado'] ?? false),
                     'user_id' => $userId,
                     'published_at' => now(),
                     'related_slugs' => (array) ($meta['relacionados'] ?? []),
@@ -440,8 +462,10 @@ class ImportChipionaCorpus extends Command
         $text = (string) preg_replace('/(?ms)\n##\s+Cómo citar esta ficha\b.*?(?=\n##\s+|\Z)/u', '', $text);
         $text = (string) preg_replace('/(?ms)\n##\s+Fuentes\b.*?(?=\n##\s+|\Z)/u', '', $text);
 
-        // 2. Eliminar marcas inline de fuentes: [F-XXXX...], `[F-XXXX...]`
-        $text = (string) preg_replace('/[\s`]*\[F-\d{4}(?:;\s*F-\d{4})*(?:,\s*p\.\s*\d+)?\][`\s]*/u', ' ', $text);
+        // 2. Eliminar cualquier marca inline de fuentes: [F-XXXX...], ([F-XXXX...]), `F-XXXX`
+        $text = (string) preg_replace('/[\s`\'\"]*\(\s*\[F-\d{4}[^\]]*\]\s*\)[\s`\'\"]*/u', ' ', $text);
+        $text = (string) preg_replace('/[\s`\'\"]*\[F-\d{4}[^\]]*\][\s`\'\"]*/u', ' ', $text);
+        $text = (string) preg_replace('/\bF-\d{4}\b/u', '', $text);
 
         // 3. Eliminar numeraciones forzadas en encabezados (ej: ## 1. Resumen -> ## Resumen)
         $text = (string) preg_replace('/(?m)^(#{2,4})\s+\d+(?:\.\d+)*\.?\s+/u', '$1 ', $text);
@@ -455,45 +479,37 @@ class ImportChipionaCorpus extends Command
     }
 
     /**
-     * Asegura que exista un archivo de cabecera y social WebP para cada slug.
+     * Resuelve la ruta de imagen WebP limpia (fotografía real propia o ilustración temática compartida sin texto).
      */
-    protected function ensureWebpImageExists(string $slug, ContentGroup $group): void
+    protected function resolveCleanImagePath(string $slug, ContentGroup $group): string
     {
-        $pagesDir = public_path('images/pages');
-        if (! File::isDirectory($pagesDir)) {
-            File::makeDirectory($pagesDir, 0755, true, true);
+        if (File::exists(public_path("images/pages/{$slug}.webp"))) {
+            return "images/pages/{$slug}.webp";
         }
 
-        $headerPath = "{$pagesDir}/{$slug}-header.webp";
-        $socialPath = "{$pagesDir}/{$slug}-social.webp";
-
-        if (File::exists($headerPath) && File::exists($socialPath)) {
-            return;
-        }
-
-        // Buscar una imagen base existente del mismo grupo o usar el banner general
-        $fallback = match ($group) {
-            ContentGroup::Playas => 'playa-de-regla-header.webp',
-            ContentGroup::Monumentos => 'faro-de-chipiona-header.webp',
-            ContentGroup::Fauna => 'camaleon-comun-header.webp',
-            ContentGroup::Flora => 'pinar-de-la-villa-header.webp',
-            ContentGroup::Gastronomia => 'moscatel-de-chipiona-header.webp',
-            default => 'turris-caepionis-header.webp',
+        $theme = match (true) {
+            str_contains($slug, 'faro') => 'faro',
+            str_contains($slug, 'salmedina') => 'salmedina',
+            str_contains($slug, 'corral') => 'corrales',
+            str_contains($slug, 'santuario') || str_contains($slug, 'regla') || str_contains($slug, 'parroquia') || str_contains($slug, 'humilladero') || str_contains($slug, 'ermita') => 'santuario',
+            str_contains($slug, 'castillo') || str_contains($slug, 'bateria') || str_contains($slug, 'bunker') => 'castillo',
+            str_contains($slug, 'tren') || str_contains($slug, 'ferrocarril') => 'tren',
+            str_contains($slug, 'camaleon') || str_contains($slug, 'lagarto') || str_contains($slug, 'conejo') => 'camaleon',
+            str_contains($slug, 'chorlitejo') || str_contains($slug, 'aves') || str_contains($slug, 'vencejo') => 'aves',
+            str_contains($slug, 'duna') || str_contains($slug, 'retama') || str_contains($slug, 'azucena') || str_contains($slug, 'litoral') => 'dunas',
+            str_contains($slug, 'pinar') || str_contains($slug, 'pino') || str_contains($slug, 'flora') => 'pinar',
+            str_contains($slug, 'romana') || str_contains($slug, 'caepionis') || str_contains($slug, 'tartessos') || str_contains($slug, 'griegos') => 'romana',
+            $group === ContentGroup::Playas => 'playas',
+            $group === ContentGroup::Monumentos => 'patrimonio',
+            $group === ContentGroup::Fauna => 'camaleon',
+            $group === ContentGroup::Flora => 'pinar',
+            $group === ContentGroup::Fiestas => 'fiestas',
+            $group === ContentGroup::Personajes => 'personajes',
+            $group === ContentGroup::Gastronomia => 'corrales',
+            default => 'historia',
         };
 
-        $baseSource = "{$pagesDir}/{$fallback}";
-        if (! File::exists($baseSource)) {
-            $baseSource = public_path('images/banner.webp');
-        }
-
-        if (File::exists($baseSource)) {
-            if (! File::exists($headerPath)) {
-                File::copy($baseSource, $headerPath);
-            }
-            if (! File::exists($socialPath)) {
-                File::copy($baseSource, $socialPath);
-            }
-        }
+        return "images/themes/{$theme}.webp";
     }
 
     /**
@@ -562,11 +578,23 @@ class ImportChipionaCorpus extends Command
      * @param  array<string, mixed>  $extras
      * @param  array<string, Category>  $categories
      * @param  array<string, Page>  $pagesBySlug
+     * @param  array<string, array{id: string, title: string, author: string, year: string, url: string}>  $officialSources
      */
-    protected function importExtras(array $extras, int $userId, array $categories, array $pagesBySlug): void
+    protected function importExtras(array $extras, int $userId, array $categories, array $pagesBySlug, array $officialSources = []): void
     {
         foreach ($extras['news'] ?? [] as $nItem) {
             $slug = (string) $nItem['slug'];
+            $resolvedNewsSources = [];
+            foreach ((array) ($nItem['source_references'] ?? []) as $sRef) {
+                if (is_array($sRef)) {
+                    $resolvedNewsSources[] = $sRef;
+                } elseif (is_string($sRef) && isset($officialSources[trim($sRef)])) {
+                    $resolvedNewsSources[] = $officialSources[trim($sRef)];
+                }
+            }
+
+            $newsImg = (string) ($nItem['image'] ?? 'images/themes/faro.webp');
+
             $news = News::updateOrCreate(
                 ['slug' => $slug],
                 [
@@ -575,13 +603,13 @@ class ImportChipionaCorpus extends Command
                     'content' => ['es' => $nItem['content_es'], 'en' => $nItem['content_en'] ?? $nItem['content_es']],
                     'seo_title' => ['es' => $nItem['title_es'].' | Desde Chipiona', 'en' => ($nItem['title_en'] ?? $nItem['title_es']).' | Desde Chipiona'],
                     'seo_description' => ['es' => $nItem['excerpt_es'], 'en' => $nItem['excerpt_en'] ?? $nItem['excerpt_es']],
-                    'image' => "images/news/{$slug}-header.webp",
-                    'social_image' => "images/news/{$slug}-social.webp",
+                    'image' => $newsImg,
+                    'social_image' => (string) ($nItem['social_image'] ?? $newsImg),
                     'latitude' => $nItem['latitude'] ?? null,
                     'longitude' => $nItem['longitude'] ?? null,
                     'location_name' => $nItem['location_name'] ?? 'Chipiona',
                     'evidence_level' => $nItem['evidence_level'] ?? EvidenceLevel::Consolidated,
-                    'source_references' => $nItem['source_references'] ?? [],
+                    'source_references' => $resolvedNewsSources,
                     'status' => ContentStatus::Published,
                     'is_active' => true,
                     'featured' => (bool) ($nItem['featured'] ?? false),

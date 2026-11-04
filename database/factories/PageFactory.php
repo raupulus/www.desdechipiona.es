@@ -41,7 +41,9 @@ class PageFactory extends Factory
                 'es' => 'Información contrastada con fuentes primarias de archivo.',
                 'en' => 'Information verified against primary archive sources.',
             ],
-            'source_references' => ['F-0001'],
+            'source_references' => [
+                ['title' => 'Archivo Histórico Provincial de Cádiz', 'author' => 'Junta de Andalucía', 'year' => '2026', 'url' => ''],
+            ],
             'status' => ContentStatus::Published,
             'is_active' => true,
             'featured' => false,

@@ -200,7 +200,7 @@ class PageResource extends Resource
                         ->required(),
                     Forms\Components\TagsInput::make('source_references')
                         ->label(__('filament.source_references'))
-                        ->placeholder('F-0071')
+                        ->placeholder('Archivo Histórico / IAPH / BOE')
                         ->columnSpanFull(),
                 ])
                 ->columnSpanFull(),

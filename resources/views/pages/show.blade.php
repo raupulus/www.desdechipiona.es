@@ -206,6 +206,23 @@
                 </section>
             @endif
 
+            {{-- Autoría, Propiedad Intelectual Privada y Cómo Citar (Licencia de Compartición con Atribución) --}}
+            <section aria-label="{{ __('messages.authorship_box_title') }}" class="rounded-2xl border border-slate-200 bg-stone-50 p-6 space-y-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg" aria-hidden="true">⚖️</span>
+                    <h2 class="font-serif text-lg font-extrabold text-slate-950">{{ __('messages.authorship_box_title') }}</h2>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+                    {{ __('messages.authorship_box_text') }}
+                </p>
+                <div class="rounded-xl border border-slate-200 bg-white p-3.5 text-xs text-slate-900">
+                    <p class="font-extrabold text-slate-950 mb-1">{{ __('messages.authorship_how_to_cite') }}</p>
+                    <p class="font-mono text-slate-800 select-all">
+                        Caro Pastorino, Raúl ({{ date('Y') }}). «{{ $title }}». En Desde Chipiona ({{ url()->current() }}).
+                    </p>
+                </div>
+            </section>
+
             {{-- Caja para proponer una corrección sobre esta página --}}
             <section id="proponer-correccion" class="rounded-2xl border-2 border-amber-500/80 bg-amber-50/70 p-6 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

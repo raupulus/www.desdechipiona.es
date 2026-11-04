@@ -57,8 +57,9 @@
                     <li><a href="{{ route('cookies') }}" class="text-slate-300 hover:text-white">{{ __('messages.cookies') }}</a></li>
                     <li><a href="https://t.me/desdechipiona" target="_blank" rel="noopener noreferrer" class="text-sky-300 hover:text-white font-semibold">📢 Canal de Telegram</a></li>
                 </ul>
-                <div class="mt-4 rounded-xl border border-slate-800 bg-slate-900 p-3 text-xs text-slate-300">
-                    Código libre bajo licencia <strong>GNU AGPLv3</strong>. Protegido con <strong>Cloudflare Turnstile</strong>.
+                <div class="mt-4 rounded-xl border border-slate-800 bg-slate-900 p-3 text-xs text-slate-300 space-y-1.5">
+                    <p>{{ __('messages.footer_content_license') }}</p>
+                    <p class="text-slate-400">Software web bajo licencia <strong>GNU AGPLv3</strong> · Protegido con <strong>Cloudflare Turnstile</strong>.</p>
                 </div>
             </div>
         </div>

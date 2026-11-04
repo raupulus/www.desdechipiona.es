@@ -182,7 +182,7 @@ class NewsResource extends Resource
                         ->maxValue(180),
                     Forms\Components\TagsInput::make('source_references')
                         ->label(__('filament.source_references'))
-                        ->placeholder('F-0031'),
+                        ->placeholder('Archivo Histórico / IAPH / BOE'),
                     Forms\Components\Select::make('relatedPages')
                         ->label(__('filament.related_pages'))
                         ->relationship(

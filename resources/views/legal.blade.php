@@ -43,19 +43,30 @@
             La historia de un pueblo como Chipiona combina legajos de archivo, hallazgos arqueológicos, memorias orales y leyendas populares transmitidas de generación en generación. En esta plataforma mantenemos una separación rigurosa y visible en cada página:
         </p>
         <ul class="space-y-3 text-sm text-slate-900 list-disc pl-6">
-            <li><strong>Información Contrastada / Consolidada:</strong> Respaldada por fuentes primarias de archivo (Archivo Histórico Nacional, Archivo Ducal de Medina Sidonia, Autoridad Portuaria, BOE, hemeroteca histórica) o publicaciones académicas, identificadas con su código <code class="font-mono font-bold">[F-XXXX]</code>.</li>
+            <li><strong>Información Contrastada / Consolidada:</strong> Respaldada por fuentes primarias de archivo (Archivo Histórico Nacional, Archivo Histórico de la Nobleza, IAPH, Autoridad Portuaria, BOE, hemeroteca histórica) o publicaciones académicas, citadas y enlazadas al pie de cada ficha.</li>
             <li><strong>Mito, Leyenda o Tradición Oral:</strong> Relatos populares de gran valor cultural e identitario (como el ciclo legendario africano de la Virgen de Regla o dichos antiguos), que se presentan expresamente como tradición y nunca como hecho empírico cerrado.</li>
             <li><strong>Hipótesis o Dato Discutido / Sin Contrastar:</strong> Cuestiones en las que las fuentes históricas discrepan o donde aún faltan excavaciones o documentos concluyentes.</li>
         </ul>
     </section>
 
-    {{-- 3. Licencia del Software y Contenidos --}}
-    <section class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-xs space-y-4">
+    {{-- 3. Propiedad Intelectual del Contenido y Licencia de Difusión --}}
+    <section class="rounded-2xl border-2 border-amber-500 bg-white p-6 sm:p-10 shadow-xs space-y-4">
         <h2 class="font-serif text-2xl sm:text-3xl font-extrabold text-slate-950">
-            3. Licencia del Proyecto: GNU AGPLv3
+            3. Propiedad Intelectual de los Contenidos y Licencia para Compartir
         </h2>
         <p class="text-base text-slate-900 leading-relaxed">
-            El código fuente de la plataforma <strong>Desde Chipiona</strong> se publica bajo la licencia libre <strong>GNU Affero General Public License v3.0 (AGPL-3.0-or-later)</strong>, garantizando que cualquier mejora o despliegue en red del software permanezca abierto a la comunidad.
+            Todo el trabajo de investigación histórica, redacción divulgativa, estructuración documental, síntesis de fuentes y material gráfico propio publicado en <strong>Desde Chipiona</strong> es <strong>obra original y propiedad intelectual privada de su autor, Raúl Caro Pastorino</strong> (<code class="font-bold text-slate-950">public@raupulus.dev</code>).
+        </p>
+        <div class="rounded-xl border border-amber-300 bg-amber-50/70 p-5 space-y-2 text-sm text-slate-900">
+            <p class="font-extrabold text-slate-950">📜 Condiciones para compartir, citar o divulgar el contenido (CC BY-NC-SA 4.0):</p>
+            <ul class="list-disc pl-5 space-y-1.5">
+                <li><strong>Atribución obligatoria de autoría:</strong> Se permite compartir, citar o reproducir extractos con fines culturales, educativos o divulgativos siempre que se indique de forma clara y visible la autoría de <strong>Raúl Caro Pastorino</strong> y el nombre del portal <strong>Desde Chipiona</strong>.</li>
+                <li><strong>Enlace a la fuente original:</strong> Toda cita o reproducción en medios digitales, redes sociales, blogs o trabajos debe incluir el enlace directo a la página original en <code class="font-bold text-orange-900">https://desdechipiona.es</code> y respetar las fuentes documentales citadas.</li>
+                <li><strong>Uso no comercial y misma licencia:</strong> No se autoriza la explotación comercial directa de los textos ni su apropiación sin reconocimiento de autoría.</li>
+            </ul>
+        </div>
+        <p class="text-sm text-slate-700 leading-relaxed pt-2">
+            Por su parte, el código fuente técnico de la plataforma web se distribuye de forma independiente bajo licencia libre <strong>GNU Affero General Public License v3.0 (AGPL-3.0-or-later)</strong>.
         </p>
         <div class="flex flex-wrap gap-3 pt-2">
             <a href="{{ route('privacy') }}" class="rounded-xl bg-slate-950 px-5 py-2.5 text-xs font-extrabold text-white hover:bg-orange-800">

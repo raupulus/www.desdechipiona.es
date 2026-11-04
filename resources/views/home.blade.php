@@ -216,7 +216,7 @@
         </div>
         <div class="flex flex-wrap gap-2 shrink-0">
             <a href="{{ route('home', ['evidence' => 'consolidado']) }}" class="inline-flex items-center gap-1.5 rounded-lg border border-sky-800 bg-sky-50 px-3 py-1 text-xs font-extrabold text-sky-950 hover:bg-sky-100">
-                <span>🛡️ Contrastado con fuentes [F-XXXX]</span>
+                <span>🛡️ {{ __('messages.home_verified_sources_pill') }}</span>
             </a>
             <a href="{{ route('home', ['evidence' => 'tradicion']) }}" class="inline-flex items-center gap-1.5 rounded-lg border border-amber-800 bg-amber-100/80 px-3 py-1 text-xs font-extrabold text-amber-950 hover:bg-amber-200">
                 <span>🗣️ Mito, Leyenda o Tradición Oral</span>
@@ -273,66 +273,60 @@
                         \App\Enums\EvidenceLevel::Tradition => 'border-amber-800 bg-amber-50 text-amber-950',
                         \App\Enums\EvidenceLevel::Disputed => 'border-rose-800 bg-rose-50 text-rose-950',
                     };
-                    $sources = null;
-                    if (is_array($pageItem->source_references) && count($pageItem->source_references) > 0) {
-                        $firstSources = array_slice($pageItem->source_references, 0, 2);
-                        $mapped = array_map(function ($s) {
-                            return is_array($s) ? ($s['id'] ?? ($s['title'] ?? '')) : (string) $s;
-                        }, $firstSources);
-                        $sources = implode(', ', array_filter($mapped));
-                    }
+                    $sourcesCount = is_array($pageItem->source_references) ? count($pageItem->source_references) : 0;
                 @endphp
                 <article class="flex flex-col justify-between rounded-2xl border border-slate-200 border-t-4 {{ $borderClass }} bg-white shadow-sm hover:shadow-md transition overflow-hidden">
                     <div>
-                        {{-- Cabecera visual de la tarjeta --}}
+                        {{-- Miniatura visual limpia de la tarjeta (sin texto superpuesto que tape la imagen) --}}
                         <a href="{{ route('pages.show', $pageItem->slug) }}" class="block relative overflow-hidden bg-slate-950 group">
                             @if($pageItem->image_url)
                                 <img
                                     src="{{ $pageItem->image_url }}"
                                     alt="{{ $pageItem->getTranslation('title', app()->getLocale()) }}"
-                                    width="1200"
-                                    height="675"
+                                    width="800"
+                                    height="450"
                                     loading="lazy"
                                     decoding="async"
-                                    class="h-48 w-full object-cover opacity-90 group-hover:scale-105 transition duration-300"
+                                    class="h-40 w-full object-cover group-hover:scale-105 transition duration-300"
                                 >
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>
                             @else
-                                <div class="h-44 w-full bg-gradient-to-br from-slate-950 via-blue-950 to-orange-900"></div>
+                                <div class="h-40 w-full bg-gradient-to-br from-slate-950 via-blue-950 to-orange-900"></div>
                             @endif
 
-                            <div class="absolute inset-0 p-5 flex flex-col justify-end">
-                                <div class="flex flex-wrap items-center gap-1.5 mb-2">
-                                    @if($pageItem->content_group)
-                                        <span class="rounded-md bg-slate-950/90 border border-white/20 px-2.5 py-0.5 text-xs font-bold text-white">
-                                            {{ $pageItem->content_group->label() }}
-                                        </span>
-                                    @endif
-                                    @if($pageItem->period_label)
-                                        <span class="rounded-md bg-amber-400 px-2.5 py-0.5 text-xs font-extrabold text-slate-950">
-                                            {{ $pageItem->period_label }}
-                                        </span>
-                                    @endif
+                            @if($pageItem->content_group)
+                                <div class="absolute top-3 left-3">
+                                    <span class="rounded-lg bg-slate-950/85 backdrop-blur-xs border border-white/20 px-2.5 py-1 text-xs font-bold text-white shadow-xs">
+                                        {{ $pageItem->content_group->label() }}
+                                    </span>
                                 </div>
-                                <h3 class="font-serif text-lg font-extrabold text-white leading-snug group-hover:text-amber-300 transition">
-                                    {{ $pageItem->getTranslation('title', app()->getLocale()) }}
-                                </h3>
-                            </div>
+                            @endif
                         </a>
 
-                        {{-- Cuerpo de la tarjeta --}}
-                        <div class="p-5 space-y-4">
-                            {{-- Sello de nivel de evidencia documental --}}
-                            <div class="flex flex-wrap items-center gap-2">
-                                <span class="inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-xs font-extrabold {{ $badgeClasses }}">
+                        {{-- Cuerpo de la tarjeta con título legible sobre fondo limpio --}}
+                        <div class="p-5 space-y-3">
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                @if($pageItem->period_label)
+                                    <span class="rounded-md bg-amber-100 border border-amber-300 px-2 py-0.5 text-xs font-extrabold text-slate-950">
+                                        {{ $pageItem->period_label }}
+                                    </span>
+                                @endif
+                                <span class="inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-extrabold {{ $badgeClasses }}">
                                     <span>{{ $evidence->label() }}</span>
-                                    @if($sources)
-                                        <span class="font-mono">[{{ $sources }}]</span>
-                                    @endif
                                 </span>
+                                @if($sourcesCount > 0)
+                                    <span class="rounded-md bg-slate-100 border border-slate-300 px-2 py-0.5 text-xs font-bold text-slate-800">
+                                        📚 {{ $sourcesCount }} {{ $sourcesCount === 1 ? __('messages.official_source_singular') : __('messages.official_sources_plural') }}
+                                    </span>
+                                @endif
                             </div>
 
-                            <p class="text-sm text-slate-900 leading-relaxed line-clamp-3">
+                            <h3 class="font-serif text-lg font-extrabold text-slate-950 leading-snug">
+                                <a href="{{ route('pages.show', $pageItem->slug) }}" class="hover:text-orange-800 transition">
+                                    {{ $pageItem->getTranslation('title', app()->getLocale()) }}
+                                </a>
+                            </h3>
+
+                            <p class="text-sm text-slate-800 leading-relaxed line-clamp-3">
                                 {{ $pageItem->getTranslation('excerpt', app()->getLocale()) ?: \Illuminate\Support\Str::limit(strip_tags($pageItem->rendered_content), 160) }}
                             </p>
                         </div>

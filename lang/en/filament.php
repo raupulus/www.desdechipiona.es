@@ -193,7 +193,7 @@ return [
     'year_end' => 'End year',
     'evidence_level' => 'Documentary evidence level',
     'evidence_note' => 'Evidence or legend warning note',
-    'source_references' => 'Source reference codes (F-XXXX)',
+    'source_references' => 'Official source references',
     'social_image' => 'Social media image (1200x630)',
     'youtube_url' => 'YouTube video URL (optional)',
     'latitude' => 'GPS Latitude',

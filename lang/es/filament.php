@@ -193,7 +193,7 @@ return [
     'year_end' => 'Año de fin',
     'evidence_level' => 'Nivel de evidencia documental',
     'evidence_note' => 'Advertencia o nota sobre evidencia / leyenda',
-    'source_references' => 'Códigos de fuente documental (F-XXXX)',
+    'source_references' => 'Referencias de fuentes oficiales',
     'social_image' => 'Imagen para redes sociales (1200x630)',
     'youtube_url' => 'URL de vídeo de YouTube (opcional)',
     'latitude' => 'Latitud GPS',

@@ -370,4 +370,13 @@ return [
     'suggestions_author_label' => 'Tu nombre completo *',
     'suggestions_email_label' => 'Tu correo electrónico de contacto *',
     'suggestions_submit_btn' => 'Enviar aportación al equipo',
+
+    // Autoría, Propiedad Privada y Licencia de Cita
+    'home_verified_sources_pill' => 'Contrastado con fuentes oficiales',
+    'official_source_singular' => 'fuente oficial',
+    'official_sources_plural' => 'fuentes oficiales',
+    'authorship_box_title' => 'Autoría, Propiedad Intelectual y Licencia de Cita',
+    'authorship_box_text' => 'Este contenido e investigación documental es obra original y propiedad intelectual privada de Raúl Caro Pastorino. Se permite su difusión y compartición siempre que se cite expresamente al autor, las fuentes documentales y se enlace de forma visible a la página original en Desde Chipiona (Licencia CC BY-NC-SA 4.0).',
+    'authorship_how_to_cite' => 'Cómo citar y compartir este artículo:',
+    'footer_content_license' => 'Contenidos e investigación: propiedad privada de Raúl Caro Pastorino. Permitido compartir citando obligatoriamente autoría, fuentes y enlace a desdechipiona.es (CC BY-NC-SA 4.0).',
 ];

@@ -370,4 +370,13 @@ return [
     'suggestions_author_label' => 'Your full name *',
     'suggestions_email_label' => 'Your contact email address *',
     'suggestions_submit_btn' => 'Submit contribution to the team',
+
+    // Authorship, Private Property & Citation License
+    'home_verified_sources_pill' => 'Verified with official sources',
+    'official_source_singular' => 'official source',
+    'official_sources_plural' => 'official sources',
+    'authorship_box_title' => 'Authorship, Intellectual Property & Citation License',
+    'authorship_box_text' => 'This documentary research and content is original work and private intellectual property of Raúl Caro Pastorino. Sharing and redistribution are permitted provided that you explicitly credit the author, cite the documentary sources, and include a visible link to the original page on Desde Chipiona (CC BY-NC-SA 4.0 License).',
+    'authorship_how_to_cite' => 'How to cite and share this article:',
+    'footer_content_license' => 'Content & research: private intellectual property of Raúl Caro Pastorino. Sharing permitted with mandatory attribution of authorship, sources and link to desdechipiona.es (CC BY-NC-SA 4.0).',
 ];

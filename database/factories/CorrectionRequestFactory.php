@@ -28,7 +28,7 @@ class CorrectionRequestFactory extends Factory
             'correctable_id' => Page::factory(),
             'quoted_text' => 'En 1865 se inauguró el faro.',
             'proposed_correction' => 'El encendido oficial de la linterna del Faro de Chipiona tuvo lugar el 28 de noviembre de 1867.',
-            'sources_info' => 'Archivo de la Autoridad Portuaria de Sevilla, F-0071.',
+            'sources_info' => 'Archivo de la Autoridad Portuaria de Sevilla.',
             'author_name' => fake()->name(),
             'author_email' => fake()->safeEmail(),
             'oauth_provider' => 'facebook',
