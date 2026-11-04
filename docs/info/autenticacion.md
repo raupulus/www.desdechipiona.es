@@ -1,6 +1,6 @@
 # Módulo: Autenticación y Autorización
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-04*
 
 > Autenticación web con sesiones, autenticación API con Laravel Sanctum, protección Google reCAPTCHA v3 y rate limiting, policies de autorización por modelo, middlewares globales (`SetLocale`, `SecurityHeaders`) y guards de Filament.
 
@@ -10,10 +10,12 @@
 
 El módulo de autenticación y autorización proporciona toda la infraestructura de seguridad y control de acceso de la plataforma:
 
-1. **Autenticación web**: formularios HTML con sesiones (`routes/auth.php`) para el acceso de usuarios al frontend y a los paneles Filament. Incluye registro, login (exigiendo `is_active = true`), recuperación y restablecimiento de contraseña, verificación de email y confirmación de contraseña.
-2. **Autenticación API** (Laravel Sanctum): tokens Bearer personales para que aplicaciones externas consuman la API REST (`/api/v1`). Incluye registro, login, logout, recuperación de contraseña y gestión de tokens personales (crear, listar, revocar).
+1. **Autenticación web**: formularios HTML con sesiones (`routes/auth.php`) para el acceso de administradores al panel Filament (`/admin`). Incluye login (exigiendo `is_active = true`), recuperación y restablecimiento de contraseña, verificación de email y confirmación de contraseña. **El registro público está estrictamente desactivado (`AUTH_REGISTRATION_ENABLED=false`) y devuelve 404.**
+2. **Autenticación API** (Laravel Sanctum): tokens Bearer personales para que aplicaciones autorizadas consuman la API REST (`/api/v1`). Incluye login, logout, recuperación de contraseña y gestión de tokens personales (crear, listar, revocar). El registro vía API está igualmente desactivado (404).
 3. **Protección de formularios públicos**: todos los POST públicos aplican rate limiting (`throttle:10,1` en web) y validación invisible con Google reCAPTCHA v3 (`App\Rules\Recaptcha` + `<x-recaptcha-script>`).
 4. **Autorización mediante Policies**: restringe por modelo y rol qué acciones están permitidas, protegiendo las cuentas `superadmin` frente a modificaciones de administradores regulares.
+
+> ⚠️ **Creación exclusiva de cuentas**: En Desde Chipiona no existe registro público de usuarios. Solo el administrador puede dar de alta cuentas de usuario desde `/admin/users` o mediante comandos de consola como `php artisan make:filament-user`.
 
 ---
 

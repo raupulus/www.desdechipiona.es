@@ -1,6 +1,6 @@
 # Módulo: Usuarios
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-04*
 
 > Gestión de cuentas de usuario con sistema de roles, autenticación web y API, y control de acceso a los paneles Filament.
 
@@ -14,7 +14,9 @@ El módulo de usuarios proporciona toda la infraestructura de gestión de identi
 - **Admin**: acceso al panel de administración con los mismos permisos de gestión de contenido, pero sin capacidad para modificar ni asignar el rol `superadmin`.
 - **User**: acceso únicamente al panel de usuario (`/panel`), donde puede gestionar su perfil personal y sus tokens de API.
 
-El módulo incluye autenticación web con sesiones HTTP (registro, login, recuperación y confirmación de contraseña) y autenticación API con Laravel Sanctum (generación de tokens Bearer para consumo externo). Cada usuario puede tener un avatar, un estado activo/inactivo que controla el acceso a toda la plataforma, y se implementa borrado lógico (soft delete) para no perder datos históricos.
+> ⚠️ **Registro público desactivado por diseño**: El registro abierto de usuarios está estrictamente desactivado (`AUTH_REGISTRATION_ENABLED=false`). Cualquier intento de acceso a `/register` o a `/api/v1/auth/register` devuelve un error 404 (Not Found). Únicamente el administrador del sistema puede crear nuevos usuarios desde el panel de administración (`/admin/users`) o mediante comandos Artisan por consola (`php artisan make:filament-user`).
+
+El módulo incluye autenticación web con sesiones HTTP (login con verificación `is_active = true`, recuperación y confirmación de contraseña) y autenticación API con Laravel Sanctum (generación de tokens Bearer para consumo externo). Cada usuario puede tener un avatar, un estado activo/inactivo que controla el acceso a toda la plataforma, y se implementa borrado lógico (soft delete) para no perder datos históricos.
 
 Desde el panel admin, los administradores pueden crear, editar, desactivar y eliminar usuarios. Los usuarios normales solo pueden editar su propio perfil desde el panel de usuario (`/panel`). Las policies de autorización garantizan que un usuario no pueda eliminarse a sí mismo ni que un `admin` pueda alterar cuentas `superadmin`.
 
