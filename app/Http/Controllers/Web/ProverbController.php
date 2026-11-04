@@ -48,8 +48,8 @@ class ProverbController extends Controller
         $proverbs = $query->paginate(12)->withQueryString();
         $pages = Page::publishedAndActive()->orderBy('slug')->get(['id', 'slug', 'title']);
 
-        $seo->setTitle('Refranero Popular y Dichos de Chipiona - '.setting('site_title', config('app.name')))
-            ->setDescription('Sabiduría oral de la mar, los corrales de pesca, los vientos y las viñas de moscatel de Chipiona.')
+        $seo->setTitle(__('messages.proverbs_nav').' - '.setting('site_title', config('app.name')))
+            ->setDescription(__('messages.proverbs_seo_description'))
             ->setUrl(route('proverbs.index'));
 
         return view('proverbs.index', compact('proverbs', 'pages', 'category', 'search', 'seo'));

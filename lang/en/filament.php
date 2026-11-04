@@ -158,6 +158,8 @@ return [
     'go_to_website' => 'Go to public website',
     'go_to_user_panel' => 'My User Panel',
     'go_to_admin_panel' => 'Administration Panel',
+    'user_panel' => 'My User Panel',
+    'admin_panel' => 'Administration Panel',
     'author' => 'Author',
     'password_confirmation' => 'Confirm password',
     'current_password' => 'Current password',

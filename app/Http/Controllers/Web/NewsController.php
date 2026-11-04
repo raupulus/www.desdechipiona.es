@@ -52,8 +52,8 @@ class NewsController extends Controller
         $newsItems = $query->paginate(9)->withQueryString();
         $categories = Category::active()->ordered()->get();
 
-        $seo->setTitle('Noticias y Hallazgos Documentales - '.setting('site_title', config('app.name')))
-            ->setDescription('Actualidad cultural, nuevos legajos incorporados y crónicas históricas sobre Chipiona.')
+        $seo->setTitle(__('messages.news_nav').' - '.setting('site_title', config('app.name')))
+            ->setDescription(__('messages.news_seo_description'))
             ->setUrl(route('news.index'));
 
         return view('news.index', compact('newsItems', 'categories', 'search', 'categorySlug', 'seo'));

@@ -11,19 +11,19 @@
                     </div>
                 </div>
                 <p class="text-sm text-slate-300 leading-relaxed">
-                    Portal divulgativo y archivo abierto sobre la historia, monumentos, playas, corrales de pesca, fauna, flora y memoria viva de Chipiona.
+                    {{ __('messages.footer_description') }}
                 </p>
                 <div class="rounded-xl border border-slate-800 bg-slate-900 p-3.5 text-xs space-y-1">
-                    <p class="font-bold text-white">Autoría e Iniciativa Privada</p>
+                    <p class="font-bold text-white">{{ __('messages.author_legal_nav') }}</p>
                     <p class="text-slate-300">
-                        Trabajo de investigación propio de <strong>Raúl Caro Pastorino</strong> (<a href="https://raupulus.dev" target="_blank" rel="noopener noreferrer" class="underline text-sky-300 hover:text-white">raupulus.dev</a> · <code class="text-amber-300">public@raupulus.dev</code>).
+                        {{ __('messages.footer_author_note') }} <strong>Raúl Caro Pastorino</strong> (<a href="https://raupulus.dev" target="_blank" rel="noopener noreferrer" class="underline text-sky-300 hover:text-white">raupulus.dev</a> · <code class="text-amber-300">public@raupulus.dev</code>).
                     </p>
                 </div>
             </div>
 
             {{-- Columna 2: Explorar Chipiona --}}
             <div>
-                <h2 class="text-white text-sm font-extrabold uppercase tracking-wider mb-4">Explorar Chipiona</h2>
+                <h2 class="text-white text-sm font-extrabold uppercase tracking-wider mb-4">{{ __('messages.footer_explore_heading') }}</h2>
                 <ul class="space-y-2.5 text-sm">
                     <li><a href="{{ route('home', ['group' => 'historia']) }}" class="text-slate-300 hover:text-white">🏛️ Historia Documentada</a></li>
                     <li><a href="{{ route('home', ['group' => 'monumentos']) }}" class="text-slate-300 hover:text-white">🗼 Faro y Monumentos</a></li>
@@ -36,12 +36,12 @@
 
             {{-- Columna 3: Servicios y Participación --}}
             <div>
-                <h2 class="text-white text-sm font-extrabold uppercase tracking-wider mb-4">Servicios y Comunidad</h2>
+                <h2 class="text-white text-sm font-extrabold uppercase tracking-wider mb-4">{{ __('messages.footer_services_heading') }}</h2>
                 <ul class="space-y-2.5 text-sm">
-                    <li><a href="{{ route('news.index') }}" class="text-slate-300 hover:text-white">📰 Noticias y Hallazgos</a></li>
-                    <li><a href="{{ route('weather.index') }}" class="text-slate-300 hover:text-white">🌊 El Tiempo y Mareas (AEMET)</a></li>
-                    <li><a href="{{ route('phones.index') }}" class="text-slate-300 hover:text-white">📞 Teléfonos Oficiales de Chipiona</a></li>
-                    <li><a href="{{ route('suggestions.create') }}" class="text-slate-300 hover:text-white">✍️ Sugerir y Aportar Contenido</a></li>
+                    <li><a href="{{ route('news.index') }}" class="text-slate-300 hover:text-white">📰 {{ __('messages.news_nav') }}</a></li>
+                    <li><a href="{{ route('weather.index') }}" class="text-slate-300 hover:text-white">🌊 {{ __('messages.weather_tides_nav') }}</a></li>
+                    <li><a href="{{ route('phones.index') }}" class="text-slate-300 hover:text-white">📞 {{ __('messages.phones_nav') }}</a></li>
+                    <li><a href="{{ route('suggestions.create') }}" class="text-slate-300 hover:text-white">✍️ {{ __('messages.contribute_btn') }}</a></li>
                     <li><a href="{{ route('blog.index') }}" class="text-slate-300 hover:text-white">{{ __('messages.blog') }}</a></li>
                     <li><a href="{{ route('contact') }}" class="text-slate-300 hover:text-white">{{ __('messages.contact') }} (info@desdechipiona.es)</a></li>
                 </ul>
@@ -49,7 +49,7 @@
 
             {{-- Columna 4: Páginas Legales y Licencia --}}
             <div>
-                <h2 class="text-white text-sm font-extrabold uppercase tracking-wider mb-4">{{ __('messages.footer_links') }} y Legal</h2>
+                <h2 class="text-white text-sm font-extrabold uppercase tracking-wider mb-4">{{ __('messages.footer_links_legal_heading') }}</h2>
                 <ul class="space-y-2.5 text-sm">
                     <li><a href="{{ route('legal') }}" class="text-slate-300 hover:text-white">⚖️ Autoría y Aviso Legal</a></li>
                     <li><a href="{{ route('about') }}" class="text-slate-300 hover:text-white">{{ __('messages.about') }}</a></li>

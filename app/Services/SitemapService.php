@@ -26,6 +26,7 @@ class SitemapService
         'privacy',
         'cookies',
         'terms',
+        'legal-notice',
     ];
 
     /**

@@ -48,10 +48,10 @@
         >
             <div class="flex items-start justify-between gap-3">
                 <div class="text-xs leading-relaxed text-slate-200">
-                    <p class="font-bold text-white mb-1">Privacidad sin rastreo publicitario</p>
+                    <p class="font-bold text-white mb-1">{{ __('messages.cookies') }}</p>
                     <p>
-                        En <strong>Desde Chipiona</strong> solo usamos cookies técnicas necesarias (sesión, tamaño de letra y protección anti-spam Turnstile).
-                        Consulta nuestra <a href="{{ route('cookies') }}" class="underline font-semibold text-amber-300 hover:text-amber-200">{{ __('messages.cookies') }}</a>.
+                        {{ __('messages.cookie_notice_text') }}
+                        <a href="{{ route('cookies') }}" class="underline font-semibold text-amber-300 hover:text-amber-200">{{ __('messages.cookie_notice_more') }}</a>.
                     </p>
                 </div>
                 <button
@@ -59,7 +59,7 @@
                     @click="localStorage.setItem('chipiona_cookie_notice', '1'); dismissed = true"
                     class="shrink-0 rounded-lg bg-orange-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-orange-800 focus:outline-none focus:ring-2 focus:ring-amber-400"
                 >
-                    Entendido
+                    {{ __('messages.cookie_notice_accept') }}
                 </button>
             </div>
         </div>

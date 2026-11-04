@@ -4,11 +4,11 @@
         <div class="flex flex-wrap items-center gap-3">
             <span class="inline-flex items-center gap-1.5 font-semibold text-amber-300">
                 <span aria-hidden="true">🦎</span>
-                <span>Iniciativa privada e investigación de <a href="https://raupulus.dev" target="_blank" rel="noopener noreferrer" class="underline hover:text-white font-bold">Raúl Caro Pastorino</a></span>
+                <span>{{ __('messages.top_bar_author') }} <a href="https://raupulus.dev" target="_blank" rel="noopener noreferrer" class="underline hover:text-white font-bold">Raúl Caro Pastorino</a></span>
             </span>
             <span class="hidden md:inline text-slate-500" aria-hidden="true">·</span>
             <a href="https://t.me/desdechipiona" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1 text-sky-300 hover:text-white font-semibold">
-                <span>Canal Telegram: @desdechipiona</span>
+                <span>{{ __('messages.top_bar_telegram') }}</span>
             </a>
         </div>
 
@@ -18,23 +18,26 @@
                 <button
                     type="button"
                     @click="setFontScale('normal')"
+                    :aria-pressed="(fontScale === 'normal').toString()"
                     :class="fontScale === 'normal' ? 'bg-orange-700 text-white' : 'text-slate-200 hover:text-white'"
-                    class="px-2 py-0.5 rounded-md font-bold text-xs transition"
-                    title="Tamaño de letra normal"
+                    class="px-2.5 py-1 min-h-6 rounded-md font-bold text-xs transition"
+                    title="{{ __('messages.font_size_normal_title') }}"
                 >A</button>
                 <button
                     type="button"
                     @click="setFontScale('large')"
+                    :aria-pressed="(fontScale === 'large').toString()"
                     :class="fontScale === 'large' ? 'bg-orange-700 text-white' : 'text-slate-200 hover:text-white'"
-                    class="px-2 py-0.5 rounded-md font-bold text-xs transition"
-                    title="Tamaño de letra grande"
+                    class="px-2.5 py-1 min-h-6 rounded-md font-bold text-xs transition"
+                    title="{{ __('messages.font_size_large_title') }}"
                 >A+</button>
                 <button
                     type="button"
                     @click="setFontScale('xlarge')"
+                    :aria-pressed="(fontScale === 'xlarge').toString()"
                     :class="fontScale === 'xlarge' ? 'bg-orange-700 text-white' : 'text-slate-200 hover:text-white'"
-                    class="px-2 py-0.5 rounded-md font-bold text-xs transition"
-                    title="Tamaño de letra muy grande"
+                    class="px-2.5 py-1 min-h-6 rounded-md font-bold text-xs transition"
+                    title="{{ __('messages.font_size_xlarge_title') }}"
                 >A++</button>
             </div>
 
@@ -76,7 +79,7 @@
                         {{ setting('site_title', config('app.name')) }}
                     </span>
                     <span class="block text-xs font-semibold text-slate-700">
-                        Historia, Mar, Tierra y Memoria Viva
+                        {{ __('messages.brand_subtitle') }}
                     </span>
                 </div>
             </a>

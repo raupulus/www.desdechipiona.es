@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\News;
+use App\Models\Page;
+use App\Models\Post;
+
 /**
  * Servicio para la gestión dinámica de meta tags SEO y Schema.org JSON-LD.
  * Acumula los valores SEO que se inyectan en el layout head.blade.php.
@@ -45,6 +49,9 @@ class SeoService
 
     /** @var array{latitude: float, longitude: float, name?: string|null}|null Coordenadas geográficas para Schema.org */
     private ?array $geo = null;
+
+    /** @var string Subtipo de artículo para Schema.org (Article, NewsArticle, BlogPosting) */
+    private string $schemaType = 'BlogPosting';
 
     /**
      * Establece el título de la página.
@@ -216,6 +223,14 @@ class SeoService
             );
         }
 
+        if ($model instanceof News) {
+            $this->schemaType = 'NewsArticle';
+        } elseif ($model instanceof Page) {
+            $this->schemaType = 'Article';
+        } elseif ($model instanceof Post) {
+            $this->schemaType = 'BlogPosting';
+        }
+
         return $this;
     }
 
@@ -244,6 +259,19 @@ class SeoService
             ? $baseUrl.'?'.http_build_query($params)
             : $baseUrl;
 
+        $robots = $this->robots;
+        $facetParams = ['q', 'group', 'era', 'evidence', 'category', 'year_from', 'year_to', 'map', 'sort'];
+        foreach ($facetParams as $facet) {
+            $val = request()->query($facet);
+            if ($val !== null && $val !== '' && $val !== 'all') {
+                $robots = 'noindex,follow';
+                break;
+            }
+        }
+
+        $rawImage = $this->image ?: asset('images/redes-sociales/og-image.png');
+        $imageUrl = str_starts_with($rawImage, 'http') ? $rawImage : url($rawImage);
+
         return [
             'title' => $this->title ?: $siteTitle,
             'description' => $this->description ?: (string) setting('site_description', ''),
@@ -251,8 +279,9 @@ class SeoService
             'baseUrl' => $baseUrl,
             'url' => $canonicalUrl,
             'type' => $this->type,
-            'image' => $this->image ?: asset('images/redes-sociales/og-image.png'),
-            'robots' => $this->robots,
+            'schemaType' => $this->schemaType,
+            'image' => $imageUrl,
+            'robots' => $robots,
             'author' => $this->author ?: $siteTitle,
             'publishedAt' => $this->publishedAt,
             'modifiedAt' => $this->modifiedAt,
@@ -295,11 +324,31 @@ class SeoService
             'sameAs' => ! empty($sameAs) ? $sameAs : null,
         ]);
 
-        $graph = [$organization];
+        $webSite = array_filter([
+            '@type' => 'WebSite',
+            '@id' => $siteUrl.'/#website',
+            'name' => $siteTitle,
+            'description' => (string) setting('site_description', ''),
+            'url' => $siteUrl,
+            'inLanguage' => app()->getLocale(),
+            'publisher' => [
+                '@id' => $siteUrl.'/#organization',
+            ],
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => [
+                    '@type' => 'EntryPoint',
+                    'urlTemplate' => $siteUrl.'/?q={search_term_string}',
+                ],
+                'query-input' => 'required name=search_term_string',
+            ],
+        ]);
+
+        $graph = [$organization, $webSite];
 
         if ($data['type'] === 'article') {
             $graph[] = array_filter([
-                '@type' => 'BlogPosting',
+                '@type' => $this->schemaType,
                 '@id' => $data['url'].'#article',
                 'mainEntityOfPage' => [
                     '@type' => 'WebPage',
@@ -316,32 +365,13 @@ class SeoService
                 'author' => [
                     '@type' => 'Person',
                     'name' => $data['author'],
+                    'url' => 'https://raupulus.dev',
                 ],
                 'publisher' => [
                     '@id' => $siteUrl.'/#organization',
                 ],
             ]);
         } else {
-            $graph[] = array_filter([
-                '@type' => 'WebSite',
-                '@id' => $siteUrl.'/#website',
-                'name' => $siteTitle,
-                'description' => (string) setting('site_description', ''),
-                'url' => $siteUrl,
-                'inLanguage' => app()->getLocale(),
-                'publisher' => [
-                    '@id' => $siteUrl.'/#organization',
-                ],
-                'potentialAction' => [
-                    '@type' => 'SearchAction',
-                    'target' => [
-                        '@type' => 'EntryPoint',
-                        'urlTemplate' => $siteUrl.'/?q={search_term_string}',
-                    ],
-                    'query-input' => 'required name=search_term_string',
-                ],
-            ]);
-
             $graph[] = array_filter([
                 '@type' => 'WebPage',
                 '@id' => $data['url'].'#webpage',

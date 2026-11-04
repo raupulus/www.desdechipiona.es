@@ -39,12 +39,11 @@ class OfficialPhoneController extends Controller
         }
 
         $phones = $query->get();
-        $emergencyPhones = OfficialPhone::active()->where('is_emergency', true)->ordered()->get();
 
-        $seo->setTitle('Teléfonos Oficiales y Urgencias de Chipiona - '.setting('site_title', config('app.name')))
-            ->setDescription('Directorio actualizado de teléfonos de información oficial, urgencias médicas, Policía Local, Guardia Civil y servicios municipales de Chipiona.')
+        $seo->setTitle(__('messages.phones_nav').' - '.setting('site_title', config('app.name')))
+            ->setDescription(__('messages.phones_seo_description'))
             ->setUrl(route('phones.index'));
 
-        return view('phones.index', compact('phones', 'emergencyPhones', 'category', 'search', 'seo'));
+        return view('phones.index', compact('phones', 'category', 'search', 'seo'));
     }
 }

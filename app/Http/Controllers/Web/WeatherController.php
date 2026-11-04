@@ -24,8 +24,8 @@ class WeatherController extends Controller
             ->limit(4)
             ->get();
 
-        $seo->setTitle('El Tiempo y Tabla de Mareas en Chipiona (AEMET) - '.setting('site_title', config('app.name')))
-            ->setDescription('Previsión meteorológica oficial de AEMET (municipio 11016) y horarios de pleamar, bajamar y aguajes en los corrales de pesca de Chipiona.')
+        $seo->setTitle(__('messages.weather_tides_nav').' - '.setting('site_title', config('app.name')))
+            ->setDescription(__('messages.weather_seo_description'))
             ->setUrl(route('weather.index'));
 
         return view('weather.index', compact('summary', 'coastalPages', 'seo'));

@@ -2,6 +2,7 @@ User-agent: *
 Disallow: /admin
 Disallow: /panel
 Disallow: /api/
+Disallow: /docs
 Disallow: /lang/
 Disallow: /login
 Disallow: /register

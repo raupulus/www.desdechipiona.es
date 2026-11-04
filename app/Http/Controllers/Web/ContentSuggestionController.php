@@ -25,8 +25,8 @@ class ContentSuggestionController extends Controller
         $pages = Page::publishedAndActive()->orderBy('slug')->get(['id', 'slug', 'title']);
         $groups = ContentGroup::cases();
 
-        $seo->setTitle('Aportar Contenido sobre Chipiona - '.setting('site_title', config('app.name')))
-            ->setDescription('Comparte historias documentadas, fotografías antiguas, recetas marineras o recuerdos de Chipiona.')
+        $seo->setTitle(__('messages.contribute_btn').' - '.setting('site_title', config('app.name')))
+            ->setDescription(__('messages.suggestions_seo_description'))
             ->setUrl(route('suggestions.create'));
 
         return view('suggestions.create', compact('pages', 'groups', 'seo'));

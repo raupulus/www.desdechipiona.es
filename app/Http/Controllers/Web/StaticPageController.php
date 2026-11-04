@@ -91,12 +91,12 @@ class StaticPageController extends Controller
      */
     public function legal(SeoService $seo): View
     {
-        $seo->setTitle('Autoría, Aviso Legal y Licencia AGPLv3 - '.setting('site_title', config('app.name')))
-            ->setDescription('Iniciativa privada y trabajo de investigación histórica y documental de Raúl Caro Pastorino (raupulus.dev) sobre Chipiona.')
+        $seo->setTitle(__('messages.author_legal_nav').' - '.setting('site_title', config('app.name')))
+            ->setDescription(__('messages.legal_seo_description'))
             ->setUrl(route('legal'))
             ->setBreadcrumbs([
                 ['name' => __('messages.home'), 'url' => route('home')],
-                ['name' => 'Autoría y Aviso Legal', 'url' => route('legal')],
+                ['name' => __('messages.author_legal_nav'), 'url' => route('legal')],
             ]);
 
         return view('legal', compact('seo'));

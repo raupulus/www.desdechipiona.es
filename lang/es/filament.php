@@ -158,6 +158,8 @@ return [
     'go_to_website' => 'Ir a la web pública',
     'go_to_user_panel' => 'Mi Panel de Usuario',
     'go_to_admin_panel' => 'Panel de Administración',
+    'user_panel' => 'Mi Panel de Usuario',
+    'admin_panel' => 'Panel de Administración',
     'author' => 'Autor',
     'password_confirmation' => 'Confirmar contraseña',
     'current_password' => 'Contraseña actual',

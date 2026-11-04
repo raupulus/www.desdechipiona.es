@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use App\Models\News;
-use App\Models\Post;
 use App\Models\Proverb;
 use App\Models\Section;
-use App\Models\Slide;
 use App\Services\ContentSearchService;
 use App\Services\SeoService;
 use Illuminate\Contracts\View\View;
@@ -41,19 +38,9 @@ class HomeController extends Controller
 
         $pages = $searchService->searchPages($filters, 12);
         $groupCounts = $searchService->getGroupCounts();
-        $categories = Category::active()->ordered()->get();
 
         $sectionIds = Cache::remember('sections_home_ids', 3600, fn () => Section::forZone('home')->pluck('id')->all());
         $sections = Section::whereIn('id', $sectionIds)->orderBy('order')->get();
-
-        $slideIds = Cache::remember('slides_home_ids', 3600, fn () => Slide::forZone('home')->pluck('id')->all());
-        $slides = Slide::whereIn('id', $slideIds)->orderBy('order')->get();
-
-        $latestPosts = Post::publishedAndActive()
-            ->with('categories:id,slug,name')
-            ->orderByDesc('published_at')
-            ->limit(6)
-            ->get();
 
         $latestNews = News::publishedAndActive()
             ->with(['categories:id,slug,name', 'relatedPages:id,slug,title'])
@@ -67,17 +54,16 @@ class HomeController extends Controller
             ->latest()
             ->first();
 
-        $seo->setTitle(setting('site_title', config('app.name')))
-            ->setDescription(setting('site_description', 'Historia, Mar, Tierra y Memoria Viva de Chipiona contrastada documento a documento.'));
+        $siteTitle = (string) setting('site_title', config('app.name'));
+        $seo->setTitle($siteTitle.' — '.__('messages.site_tagline'))
+            ->setDescription((string) setting('site_description', __('messages.about_seo_description')))
+            ->setUrl(route('home'));
 
         return view('home', compact(
             'pages',
             'filters',
             'groupCounts',
-            'categories',
             'sections',
-            'slides',
-            'latestPosts',
             'latestNews',
             'featuredProverb',
             'seo'
