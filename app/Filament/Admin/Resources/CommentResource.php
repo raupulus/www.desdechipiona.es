@@ -70,7 +70,8 @@ class CommentResource extends Resource
                 ->email()
                 ->maxLength(191),
             Forms\Components\TextInput::make('oauth_provider')
-                ->label(__('filament.oauth_provider')),
+                ->label(__('filament.oauth_provider'))
+                ->maxLength(30),
             Forms\Components\Toggle::make('is_approved')
                 ->label(__('filament.is_approved'))
                 ->default(true),

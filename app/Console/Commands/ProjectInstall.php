@@ -32,6 +32,12 @@ class ProjectInstall extends Command
     {
         $this->info('=== Instalación del proyecto ===');
 
+        if ($this->laravel->isProduction() && ! $this->option('force') && ! $this->confirm('⚠ Estás en entorno de producción. ¿Deseas continuar con project:install?', false)) {
+            $this->warn('Instalación cancelada.');
+
+            return Command::FAILURE;
+        }
+
         if (! file_exists(base_path('.env'))) {
             copy(base_path('.env.example'), base_path('.env'));
             $this->info('✓ .env creado');
@@ -45,8 +51,8 @@ class ProjectInstall extends Command
             passthru('pnpm install');
         }
 
-        if ($this->option('force') || $this->confirm('¿Generar key?', true)) {
-            $this->call('key:generate');
+        if (empty(config('app.key')) && ($this->option('force') || $this->confirm('¿Generar key?', true))) {
+            $this->call('key:generate', ['--force' => $this->option('force')]);
         }
 
         if (! file_exists(public_path('storage'))) {

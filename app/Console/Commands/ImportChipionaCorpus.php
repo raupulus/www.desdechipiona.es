@@ -60,8 +60,12 @@ class ImportChipionaCorpus extends Command
         $categories = Category::all()->keyBy('slug');
 
         if ($this->option('clean')) {
-            $this->warn('→ Limpiando páginas enciclopédicas previas...');
-            Page::whereNotNull('content_group')->forceDelete();
+            if ($this->laravel->isProduction() && ! $this->confirm('⚠ Estás en producción. ¿Confirmas eliminar permanentemente las páginas previas antes de reimportar?', false)) {
+                $this->warn('→ Limpieza previa cancelada; se realizará actualización incremental (updateOrCreate).');
+            } else {
+                $this->warn('→ Limpiando páginas enciclopédicas previas...');
+                Page::whereNotNull('content_group')->forceDelete();
+            }
         }
 
         // 2. Comprobar si existe un paquete local curado (gitignored) en database/seeders/data/

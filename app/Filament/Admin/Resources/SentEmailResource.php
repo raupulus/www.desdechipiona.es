@@ -79,7 +79,7 @@ class SentEmailResource extends Resource
                 ->html()
                 ->columnSpanFull()
                 ->formatStateUsing(fn ($state) => $state
-                    ? '<div class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-4 border border-gray-200 dark:border-white/10 rounded-lg max-h-[600px] overflow-auto">'.$state.'</div>'
+                    ? '<div style="padding: 1rem; border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 0.5rem; max-height: 600px; overflow: auto;">'.$state.'</div>'
                     : ''
                 ),
             TextEntry::make('error_message')

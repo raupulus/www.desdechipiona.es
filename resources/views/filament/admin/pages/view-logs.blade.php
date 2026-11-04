@@ -80,8 +80,8 @@
                         </x-filament::button>
                     </div>
                 </div>
-                <div class="bg-gray-50 dark:bg-gray-950/50" style="flex: 1; overflow: auto; padding: 1rem 1.5rem; border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem;">
-                    <pre class="text-gray-800 dark:text-gray-200" style="margin: 0; font-size: 0.75rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; white-space: pre-wrap; word-break: break-word;">{{ $logContent }}</pre>
+                <div style="flex: 1; overflow: auto; padding: 1rem 1.5rem; border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem;">
+                    <pre style="margin: 0; font-size: 0.75rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; white-space: pre-wrap; word-break: break-word;">{{ $logContent }}</pre>
                 </div>
             </div>
         </div>

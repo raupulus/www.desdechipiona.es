@@ -97,14 +97,16 @@ class ProjectClear extends Command
      */
     protected function clearQueues(): void
     {
-        $this->line('→ Limpiando colas...');
-        try {
-            $this->callSilently('queue:clear', ['--force' => true]);
-        } catch (\Throwable) {
-            // El driver puede no soportar queue:clear (ej: sync)
+        $this->line('→ Reiniciando colas...');
+        if (! $this->laravel->isProduction()) {
+            try {
+                $this->callSilently('queue:clear', ['--force' => true]);
+            } catch (\Throwable) {
+                // El driver puede no soportar queue:clear (ej: sync)
+            }
         }
         $this->callSilently('queue:restart');
-        $this->info('  ✓ Colas limpiadas y workers reiniciados.');
+        $this->info('  ✓ Workers de colas reiniciados.');
     }
 
     /**

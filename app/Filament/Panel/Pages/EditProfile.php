@@ -67,7 +67,15 @@ class EditProfile extends Page
                 ->disabled()
                 ->helperText(__('messages.profile_email_helper')),
 
-            // 4. Contraseña (con nota de "dejar en blanco")
+            // 4. Contraseña actual (obligatoria solo si se desea cambiar la contraseña)
+            TextInput::make('current_password')
+                ->label(__('Current Password'))
+                ->password()
+                ->revealable()
+                ->rules(['nullable', 'required_with:data.password', 'current_password'])
+                ->dehydrated(false),
+
+            // 5. Nueva contraseña (con nota de "dejar en blanco")
             TextInput::make('password')
                 ->label(__('filament.password'))
                 ->password()
@@ -77,7 +85,7 @@ class EditProfile extends Page
                 ->dehydrated(fn ($state) => filled($state))
                 ->helperText(__('messages.profile_password_helper')),
 
-            // 5. Confirmación de nueva contraseña
+            // 6. Confirmación de nueva contraseña
             TextInput::make('password_confirmation')
                 ->label(__('messages.confirm_password'))
                 ->password()

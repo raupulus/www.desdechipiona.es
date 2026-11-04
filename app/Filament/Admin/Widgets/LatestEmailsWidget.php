@@ -30,7 +30,7 @@ class LatestEmailsWidget extends BaseWidget
     /**
      * Devuelve el heading traducido del widget.
      */
-    public function getHeading(): ?string
+    protected function getTableHeading(): ?string
     {
         return __('filament.latest_emails');
     }
@@ -44,6 +44,7 @@ class LatestEmailsWidget extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
+            ->heading(__('filament.latest_emails'))
             ->query(SentEmail::query()->latest()->limit(5))
             ->columns([
                 TextColumn::make('to')
