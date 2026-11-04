@@ -1,6 +1,6 @@
 # Catálogo de Componentes UI Reutilizables (COMPONENTS.md)
 
-*Última actualización: 2026-08-26*
+*Última actualización: 2026-11-04*
 
 > Catálogo completo de componentes Blade disponibles en `resources/views/components/`. Contiene la especificación de tags, propiedades, variantes visuales y ejemplos prácticos de uso.
 
@@ -24,6 +24,7 @@
    - [x-text-input](#x-text-input)
    - [x-input-label](#x-input-label)
    - [x-input-error](#x-input-error)
+   - [x-searchable-select](#x-searchable-select)
    - [x-recaptcha-script](#x-recaptcha-script)
 3. [Notificaciones y Alertas](#3-notificaciones-y-alertas)
    - [x-flash-messages](#x-flash-messages)
@@ -122,6 +123,30 @@ Renderizador de mensajes de error de validación de Laravel.
 
 ```blade
 <x-input-error :messages="$errors->get('email')" class="mt-2" />
+```
+
+### `x-searchable-select`
+Selector dinámico mejorado con buscador por tecleo en tiempo real, navegación por teclado, soporte de opciones agrupadas o simples y sincronización transparente con un `input hidden` para formularios estándar.
+
+- **Archivo**: `resources/views/components/searchable-select.blade.php`
+- **Propiedades**:
+  - `name` (string, obligatorio): Nombre del campo para el envío del formulario.
+  - `options` (array, obligatorio): Array asociativo `['valor' => 'Etiqueta']` o con optgroups anidados.
+  - `selected` (string|int|null, opcional): Valor preseleccionado.
+  - `placeholder` (string, opcional): Placeholder descriptivo (ej: `'Seleccionar o escribir...'`).
+  - `searchPlaceholder` (string, opcional): Placeholder del buscador interno (`'Escribe para filtrar...'`).
+  - `id` (string|null, opcional): Identificador HTML opcional.
+  - `required` (bool, default `false`): Si el campo es obligatorio.
+- **Interactividad**: Basado en Alpine.js con soporte `Escape`, `Enter`, `ArrowDown`, `ArrowUp` y cierre por click fuera.
+
+```blade
+<x-searchable-select
+    name="page_id"
+    :options="$pages->pluck('title', 'id')->toArray()"
+    :selected="old('page_id')"
+    placeholder="Seleccionar ficha de Chipiona..."
+    required
+/>
 ```
 
 ### `x-recaptcha-script`

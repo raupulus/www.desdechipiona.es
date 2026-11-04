@@ -156,23 +156,36 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="prov-category" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tema del refrán *</label>
-                    <select id="prov-category" name="category" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-bold">
-                        <option value="mar">La Mar, Mareas y Corrales</option>
-                        <option value="campo">El Campo, Huerta y Moscatel</option>
-                        <option value="vientos">Vientos (Levante y Poniente)</option>
-                        <option value="fiestas">Fiestas y Tradiciones</option>
-                        <option value="vida">Vida Cotidiana del Pueblo</option>
-                    </select>
+                    <x-searchable-select
+                        name="category"
+                        id="prov-category"
+                        :options="[
+                            'mar' => 'La Mar, Mareas y Corrales',
+                            'campo' => 'El Campo, Huerta y Moscatel',
+                            'vientos' => 'Vientos (Levante y Poniente)',
+                            'fiestas' => 'Fiestas y Tradiciones',
+                            'vida' => 'Vida Cotidiana del Pueblo',
+                        ]"
+                        value="mar"
+                        required
+                    />
                 </div>
 
                 <div>
                     <label for="prov-page" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Página relacionada (opcional)</label>
-                    <select id="prov-page" name="related_page_id" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-bold">
-                        <option value="">— Ninguna página en concreto —</option>
-                        @foreach($pages as $p)
-                            <option value="{{ $p->id }}">{{ $p->getTranslation('title', app()->getLocale()) }}</option>
-                        @endforeach
-                    </select>
+                    @php
+                        $proverbPageOptions = ['' => '— Ninguna página en concreto —'];
+                        foreach($pages as $p) {
+                            $proverbPageOptions[(string) $p->id] = $p->getTranslation('title', app()->getLocale());
+                        }
+                    @endphp
+                    <x-searchable-select
+                        name="related_page_id"
+                        id="prov-page"
+                        :options="$proverbPageOptions"
+                        value=""
+                        placeholder="Escribe para buscar página..."
+                    />
                 </div>
             </div>
 

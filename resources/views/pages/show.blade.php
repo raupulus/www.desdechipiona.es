@@ -342,55 +342,65 @@
 
                 <div class="pt-4 border-t border-slate-200 space-y-4">
                     <h3 class="text-base font-extrabold text-slate-950">Dejar un comentario</h3>
-                    <x-social-identity-banner />
 
-                    <form action="{{ route('comments.store') }}" method="POST" class="space-y-4">
-                        @csrf
-                        <input type="hidden" name="commentable_type" value="page">
-                        <input type="hidden" name="commentable_id" value="{{ $page->id }}">
+                    @if(!session('public_social_identity') && !auth()->check())
+                        <div class="rounded-xl border-2 border-slate-300 bg-stone-50 p-5 text-center space-y-3">
+                            <p class="text-sm font-bold text-slate-900">
+                                🔒 Para proteger el portal contra spam y mantener el rigor del archivo, se requiere identificación previa en un clic:
+                            </p>
+                            <x-social-identity-banner />
+                        </div>
+                    @else
+                        @php
+                            $socialUser = session('public_social_identity');
+                            $userName = $socialUser['name'] ?? auth()->user()?->name ?? 'Usuario Verificado';
+                            $userProvider = $socialUser['provider'] ?? 'cuenta';
+                        @endphp
+                        <div class="flex items-center justify-between rounded-xl bg-slate-100 p-3 text-xs font-bold text-slate-800">
+                            <span>Comentando como: <strong class="text-slate-950">{{ $userName }}</strong> ({{ ucfirst($userProvider) }})</span>
+                            <form action="{{ route('social.disconnect') }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="text-red-700 hover:underline cursor-pointer">Cambiar cuenta</button>
+                            </form>
+                        </div>
 
-                        @if(!session('public_social_identity'))
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="comment-author-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre</label>
-                                    <input type="text" id="comment-author-name" name="author_name" value="{{ old('author_name') }}" autocomplete="name" placeholder="Ej. Juan Camacho" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
-                                    <x-input-error :messages="$errors->get('author_name')" class="mt-1" />
-                                </div>
-                                <div>
-                                    <label for="comment-author-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu correo (opcional)</label>
-                                    <input type="email" id="comment-author-email" name="author_email" value="{{ old('author_email') }}" autocomplete="email" placeholder="No se publicará" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
-                                    <x-input-error :messages="$errors->get('author_email')" class="mt-1" />
-                                </div>
+                        <form action="{{ route('comments.store') }}" method="POST" class="space-y-4">
+                            @csrf
+                            <input type="hidden" name="commentable_type" value="page">
+                            <input type="hidden" name="commentable_id" value="{{ $page->id }}">
+
+                            <div>
+                                <label for="comment-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu comentario o recuerdo *</label>
+                                <textarea id="comment-body" name="body" rows="3" required minlength="5" placeholder="Escribe aquí tu comentario con respeto (sin enlaces web)..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('body') }}</textarea>
+                                <x-input-error :messages="$errors->get('body')" class="mt-1" />
                             </div>
-                        @endif
 
-                        <div>
-                            <label for="comment-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu comentario o recuerdo *</label>
-                            <textarea id="comment-body" name="body" rows="3" required minlength="5" placeholder="Escribe aquí tu comentario con respeto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('body') }}</textarea>
-                            <x-input-error :messages="$errors->get('body')" class="mt-1" />
-                        </div>
+                            <p class="text-xs text-slate-600">
+                                🛡️ Todos los comentarios pasan por moderación previa antes de su publicación para garantizar el respeto y la calidad del archivo.
+                            </p>
 
-                        <x-turnstile-widget action="comment" />
+                            <x-turnstile-widget action="comment" />
 
-                        <div class="flex items-start gap-2 pt-1">
-                            <input type="checkbox" id="page-comment-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
-                            <label for="page-comment-privacy" class="text-xs text-slate-700">
-                                {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
-                            </label>
-                        </div>
-                        @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
+                            <div class="flex items-start gap-2 pt-1">
+                                <input type="checkbox" id="page-comment-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
+                                <label for="page-comment-privacy" class="text-xs text-slate-700">
+                                    {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
+                                </label>
+                            </div>
+                            @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
 
-                        <button type="submit" class="rounded-xl bg-slate-950 px-6 py-3 text-sm font-extrabold text-white hover:bg-orange-800 transition cursor-pointer">
-                            Publicar comentario
-                        </button>
-                    </form>
+                            <button type="submit" class="rounded-xl bg-slate-950 px-6 py-3 text-sm font-extrabold text-white hover:bg-orange-800 transition cursor-pointer">
+                                Enviar comentario a moderación
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </section>
         </article>
 
         {{-- Barra lateral: Coordenadas GPS / Google Maps, Páginas Enlazadas y Noticias --}}
         <aside class="lg:col-span-4 space-y-6">
-            {{-- Ubicación GPS en Chipiona --}}
+            {{-- Ubicación GPS y Mapa en Chipiona --}}
             @if($page->hasCoordinates())
                 <div class="rounded-2xl border-2 border-slate-200 bg-white p-5 shadow-xs space-y-4">
                     <div class="flex items-center justify-between">
@@ -400,16 +410,27 @@
                     @if($page->location_name)
                         <p class="text-sm font-bold text-slate-900">{{ $page->location_name }}</p>
                     @endif
-                    <p class="font-mono text-xs font-bold text-slate-700">
-                        Lat: {{ number_format($page->latitude, 5) }} · Lng: {{ number_format($page->longitude, 5) }}
-                    </p>
+                    <div class="aspect-4/3 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-inner">
+                        <iframe
+                            src="https://maps.google.com/maps?q={{ $page->latitude }},{{ $page->longitude }}&amp;z=15&amp;output=embed"
+                            title="Mapa de {{ $title }}"
+                            class="h-full w-full border-0"
+                            allowfullscreen
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                        ></iframe>
+                    </div>
+                    <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                        <span>Lat: {{ number_format($page->latitude, 4) }}</span>
+                        <span>Lng: {{ number_format($page->longitude, 4) }}</span>
+                    </div>
                     <a
                         href="https://www.google.com/maps/search/?api=1&amp;query={{ $page->latitude }},{{ $page->longitude }}"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="flex items-center justify-center gap-2 w-full rounded-xl bg-blue-900 px-4 py-2.5 text-xs font-extrabold text-white hover:bg-blue-950 transition"
                     >
-                        <span>🗺️ Abrir ubicación exacta en Google Maps</span>
+                        <span>🗺️ Abrir ubicación en Google Maps</span>
                     </a>
                 </div>
             @endif

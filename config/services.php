@@ -57,6 +57,11 @@ return [
         'municipality_code' => env('AEMET_MUNICIPALITY_CODE', '11016'),
     ],
 
+    'raupulus_weather' => [
+        'url' => env('RAUPULUS_WEATHER_API_URL', 'https://api.raupulus.dev/v1/chipiona/weather-tides'),
+        'timeout' => (int) env('RAUPULUS_WEATHER_TIMEOUT', 4),
+    ],
+
     'chipiona' => [
         'corpus_path' => env('CHIPIONA_CORPUS_PATH'),
     ],

@@ -146,43 +146,73 @@
         <section class="rounded-2xl border border-slate-200 bg-white p-6 space-y-5">
             <h2 class="font-serif text-2xl font-extrabold text-slate-950">💬 Comentarios ({{ $news->comments->count() }})</h2>
             @foreach($news->comments as $comment)
-                <div class="rounded-xl border border-slate-200 bg-stone-50 p-4">
-                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
-                        <span class="text-slate-950">{{ $comment->author_name }}</span>
+                <div class="rounded-xl border border-slate-200 bg-stone-50 p-4 space-y-1">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-slate-950">{{ $comment->author_name }}</span>
+                            @if($comment->oauth_provider)
+                                <span class="rounded bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-950">
+                                    Verificado con {{ ucfirst($comment->oauth_provider) }}
+                                </span>
+                            @endif
+                        </div>
                         <time datetime="{{ $comment->created_at?->toIso8601String() }}">{{ format_date($comment->created_at) }}</time>
                     </div>
-                    <p class="text-sm text-slate-900">{{ $comment->body }}</p>
+                    <p class="text-sm text-slate-900 leading-relaxed">{{ $comment->body }}</p>
                 </div>
             @endforeach
 
-            <form action="{{ route('comments.store') }}" method="POST" class="space-y-4 pt-3 border-t border-slate-200">
-                @csrf
-                <input type="hidden" name="commentable_type" value="news">
-                <input type="hidden" name="commentable_id" value="{{ $news->id }}">
-                @if(!session('public_social_identity'))
-                    <div>
-                        <label for="news-comm-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre</label>
-                        <input type="text" id="news-comm-name" name="author_name" value="{{ old('author_name') }}" autocomplete="name" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">
-                        <x-input-error :messages="$errors->get('author_name')" class="mt-1" />
+            <div class="pt-4 border-t border-slate-200 space-y-4">
+                <h3 class="text-base font-extrabold text-slate-950">Dejar un comentario</h3>
+
+                @if(!session('public_social_identity') && !auth()->check())
+                    <div class="rounded-xl border-2 border-slate-300 bg-stone-50 p-5 text-center space-y-3">
+                        <p class="text-sm font-bold text-slate-900">
+                            🔒 Para proteger el portal contra spam y mantener el rigor de la hemeroteca, se requiere identificación previa en un clic:
+                        </p>
+                        <x-social-identity-banner />
                     </div>
+                @else
+                    @php
+                        $socialUser = session('public_social_identity');
+                        $userName = $socialUser['name'] ?? auth()->user()?->name ?? 'Usuario Verificado';
+                        $userProvider = $socialUser['provider'] ?? 'cuenta';
+                    @endphp
+                    <div class="flex items-center justify-between rounded-xl bg-slate-100 p-3 text-xs font-bold text-slate-800">
+                        <span>Comentando como: <strong class="text-slate-950">{{ $userName }}</strong> ({{ ucfirst($userProvider) }})</span>
+                        <form action="{{ route('social.disconnect') }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="text-red-700 hover:underline cursor-pointer">Cambiar cuenta</button>
+                        </form>
+                    </div>
+
+                    <form action="{{ route('comments.store') }}" method="POST" class="space-y-4">
+                        @csrf
+                        <input type="hidden" name="commentable_type" value="news">
+                        <input type="hidden" name="commentable_id" value="{{ $news->id }}">
+                        <div>
+                            <label for="news-comm-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu comentario *</label>
+                            <textarea id="news-comm-body" name="body" rows="3" required minlength="5" placeholder="Escribe tu reflexión o memoria sobre esta noticia..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm focus:border-orange-600 focus:ring-orange-600">{{ old('body') }}</textarea>
+                            <x-input-error :messages="$errors->get('body')" class="mt-1" />
+                            <p class="text-xs text-slate-500 mt-1">Los enlaces y menciones publicitarias externas no están permitidos.</p>
+                        </div>
+                        <x-turnstile-widget action="news_comment" />
+                        <div class="flex items-start gap-2 pt-1">
+                            <input type="checkbox" id="news-comm-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
+                            <label for="news-comm-privacy" class="text-xs text-slate-700">
+                                {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
+                            </label>
+                        </div>
+                        @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
+                        <div class="flex items-center justify-between">
+                            <button type="submit" class="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 transition">
+                                Publicar comentario
+                            </button>
+                            <span class="text-xs text-slate-500">Moderación previa activa</span>
+                        </div>
+                    </form>
                 @endif
-                <div>
-                    <label for="news-comm-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu comentario *</label>
-                    <textarea id="news-comm-body" name="body" rows="3" required minlength="5" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">{{ old('body') }}</textarea>
-                    <x-input-error :messages="$errors->get('body')" class="mt-1" />
-                </div>
-                <x-turnstile-widget action="news_comment" />
-                <div class="flex items-start gap-2 pt-1">
-                    <input type="checkbox" id="news-comm-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
-                    <label for="news-comm-privacy" class="text-xs text-slate-700">
-                        {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
-                    </label>
-                </div>
-                @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
-                <button type="submit" class="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800">
-                    Publicar comentario
-                </button>
-            </form>
+            </div>
         </section>
     </article>
 
@@ -190,9 +220,25 @@
         @if($news->hasCoordinates())
             <div class="rounded-2xl border border-slate-200 bg-white p-5 space-y-3">
                 <h2 class="font-serif text-lg font-extrabold text-slate-950">📍 Lugar de la noticia</h2>
-                <p class="text-sm font-bold text-slate-900">{{ $news->location_name }}</p>
-                <a href="https://www.google.com/maps/search/?api=1&amp;query={{ $news->latitude }},{{ $news->longitude }}" target="_blank" rel="noopener noreferrer" class="block text-center rounded-xl bg-blue-900 px-4 py-2.5 text-xs font-extrabold text-white hover:bg-blue-950">
-                    🗺️ Ver en Google Maps
+                @if($news->location_name)
+                    <p class="text-sm font-bold text-slate-900">{{ $news->location_name }}</p>
+                @endif
+                <div class="aspect-4/3 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-inner">
+                    <iframe
+                        src="https://maps.google.com/maps?q={{ $news->latitude }},{{ $news->longitude }}&amp;z=15&amp;output=embed"
+                        title="Mapa de {{ $title }}"
+                        class="h-full w-full border-0"
+                        allowfullscreen
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                </div>
+                <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                    <span>Lat: {{ number_format($news->latitude, 4) }}</span>
+                    <span>Lng: {{ number_format($news->longitude, 4) }}</span>
+                </div>
+                <a href="https://www.google.com/maps/search/?api=1&amp;query={{ $news->latitude }},{{ $news->longitude }}" target="_blank" rel="noopener noreferrer" class="block text-center rounded-xl bg-blue-900 px-4 py-2.5 text-xs font-extrabold text-white hover:bg-blue-950 transition">
+                    🗺️ Abrir ubicación en Google Maps
                 </a>
             </div>
         @endif

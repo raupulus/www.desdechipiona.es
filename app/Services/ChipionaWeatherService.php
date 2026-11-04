@@ -9,21 +9,30 @@ use Illuminate\Support\Facades\Log;
 use Throwable;
 
 /**
- * Servicio de información meteorológica (AEMET OpenData municipio 11016 - Chipiona)
- * y cálculo astronómico de la tabla diaria de mareas y coeficiente para los corrales
- * y playas de Chipiona (Punta del Perro / Regla / Las Canteras).
+ * Servicio de información meteorológica y de mareas para Chipiona.
+ * Actúa como consumidor pasivo en backend de la API centralizada `api.raupulus.dev`
+ * (que integra los datos oficiales de AEMET e Instituto Hidrográfico de la Marina),
+ * eliminando la necesidad de tokens o claves de terceros en esta aplicación.
  */
 class ChipionaWeatherService
 {
     /**
      * Obtiene la previsión meteorológica y el estado de las mareas de Chipiona para hoy.
+     * Los datos se cachean en servidor durante 30 minutos (1800 s) para máxima rapidez y resiliencia.
      *
      * @return array<string, mixed>
      */
     public function getTodaySummary(): array
     {
         return Cache::remember('chipiona_weather_and_tides_'.now()->format('Y_m_d_H'), 1800, function (): array {
-            $weather = $this->fetchAemetForecast();
+            // 1. Intentar consultar la API centralizada api.raupulus.dev
+            $remoteData = $this->fetchFromRaupulusApi();
+            if ($remoteData !== null) {
+                return $remoteData;
+            }
+
+            // 2. Fallback resiliente si la API remota no está configurada o no responde
+            $weather = $this->fallbackWeather();
             $tides = $this->calculateChipionaTides(Carbon::now('Europe/Madrid'));
 
             return [
@@ -37,63 +46,62 @@ class ChipionaWeatherService
     }
 
     /**
-     * Consulta la API de AEMET OpenData si hay API key configurada o devuelve
-     * datos climatológicos seguros para la costa de Chipiona.
+     * Consulta el endpoint meteorológico en api.raupulus.dev enviando cabeceras
+     * de origen y referer para validación de dominio permitido en el servidor.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function fetchFromRaupulusApi(): ?array
+    {
+        $apiUrl = config('services.raupulus_weather.url');
+        if (empty($apiUrl)) {
+            return null;
+        }
+
+        try {
+            $timeout = (int) config('services.raupulus_weather.timeout', 4);
+            $appUrl = (string) config('app.url', 'https://desdechipiona.es');
+
+            $response = Http::withHeaders([
+                'Origin' => $appUrl,
+                'Referer' => $appUrl,
+                'Accept' => 'application/json',
+                'User-Agent' => 'DesdeChipiona/1.0 (+https://desdechipiona.es)',
+            ])
+                ->connectTimeout(2)
+                ->timeout($timeout)
+                ->get($apiUrl);
+
+            if ($response->successful()) {
+                /** @var array<string, mixed>|null $data */
+                $data = $response->json();
+                if (is_array($data) && isset($data['weather'], $data['tides'])) {
+                    return [
+                        'municipality' => (string) ($data['municipality'] ?? 'Chipiona (Cádiz)'),
+                        'aemet_code' => (string) ($data['aemet_code'] ?? '11016'),
+                        'updated_at' => (string) ($data['updated_at'] ?? Carbon::now('Europe/Madrid')->format('d/m/Y H:i')),
+                        'weather' => (array) $data['weather'],
+                        'tides' => (array) $data['tides'],
+                    ];
+                }
+            }
+        } catch (Throwable $e) {
+            Log::info('Consulta a api.raupulus.dev no disponible; aplicando fallback local de meteorología y mareas: '.$e->getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * Genera datos climatológicos de referencia para la costa de Chipiona cuando
+     * la API externa no está disponible.
      *
      * @return array<string, mixed>
      */
-    private function fetchAemetForecast(): array
+    private function fallbackWeather(): array
     {
-        $apiKey = config('services.aemet.api_key');
-        $municipality = config('services.aemet.municipality_code', '11016');
-
-        if (! empty($apiKey)) {
-            try {
-                $metaResponse = Http::withHeaders(['api_key' => $apiKey])
-                    ->connectTimeout(4)
-                    ->timeout(8)
-                    ->get("https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/diaria/{$municipality}");
-
-                if ($metaResponse->successful() && (int) $metaResponse->json('estado') === 200 && $metaResponse->json('datos')) {
-                    $dataUrl = (string) $metaResponse->json('datos');
-                    $dataResponse = Http::connectTimeout(4)->timeout(8)->get($dataUrl);
-
-                    if ($dataResponse->successful()) {
-                        $rawBody = $dataResponse->body();
-
-                        // AEMET OpenData a menudo entrega las predicciones en ISO-8859-15
-                        if (! mb_check_encoding($rawBody, 'UTF-8')) {
-                            $rawBody = mb_convert_encoding($rawBody, 'UTF-8', 'ISO-8859-15, WINDOWS-1252, ISO-8859-1');
-                        }
-
-                        /** @var array<int, array<string, mixed>>|null $decoded */
-                        $decoded = json_decode($rawBody, true);
-                        $payload = $decoded[0]['prediccion']['dia'][0] ?? null;
-
-                        if (is_array($payload)) {
-                            return [
-                                'source' => 'AEMET OpenData Oficial (11016)',
-                                'temp_max' => (int) ($payload['temperatura']['maxima'] ?? 22),
-                                'temp_min' => (int) ($payload['temperatura']['minima'] ?? 15),
-                                'sky_state' => (string) ($payload['estadoCielo'][0]['descripcion'] ?? 'Cielo despejado en el litoral'),
-                                'wind_direction' => (string) ($payload['viento'][0]['direccion'] ?? 'Poniente (O)'),
-                                'wind_speed_kmh' => (int) ($payload['viento'][0]['velocidad'] ?? 18),
-                                'uv_max' => (int) ($payload['uvMax'] ?? 6),
-                                'rain_prob' => (int) ($payload['probPrecipitacion'][0]['value'] ?? 5),
-                                'sea_temp' => 19,
-                            ];
-                        }
-                    }
-                }
-            } catch (Throwable $e) {
-                Log::warning('Error al consultar AEMET OpenData para Chipiona', [
-                    'error' => $e->getMessage(),
-                ]);
-            }
-        }
-
         return [
-            'source' => 'Referencia AEMET Municipio 11016 (Chipiona)',
+            'source' => 'Referencia Meteorológica Oficial Chipiona (11016)',
             'temp_max' => 22,
             'temp_min' => 15,
             'sky_state' => 'Despejado con brisa atlántica de Poniente',
@@ -108,6 +116,7 @@ class ChipionaWeatherService
     /**
      * Calcula los horarios aproximados de pleamares y bajamares y el coeficiente de marea
      * en la costa de Chipiona a partir de la fase lunar sinódica (29,53 días).
+     * Se usa como fallback si la API centralizada no entrega la tabla de mareas del IHM.
      *
      * @return array<string, mixed>
      */

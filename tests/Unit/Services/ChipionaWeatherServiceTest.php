@@ -16,9 +16,11 @@ class ChipionaWeatherServiceTest extends TestCase
         Cache::flush();
     }
 
-    public function test_get_today_summary_returns_fallback_when_no_api_key(): void
+    public function test_get_today_summary_returns_fallback_when_endpoint_fails(): void
     {
-        config(['services.aemet.api_key' => '']);
+        Http::fake([
+            '*' => Http::response(null, 500),
+        ]);
 
         $service = new ChipionaWeatherService;
         $summary = $service->getTodaySummary();
@@ -27,34 +29,34 @@ class ChipionaWeatherServiceTest extends TestCase
         $this->assertEquals('11016', $summary['aemet_code']);
         $this->assertArrayHasKey('weather', $summary);
         $this->assertArrayHasKey('tides', $summary);
-        $this->assertStringContainsString('Referencia AEMET', $summary['weather']['source']);
+        $this->assertStringContainsString('Chipiona (11016)', $summary['weather']['source']);
         $this->assertEquals(22, $summary['weather']['temp_max']);
         $this->assertEquals(15, $summary['weather']['temp_min']);
     }
 
-    public function test_get_today_summary_fetches_and_decodes_aemet_forecast(): void
+    public function test_get_today_summary_fetches_and_caches_remote_microservice_data(): void
     {
-        config(['services.aemet.api_key' => 'test-api-key']);
-        config(['services.aemet.municipality_code' => '11016']);
-
         Http::fake([
-            'opendata.aemet.es/opendata/api/prediccion/especifica/municipio/diaria/11016' => Http::response([
-                'estado' => 200,
-                'datos' => 'https://opendata.aemet.es/mock-data-url',
-            ], 200),
-            'opendata.aemet.es/mock-data-url' => Http::response([
-                [
-                    'prediccion' => [
-                        'dia' => [
-                            [
-                                'temperatura' => ['maxima' => 26, 'minima' => 18],
-                                'estadoCielo' => [['descripcion' => 'Despejado']],
-                                'viento' => [['direccion' => 'Poniente', 'velocidad' => 20]],
-                                'uvMax' => 7,
-                                'probPrecipitacion' => [['value' => 0]],
-                            ],
-                        ],
-                    ],
+            'https://api.raupulus.dev/*' => Http::response([
+                'municipality' => 'Chipiona (Cádiz)',
+                'aemet_code' => '11016',
+                'updated_at' => now()->toIso8601String(),
+                'weather' => [
+                    'source' => 'api.raupulus.dev / AEMET 11016',
+                    'temp_max' => 26,
+                    'temp_min' => 18,
+                    'sky_state' => 'Despejado',
+                    'wind_direction' => 'Poniente',
+                    'wind_speed_kmh' => 20,
+                    'uv_max' => 7,
+                    'rain_prob_percent' => 0,
+                ],
+                'tides' => [
+                    'source' => 'IHM / Sanlúcar-Chipiona',
+                    'coefficient' => 85,
+                    'is_aguaje' => true,
+                    'type_label' => 'Mareas vivas (aguajes de luna)',
+                    'today_events' => [],
                 ],
             ], 200),
         ]);
@@ -62,10 +64,11 @@ class ChipionaWeatherServiceTest extends TestCase
         $service = new ChipionaWeatherService;
         $summary = $service->getTodaySummary();
 
-        $this->assertEquals('AEMET OpenData Oficial (11016)', $summary['weather']['source']);
+        $this->assertEquals('api.raupulus.dev / AEMET 11016', $summary['weather']['source']);
         $this->assertEquals(26, $summary['weather']['temp_max']);
         $this->assertEquals(18, $summary['weather']['temp_min']);
         $this->assertEquals('Despejado', $summary['weather']['sky_state']);
+        $this->assertTrue($summary['tides']['is_aguaje']);
     }
 
     public function test_calculate_chipiona_tides_returns_valid_structure(): void

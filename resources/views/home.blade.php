@@ -105,36 +105,36 @@
                     <label for="filter-era" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
                         2. Época o siglo:
                     </label>
-                    <select
-                        id="filter-era"
+                    @php
+                        $eraOptions = ['all' => '⏳ Todas las épocas'];
+                        foreach(\App\Enums\HistoricalEra::cases() as $eraCase) {
+                            $eraOptions[$eraCase->value] = $eraCase->label();
+                        }
+                    @endphp
+                    <x-searchable-select
                         name="era"
-                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
-                    >
-                        <option value="all">⏳ Todas las épocas</option>
-                        @foreach(\App\Enums\HistoricalEra::cases() as $eraCase)
-                            <option value="{{ $eraCase->value }}" @selected($activeEra === $eraCase->value)>
-                                {{ $eraCase->label() }}
-                            </option>
-                        @endforeach
-                    </select>
+                        id="filter-era"
+                        :options="$eraOptions"
+                        :value="$activeEra ?: 'all'"
+                    />
                 </div>
 
                 <div>
                     <label for="filter-evidence" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
                         3. Rigor (Hechos vs. Leyendas):
                     </label>
-                    <select
-                        id="filter-evidence"
+                    @php
+                        $evidenceOptions = ['all' => '⚖️ Todos los niveles'];
+                        foreach(\App\Enums\EvidenceLevel::cases() as $evCase) {
+                            $evidenceOptions[$evCase->value] = $evCase->label();
+                        }
+                    @endphp
+                    <x-searchable-select
                         name="evidence"
-                        class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
-                    >
-                        <option value="all">⚖️ Todos los niveles</option>
-                        @foreach(\App\Enums\EvidenceLevel::cases() as $evCase)
-                            <option value="{{ $evCase->value }}" @selected($activeEvidence === $evCase->value)>
-                                {{ $evCase->label() }}
-                            </option>
-                        @endforeach
-                    </select>
+                        id="filter-evidence"
+                        :options="$evidenceOptions"
+                        :value="$activeEvidence ?: 'all'"
+                    />
                 </div>
 
                 <div>

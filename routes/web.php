@@ -49,7 +49,7 @@ Route::post('/corrections', [CorrectionRequestController::class, 'store'])
     ->name('corrections.store');
 
 Route::post('/comments', [CommentController::class, 'store'])
-    ->middleware('throttle:10,1')
+    ->middleware('throttle:3,60')
     ->name('comments.store');
 
 // --- Identificación pública ligera con Facebook / Google (sin cuentas en plataforma) ---

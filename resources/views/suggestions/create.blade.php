@@ -40,25 +40,36 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="sugg-group" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">1. Selecciona el tipo de apartado *</label>
-                    <select id="sugg-group" name="content_group" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-bold text-slate-950">
-                        @foreach($groups as $group)
-                            <option value="{{ $group->value }}" @selected(old('content_group') === $group->value)>
-                                {{ $group->label() }}
-                            </option>
-                        @endforeach
-                    </select>
+                    @php
+                        $groupOptions = [];
+                        foreach($groups as $group) {
+                            $groupOptions[$group->value] = $group->label();
+                        }
+                    @endphp
+                    <x-searchable-select
+                        name="content_group"
+                        id="sugg-group"
+                        :options="$groupOptions"
+                        :value="old('content_group', $groups[0]->value ?? 'historia')"
+                        required
+                    />
                 </div>
 
                 <div>
                     <label for="sugg-related" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">2. ¿Se relaciona con alguna página ya publicada?</label>
-                    <select id="sugg-related" name="related_page_id" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-bold text-slate-950">
-                        <option value="">— Es un tema nuevo independiente —</option>
-                        @foreach($pages as $p)
-                            <option value="{{ $p->id }}" @selected((int) old('related_page_id') === $p->id)>
-                                {{ $p->getTranslation('title', app()->getLocale()) }}
-                            </option>
-                        @endforeach
-                    </select>
+                    @php
+                        $pageOptions = ['' => '— Es un tema nuevo independiente —'];
+                        foreach($pages as $p) {
+                            $pageOptions[(string) $p->id] = $p->getTranslation('title', app()->getLocale());
+                        }
+                    @endphp
+                    <x-searchable-select
+                        name="related_page_id"
+                        id="sugg-related"
+                        :options="$pageOptions"
+                        :value="old('related_page_id')"
+                        placeholder="Escribe para buscar página..."
+                    />
                 </div>
             </div>
 
