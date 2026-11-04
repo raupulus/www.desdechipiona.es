@@ -67,13 +67,13 @@
 
         {{-- Fuentes Oficiales y Documentación Pública --}}
         @if(!empty($news->source_references) && is_array($news->source_references))
-            <section aria-label="Fuentes oficiales y documentación consultada" class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-4">
+            <section aria-label="{{ __('messages.official_sources_heading') }}" class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-4">
                 <div class="flex items-center gap-2">
-                    <span class="text-xl">🏛️</span>
-                    <h2 class="font-serif text-xl font-extrabold text-slate-950">Fuentes Oficiales y Documentación Pública</h2>
+                    <span class="text-xl" aria-hidden="true">🏛️</span>
+                    <h2 class="font-serif text-xl font-extrabold text-slate-950">{{ __('messages.official_sources_heading') }}</h2>
                 </div>
-                <p class="text-xs text-slate-700">
-                    En cumplimiento de nuestro compromiso de rigor, esta noticia cita exclusivamente fuentes procedentes de archivos históricos, organismos gubernamentales e instituciones académicas oficiales.
+                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                    {{ __('messages.official_sources_disclaimer') }}
                 </p>
                 <ul class="divide-y divide-slate-100 text-sm space-y-3">
                     @foreach($news->source_references as $source)

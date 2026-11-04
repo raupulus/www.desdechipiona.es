@@ -375,6 +375,8 @@ return [
     'home_verified_sources_pill' => 'Verified with official sources',
     'official_source_singular' => 'official source',
     'official_sources_plural' => 'official sources',
+    'official_sources_heading' => 'Official Sources & Public Documentation',
+    'official_sources_disclaimer' => 'In accordance with our commitment to historical rigor, this article exclusively cites sources from historical archives, government bodies, and official academic institutions, which we have consulted and used to cross-check and verify the historical accuracy of the facts presented in this original work.',
     'authorship_box_title' => 'Authorship, Intellectual Property & Citation License',
     'authorship_box_text' => 'This documentary research and content is original work and private intellectual property of Raúl Caro Pastorino. Sharing and redistribution are permitted provided that you explicitly credit the author, cite the documentary sources, and include a visible link to the original page on Desde Chipiona (CC BY-NC-SA 4.0 License).',
     'authorship_how_to_cite' => 'How to cite and share this article:',
