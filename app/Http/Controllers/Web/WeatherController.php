@@ -24,9 +24,13 @@ class WeatherController extends Controller
             ->limit(4)
             ->get();
 
-        $seo->setTitle(__('messages.weather_tides_nav').' - '.setting('site_title', config('app.name')))
+        $seo->setTitle(__('messages.weather_tides_nav').' — '.setting('site_title', config('app.name')))
             ->setDescription(__('messages.weather_seo_description'))
-            ->setUrl(route('weather.index'));
+            ->setUrl(route('weather.index'))
+            ->setBreadcrumbs([
+                ['name' => __('messages.home'), 'url' => route('home')],
+                ['name' => __('messages.weather_tides_nav'), 'url' => route('weather.index')],
+            ]);
 
         return view('weather.index', compact('summary', 'coastalPages', 'seo'));
     }

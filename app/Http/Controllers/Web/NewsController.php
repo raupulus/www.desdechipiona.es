@@ -52,9 +52,19 @@ class NewsController extends Controller
         $newsItems = $query->paginate(9)->withQueryString();
         $categories = Category::active()->ordered()->get();
 
-        $seo->setTitle(__('messages.news_nav').' - '.setting('site_title', config('app.name')))
+        $currentPage = $newsItems->currentPage();
+        $siteTitle = (string) setting('site_title', config('app.name'));
+        $title = $currentPage > 1
+            ? __('messages.news_nav').' ('.__('messages.page_number', ['page' => $currentPage]).') — '.$siteTitle
+            : __('messages.news_nav').' — '.$siteTitle;
+
+        $seo->setTitle($title)
             ->setDescription(__('messages.news_seo_description'))
-            ->setUrl(route('news.index'));
+            ->setUrl(route('news.index'))
+            ->setBreadcrumbs([
+                ['name' => __('messages.home'), 'url' => route('home')],
+                ['name' => __('messages.news_nav'), 'url' => route('news.index')],
+            ]);
 
         return view('news.index', compact('newsItems', 'categories', 'search', 'categorySlug', 'seo'));
     }
@@ -80,7 +90,7 @@ class NewsController extends Controller
             ->setUrl($newsUrl)
             ->setBreadcrumbs([
                 ['name' => __('messages.home'), 'url' => route('home')],
-                ['name' => 'Noticias', 'url' => route('news.index')],
+                ['name' => __('messages.news_nav'), 'url' => route('news.index')],
                 ['name' => $news->title, 'url' => $newsUrl],
             ]);
 

@@ -40,9 +40,13 @@ class OfficialPhoneController extends Controller
 
         $phones = $query->get();
 
-        $seo->setTitle(__('messages.phones_nav').' - '.setting('site_title', config('app.name')))
+        $seo->setTitle(__('messages.phones_nav').' — '.setting('site_title', config('app.name')))
             ->setDescription(__('messages.phones_seo_description'))
-            ->setUrl(route('phones.index'));
+            ->setUrl(route('phones.index'))
+            ->setBreadcrumbs([
+                ['name' => __('messages.home'), 'url' => route('home')],
+                ['name' => __('messages.phones_nav'), 'url' => route('phones.index')],
+            ]);
 
         return view('phones.index', compact('phones', 'category', 'search', 'seo'));
     }

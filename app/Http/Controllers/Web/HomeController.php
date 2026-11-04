@@ -55,8 +55,17 @@ class HomeController extends Controller
             ->first();
 
         $siteTitle = (string) setting('site_title', config('app.name'));
-        $seo->setTitle($siteTitle.' — '.__('messages.site_tagline'))
-            ->setDescription((string) setting('site_description', __('messages.about_seo_description')))
+        $currentPage = $pages->currentPage();
+        $baseTitle = $siteTitle.' — '.__('messages.site_tagline');
+        $title = $currentPage > 1
+            ? $baseTitle.' ('.__('messages.page_number', ['page' => $currentPage]).')'
+            : $baseTitle;
+        $description = app()->getLocale() === 'en'
+            ? __('messages.about_seo_description')
+            : (string) setting('site_description', __('messages.about_seo_description'));
+
+        $seo->setTitle($title)
+            ->setDescription($description)
             ->setUrl(route('home'));
 
         return view('home', compact(

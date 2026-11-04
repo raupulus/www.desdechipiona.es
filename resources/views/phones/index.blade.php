@@ -68,7 +68,7 @@
                     <div class="space-y-3">
                         <div class="flex items-center justify-between gap-2">
                             <span class="rounded-lg px-2.5 py-1 text-xs font-extrabold uppercase {{ $phone->is_emergency ? 'bg-rose-800 text-white' : 'bg-slate-900 text-amber-300' }}">
-                                {{ $phone->is_emergency ? '🚨 Urgencia 24h' : ($categories[$phone->category] ?? $phone->category) }}
+                                {{ $phone->is_emergency ? __('messages.emergency_24h_badge') : ($categories[$phone->category] ?? $phone->category) }}
                             </span>
                             @if($phone->schedule)
                                 <span class="text-xs font-bold text-slate-700">🕒 {{ $phone->schedule }}</span>
@@ -91,11 +91,11 @@
                             href="tel:{{ $phone->tel_href }}"
                             class="flex items-center justify-center gap-2 w-full rounded-xl {{ $phone->is_emergency ? 'bg-rose-800 hover:bg-rose-900' : 'bg-slate-950 hover:bg-orange-800' }} px-4 py-3 text-base font-extrabold text-white transition"
                         >
-                            <span>📞 Llamar al {{ $phone->phone }}</span>
+                            <span>📞 {{ __('messages.call_phone_prefix') }} {{ $phone->phone }}</span>
                         </a>
                         @if($phone->secondary_phone)
                             <p class="text-center text-xs font-bold text-slate-800">
-                                Teléfono alternativo / urgencias: <strong>{{ $phone->secondary_phone }}</strong>
+                                {{ __('messages.alt_phone_label') }} <strong>{{ $phone->secondary_phone }}</strong>
                             </p>
                         @endif
                     </div>
@@ -104,7 +104,7 @@
         </div>
     @else
         <div class="rounded-2xl border border-slate-200 bg-white p-10 text-center">
-            <p class="text-base font-extrabold text-slate-950">No hay teléfonos registrados para este filtro.</p>
+            <p class="text-base font-extrabold text-slate-950">{{ __('messages.no_phones_found') }}</p>
         </div>
     @endif
 </div>

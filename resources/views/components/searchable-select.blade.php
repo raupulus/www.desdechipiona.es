@@ -2,13 +2,14 @@
     'name',
     'id' => null,
     'value' => null,
-    'placeholder' => 'Seleccionar opción...',
+    'placeholder' => null,
     'options' => [], // array asociativo [valor => etiqueta] o array de arrays [['value' => ..., 'label' => ...]]
     'required' => false,
     'class' => '',
 ])
 
 @php
+    $placeholderText = $placeholder ?? __('messages.select_option_placeholder');
     $inputId = $id ?? $name;
     $normalizedOptions = [];
     foreach ($options as $optKey => $optVal) {
@@ -116,12 +117,12 @@
         aria-haspopup="listbox"
         class="w-full flex items-center justify-between gap-2 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-left text-base sm:text-sm font-bold text-slate-950 shadow-xs hover:border-slate-400 focus:border-orange-700 focus:ring-2 focus:ring-orange-700 transition cursor-pointer"
     >
-        <span class="truncate" :title="selectedLabel" x-text="selectedLabel || '{{ $placeholder }}'" :class="!selectedLabel ? 'text-slate-500 font-medium' : 'text-slate-950 font-bold'"></span>
+        <span class="truncate" :title="selectedLabel" x-text="selectedLabel || @js($placeholderText)" :class="!selectedLabel ? 'text-slate-500 font-medium' : 'text-slate-950 font-bold'"></span>
         <div class="flex items-center gap-1 shrink-0 text-slate-600">
             <template x-if="selected && !{{ $required ? 'true' : 'false' }}">
                 <span
                     @click.stop="clear()"
-                    title="Limpiar selección"
+                    title="{{ __('messages.clear_selection_title') }}"
                     class="p-0.5 rounded-full hover:bg-slate-200 text-slate-600 hover:text-slate-900 cursor-pointer"
                 >
                     <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
@@ -153,8 +154,8 @@
                 x-ref="searchInput"
                 type="text"
                 x-model="search"
-                placeholder="Escribe para buscar..."
-                class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-950 placeholder:text-slate-500 focus:border-orange-700 focus:bg-white focus:ring-1 focus:ring-orange-700"
+                placeholder="{{ __('messages.type_to_search') }}"
+                class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-base sm:text-sm font-medium text-slate-950 placeholder:text-slate-500 focus:border-orange-700 focus:bg-white focus:ring-1 focus:ring-orange-700"
             >
             <template x-if="search">
                 <button
@@ -193,7 +194,7 @@
 
             <template x-if="filteredOptions.length === 0">
                 <li class="px-3 py-4 text-center text-xs font-medium text-slate-600">
-                    No se encontraron coincidencias para "<span x-text="search" class="font-bold"></span>".
+                    {{ __('messages.no_matches_for') }} "<span x-text="search" class="font-bold"></span>".
                 </li>
             </template>
         </ul>

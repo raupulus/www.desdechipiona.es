@@ -9,15 +9,15 @@
 <header class="bg-gradient-to-br from-slate-950 via-blue-950 to-violet-950 text-white border-b-4 border-orange-700">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 space-y-4">
         <nav aria-label="Migas de pan" class="text-xs font-bold text-slate-300 flex flex-wrap items-center gap-2">
-            <a href="{{ route('home') }}" class="hover:text-white underline">Inicio</a>
+            <a href="{{ route('home') }}" class="hover:text-white underline">{{ __('messages.home') }}</a>
             <span>/</span>
-            <a href="{{ route('news.index') }}" class="text-amber-300 hover:text-white underline">Noticias</a>
+            <a href="{{ route('news.index') }}" class="text-amber-300 hover:text-white underline">{{ __('messages.news_nav') }}</a>
             <span>/</span>
             <span class="text-white">{{ $title }}</span>
         </nav>
 
         <div class="flex flex-wrap items-center gap-2 text-xs font-extrabold">
-            <span class="rounded-lg bg-orange-700 px-3 py-1 text-white">📰 Noticia Documental</span>
+            <span class="rounded-lg bg-orange-700 px-3 py-1 text-white">📰 {{ __('messages.documentary_news_badge') }}</span>
             <time datetime="{{ ($news->published_at ?? $news->created_at)?->toIso8601String() }}" class="rounded-lg bg-slate-900 border border-slate-700 px-3 py-1 text-amber-300">
                 📅 {{ format_date($news->published_at ?? $news->created_at) }}
             </time>
@@ -112,7 +112,7 @@
             </p>
             <div class="rounded-xl border border-slate-200 bg-white p-3.5 text-xs text-slate-900">
                 <p class="font-extrabold text-slate-950 mb-1">{{ __('messages.authorship_how_to_cite') }}</p>
-                <p class="font-mono text-slate-800 select-all">
+                <p class="font-mono text-slate-800 select-all break-words [overflow-wrap:anywhere]">
                     Caro Pastorino, Raúl ({{ date('Y') }}). «{{ $title }}». En Desde Chipiona ({{ url()->current() }}).
                 </p>
             </div>

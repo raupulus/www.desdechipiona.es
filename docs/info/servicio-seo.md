@@ -1,6 +1,6 @@
 # Módulo: SeoService
 
-*Última actualización: 2026-11-03*
+*Última actualización: 2026-11-04*
 
 > Servicio para la gestión dinámica de meta tags SEO (title, description, OG, Twitter Cards, JSON-LD) con soporte para carga automática desde modelos (`Page`, `News`, `Post`).
 
@@ -41,8 +41,11 @@ Todos los setters retornan `static` para encadenar:
 | `setType(string)` | Tipo Open Graph: `website`, `article`, `product`... |
 | `setImage(string)` | URL imagen para OG y Twitter Cards |
 | `setRobots(string)` | Directiva meta robots (ej: `noindex,follow`) |
-| `fromModel(object)` | Carga SEO de un modelo con trait `HasSeo`: llama a `getSeoTitleText()`, `getSeoDescriptionText()`, `getSeoKeywordsText()` y resuelve la imagen del modelo (`$model->image_url` o `media_url($model->image)`) |
-| `toArray()` | Devuelve array con todos los valores SEO para la vista |
+| `setBreadcrumbs(array)` | Define la lista jerárquica de migas de pan para `BreadcrumbList` en JSON-LD |
+| `setGeo(float, float, ?string)` | Establece coordenadas GPS (`Place` + `GeoCoordinates`) para fichas geolocalizadas |
+| `fromModel(object)` | Carga SEO de un modelo con trait `HasSeo`: llama a `getSeoTitleText()` (con sufijo corporativo automático si usa fallback), `getSeoDescriptionText()` (normalizado en una sola línea), `getSeoKeywordsText()`, coordenadas GPS y resuelve la imagen WebP (`social_image_url` o `image_url`) |
+| `toArray()` | Devuelve array con todos los valores SEO para la vista y activa `noindex,follow` automáticamente ante parámetros de búsqueda facetada (`q`, `group`, `era`, `evidence`, `year_from`, `year_to`, `map`, `sort`) |
+| `toJsonLd()` | Construye el grafo Schema.org JSON-LD (`@graph`) con `Organization` (`foundingDate: "2008"`, `founder`), `WebSite` (`SearchAction`), `Article`/`NewsArticle`/`BlogPosting`/`WebPage`, `Place` (si tiene coordenadas) y `BreadcrumbList` |
 
 ---
 
@@ -53,12 +56,12 @@ Cuando un campo SEO no se establece explícitamente, se usan estos fallbacks:
 | Campo | Fallback |
 |-------|----------|
 | title | `setting('site_title')` → `config('app.name')` |
-| description | `setting('site_description')` → `''` |
+| description | `setting('site_description')` (ES) / `__('messages.about_seo_description')` (EN) |
 | keywords | `setting('default_meta_keywords')` → `''` |
 | url | `url()->current()` |
 | type | `website` |
-| image | `asset('images/redes-sociales/og-image.png')` |
-| robots | `index,follow` |
+| image | `asset('images/redes-sociales/og-image.webp')` |
+| robots | `index,follow` (`noindex,follow` si hay filtros facetados activos) |
 
 ---
 

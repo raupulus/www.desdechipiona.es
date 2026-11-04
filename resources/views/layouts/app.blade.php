@@ -18,7 +18,7 @@
         @stack('head_css')
         @stack('head_js')
     </head>
-    <body class="min-h-screen bg-stone-50 text-slate-950 antialiased flex flex-col selection:bg-orange-200 selection:text-slate-950">
+    <body class="min-h-screen overflow-x-hidden bg-stone-50 text-slate-950 antialiased flex flex-col selection:bg-orange-200 selection:text-slate-950">
         <a
             href="#main-content"
             class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-slate-950 focus:text-white focus:font-bold focus:rounded-lg focus:shadow-lg focus:outline-none"

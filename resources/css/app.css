@@ -43,6 +43,7 @@ html[data-font-scale="xlarge"] {
     color: #0f172a;
     line-height: 1.85;
     font-size: 1.075rem;
+    overflow-wrap: break-word;
 }
 
 .prose-chipiona h2 {
@@ -212,9 +213,16 @@ html[data-font-scale="xlarge"] {
     font-weight: 700;
     color: #020617;
     border-right: 1px solid #f1f5f9;
-    min-width: 140px;
-    white-space: nowrap;
+    min-width: 110px;
     background-color: rgb(248 250 252 / 0.5);
+}
+
+@media (min-width: 640px) {
+    .prose-chipiona tbody td:first-child,
+    .prose-chipiona tbody th:first-child {
+        min-width: 140px;
+        white-space: nowrap;
+    }
 }
 
 .prose-chipiona tbody tr:hover td:first-child,

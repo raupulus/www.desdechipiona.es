@@ -33,10 +33,16 @@ trait HasSeo
 
         $title = $this->title;
         if (is_array($title)) {
-            return $title[app()->getLocale()] ?? $title[config('app.fallback_locale')] ?? '';
+            $title = $title[app()->getLocale()] ?? $title[config('app.fallback_locale')] ?? '';
         }
 
-        return $title ?? '';
+        $rawTitle = (string) ($title ?? '');
+        $siteTitle = (string) setting('site_title', config('app.name'));
+        if ($rawTitle !== '' && $siteTitle !== '' && ! str_contains($rawTitle, $siteTitle)) {
+            return $rawTitle.' — '.$siteTitle;
+        }
+
+        return $rawTitle;
     }
 
     /**
@@ -54,7 +60,7 @@ trait HasSeo
         }
 
         if (! empty($seoDesc)) {
-            return $seoDesc;
+            return $this->cleanSeoText((string) $seoDesc);
         }
 
         // Fallback al excerpt si existe en el modelo
@@ -65,7 +71,7 @@ trait HasSeo
             }
 
             if (! empty($excerpt)) {
-                return $excerpt;
+                return $this->cleanSeoText((string) $excerpt);
             }
         }
 
@@ -77,11 +83,21 @@ trait HasSeo
             }
 
             if (! empty($content)) {
-                return Str::limit(trim(strip_tags((string) $content)), 155);
+                return $this->cleanSeoText((string) $content, 155);
             }
         }
 
         return '';
+    }
+
+    /**
+     * Normaliza el texto para meta description eliminando HTML, saltos de línea y espacios múltiples.
+     */
+    private function cleanSeoText(string $text, int $limit = 160): string
+    {
+        $normalized = preg_replace('/\s+/u', ' ', trim(strip_tags($text))) ?? '';
+
+        return Str::limit($normalized, $limit);
     }
 
     /**

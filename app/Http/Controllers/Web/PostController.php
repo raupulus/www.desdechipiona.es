@@ -34,7 +34,7 @@ class PostController extends Controller
 
         $seo->setTitle($title)
             ->setDescription(__('messages.blog_seo_description'))
-            ->setUrl($currentPage > 1 ? $posts->url($currentPage) : route('blog.index'))
+            ->setUrl(route('blog.index'))
             ->setBreadcrumbs([
                 ['name' => __('messages.home'), 'url' => route('home')],
                 ['name' => __('messages.blog'), 'url' => route('blog.index')],

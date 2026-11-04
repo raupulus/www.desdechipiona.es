@@ -44,6 +44,9 @@
 <meta property="og:type" content="{{ $pageType }}" />
 <meta property="og:description" content="{{ $pageDescription }}" />
 <meta property="og:image" content="{{ $pageImage }}" />
+<meta property="og:image:type" content="image/webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="{{ $pageTitle }}" />
 <meta property="og:url" content="{{ $pageUrl }}" />
 <meta name="twitter:card" content="summary_large_image" />

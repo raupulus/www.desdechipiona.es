@@ -25,9 +25,13 @@ class ContentSuggestionController extends Controller
         $pages = Page::publishedAndActive()->orderBy('slug')->get(['id', 'slug', 'title']);
         $groups = ContentGroup::cases();
 
-        $seo->setTitle(__('messages.contribute_btn').' - '.setting('site_title', config('app.name')))
+        $seo->setTitle(__('messages.contribute_btn').' — '.setting('site_title', config('app.name')))
             ->setDescription(__('messages.suggestions_seo_description'))
-            ->setUrl(route('suggestions.create'));
+            ->setUrl(route('suggestions.create'))
+            ->setBreadcrumbs([
+                ['name' => __('messages.home'), 'url' => route('home')],
+                ['name' => __('messages.contribute_btn'), 'url' => route('suggestions.create')],
+            ]);
 
         return view('suggestions.create', compact('pages', 'groups', 'seo'));
     }

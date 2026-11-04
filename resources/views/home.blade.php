@@ -26,7 +26,7 @@
 {{-- ============================================================
      HERO NOCTURNO ATLÁNTICO + BUSCADOR MULTICRITERIO
      ============================================================ --}}
-<section class="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-violet-950 text-white border-b-4 border-orange-700">
+<section class="relative z-20 bg-gradient-to-br from-slate-950 via-blue-950 to-violet-950 text-white border-b-4 border-orange-700">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
         <div class="text-center max-w-4xl mx-auto mb-8">
             <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/90 px-4 py-1.5 text-xs font-bold text-amber-300 mb-5">

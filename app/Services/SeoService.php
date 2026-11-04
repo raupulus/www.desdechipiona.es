@@ -272,9 +272,13 @@ class SeoService
         $rawImage = $this->image ?: asset('images/redes-sociales/og-image.webp');
         $imageUrl = str_starts_with($rawImage, 'http') ? $rawImage : url($rawImage);
 
+        $defaultDescription = app()->getLocale() === 'en'
+            ? __('messages.about_seo_description')
+            : (string) setting('site_description', __('messages.about_seo_description'));
+
         return [
             'title' => $this->title ?: $siteTitle,
-            'description' => $this->description ?: (string) setting('site_description', ''),
+            'description' => $this->description ?: $defaultDescription,
             'keywords' => $this->keywords ?: (string) setting('default_meta_keywords', ''),
             'baseUrl' => $baseUrl,
             'url' => $canonicalUrl,
@@ -315,6 +319,12 @@ class SeoService
             '@id' => $siteUrl.'/#organization',
             'name' => $siteTitle,
             'url' => $siteUrl,
+            'foundingDate' => '2008',
+            'founder' => [
+                '@type' => 'Person',
+                'name' => 'Raúl Caro Pastorino',
+                'url' => 'https://raupulus.dev',
+            ],
             'logo' => [
                 '@type' => 'ImageObject',
                 'url' => $logoUrl,
@@ -328,7 +338,7 @@ class SeoService
             '@type' => 'WebSite',
             '@id' => $siteUrl.'/#website',
             'name' => $siteTitle,
-            'description' => (string) setting('site_description', ''),
+            'description' => $data['description'],
             'url' => $siteUrl,
             'inLanguage' => app()->getLocale(),
             'publisher' => [
@@ -347,7 +357,7 @@ class SeoService
         $graph = [$organization, $webSite];
 
         if ($data['type'] === 'article') {
-            $graph[] = array_filter([
+            $articleNode = [
                 '@type' => $this->schemaType,
                 '@id' => $data['url'].'#article',
                 'mainEntityOfPage' => [
@@ -360,6 +370,8 @@ class SeoService
                 'image' => [$data['image']],
                 'url' => $data['url'],
                 'inLanguage' => app()->getLocale(),
+                'isAccessibleForFree' => true,
+                'license' => 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
                 'datePublished' => $data['publishedAt'],
                 'dateModified' => $data['modifiedAt'] ?? $data['publishedAt'],
                 'author' => [
@@ -370,7 +382,21 @@ class SeoService
                 'publisher' => [
                     '@id' => $siteUrl.'/#organization',
                 ],
-            ]);
+            ];
+
+            if ($this->geo !== null) {
+                $articleNode['contentLocation'] = [
+                    '@type' => 'Place',
+                    'name' => $this->geo['name'] ?? $data['title'],
+                    'geo' => [
+                        '@type' => 'GeoCoordinates',
+                        'latitude' => $this->geo['latitude'],
+                        'longitude' => $this->geo['longitude'],
+                    ],
+                ];
+            }
+
+            $graph[] = array_filter($articleNode, fn ($v) => $v !== null && $v !== '');
         } else {
             $graph[] = array_filter([
                 '@type' => 'WebPage',

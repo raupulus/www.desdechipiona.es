@@ -48,9 +48,19 @@ class ProverbController extends Controller
         $proverbs = $query->paginate(12)->withQueryString();
         $pages = Page::publishedAndActive()->orderBy('slug')->get(['id', 'slug', 'title']);
 
-        $seo->setTitle(__('messages.proverbs_nav').' - '.setting('site_title', config('app.name')))
+        $currentPage = $proverbs->currentPage();
+        $siteTitle = (string) setting('site_title', config('app.name'));
+        $title = $currentPage > 1
+            ? __('messages.proverbs_nav').' ('.__('messages.page_number', ['page' => $currentPage]).') — '.$siteTitle
+            : __('messages.proverbs_nav').' — '.$siteTitle;
+
+        $seo->setTitle($title)
             ->setDescription(__('messages.proverbs_seo_description'))
-            ->setUrl(route('proverbs.index'));
+            ->setUrl(route('proverbs.index'))
+            ->setBreadcrumbs([
+                ['name' => __('messages.home'), 'url' => route('home')],
+                ['name' => __('messages.proverbs_nav'), 'url' => route('proverbs.index')],
+            ]);
 
         return view('proverbs.index', compact('proverbs', 'pages', 'category', 'search', 'seo'));
     }

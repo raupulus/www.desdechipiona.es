@@ -23,7 +23,7 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         {{-- Migas de pan --}}
         <nav aria-label="Migas de pan" class="mb-5 text-xs font-bold text-slate-300 flex flex-wrap items-center gap-2">
-            <a href="{{ route('home') }}" class="hover:text-white underline">Inicio</a>
+            <a href="{{ route('home') }}" class="hover:text-white underline">{{ __('messages.home') }}</a>
             <span aria-hidden="true">/</span>
             @if($page->content_group)
                 <a href="{{ route('home', ['group' => $page->content_group->value]) }}" class="text-amber-300 hover:text-white underline">
@@ -65,9 +65,9 @@
                 @endif
 
                 <div class="pt-2 flex flex-wrap items-center gap-4 text-xs text-slate-300">
-                    <span>✍️ Investigación y redacción: <strong class="text-white">Raúl Caro Pastorino</strong> (<a href="https://raupulus.dev" target="_blank" rel="noopener noreferrer" class="underline text-amber-300">raupulus.dev</a>)</span>
+                    <span>✍️ {{ __('messages.research_and_writing_by') }} <strong class="text-white">Raúl Caro Pastorino</strong> (<a href="https://raupulus.dev" target="_blank" rel="noopener noreferrer" class="underline text-amber-300">raupulus.dev</a>)</span>
                     @if($page->published_at)
-                        <span>· Actualizado: {{ format_date($page->updated_at ?? $page->published_at) }}</span>
+                        <span>· {{ __('messages.updated_label') }} {{ format_date($page->updated_at ?? $page->published_at) }}</span>
                     @endif
                 </div>
             </div>
@@ -217,7 +217,7 @@
                 </p>
                 <div class="rounded-xl border border-slate-200 bg-white p-3.5 text-xs text-slate-900">
                     <p class="font-extrabold text-slate-950 mb-1">{{ __('messages.authorship_how_to_cite') }}</p>
-                    <p class="font-mono text-slate-800 select-all">
+                    <p class="font-mono text-slate-800 select-all break-words [overflow-wrap:anywhere]">
                         Caro Pastorino, Raúl ({{ date('Y') }}). «{{ $title }}». En Desde Chipiona ({{ url()->current() }}).
                     </p>
                 </div>

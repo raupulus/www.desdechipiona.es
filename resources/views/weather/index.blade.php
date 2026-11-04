@@ -62,7 +62,7 @@
                     <dd class="font-extrabold text-slate-950">Nivel {{ $weather['uv_max'] ?? 6 }}</dd>
                 </div>
                 <div class="flex justify-between">
-                    <dt class="font-bold text-slate-700">Temperatura del agua (Atlántico):</dt>
+                    <dt class="font-bold text-slate-700">{{ __('messages.weather_sea_temp') }}</dt>
                     <dd class="font-extrabold text-blue-950">~{{ $weather['sea_temp'] ?? 19 }} °C</dd>
                 </div>
             </dl>
@@ -82,24 +82,24 @@
             </div>
 
             <div class="overflow-x-auto" tabindex="0" role="region" aria-label="Tabla de mareas y estado de los corrales de pesca">
-                <table class="w-full text-left border-collapse">
+                <table class="w-full min-w-[520px] sm:min-w-full text-left border-collapse">
                     <caption class="sr-only">Horarios diarios de pleamar y bajamar, altura en metros y estado de los corrales de pesca de Chipiona</caption>
                     <thead>
                         <tr class="border-b-2 border-slate-300 text-xs font-extrabold uppercase text-slate-800">
-                            <th scope="col" class="py-3 pr-4">{{ __('messages.tides_col_tide') }}</th>
-                            <th scope="col" class="py-3 px-4">{{ __('messages.tides_col_time') }}</th>
-                            <th scope="col" class="py-3 px-4">{{ __('messages.tides_col_height') }}</th>
+                            <th scope="col" class="py-3 pr-4 whitespace-nowrap">{{ __('messages.tides_col_tide') }}</th>
+                            <th scope="col" class="py-3 px-4 whitespace-nowrap">{{ __('messages.tides_col_time') }}</th>
+                            <th scope="col" class="py-3 px-4 whitespace-nowrap">{{ __('messages.tides_col_height') }}</th>
                             <th scope="col" class="py-3 pl-4">{{ __('messages.tides_col_state') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 text-sm">
                         @foreach($tides['events'] ?? [] as $event)
                             <tr>
-                                <td class="py-3.5 pr-4 font-extrabold {{ $event['type'] === 'bajamar' ? 'text-emerald-950' : 'text-blue-950' }}">
+                                <td class="py-3.5 pr-4 whitespace-nowrap font-extrabold {{ $event['type'] === 'bajamar' ? 'text-emerald-950' : 'text-blue-950' }}">
                                     {{ $event['type'] === 'bajamar' ? '⬇️ ' : '⬆️ ' }}{{ $event['label'] }}
                                 </td>
-                                <td class="py-3.5 px-4 font-mono font-extrabold text-slate-950">{{ $event['time'] }} h</td>
-                                <td class="py-3.5 px-4 font-mono font-bold text-slate-800">{{ number_format((float) $event['height_m'], 2) }} m</td>
+                                <td class="py-3.5 px-4 whitespace-nowrap font-mono font-extrabold text-slate-950">{{ $event['time'] }} h</td>
+                                <td class="py-3.5 px-4 whitespace-nowrap font-mono font-bold text-slate-800">{{ number_format((float) $event['height_m'], 2) }} m</td>
                                 <td class="py-3.5 pl-4 text-slate-800">{{ $event['corrales_note'] }}</td>
                             </tr>
                         @endforeach
@@ -108,8 +108,8 @@
             </div>
 
             <div class="rounded-xl border border-amber-400 bg-amber-50 p-4 text-xs sm:text-sm text-slate-950 leading-relaxed">
-                <strong>🦎 Consejo de conservación de los Corrales de Pesca:</strong>
-                Para contemplar las paredes de piedra ostionera de los corrales (Las Canteras, Montijo, La Longuera), acude siempre en torno a la <strong>bajamar</strong>. No camines nunca sobre el muro recubierto de ostiones y escaramujo para proteger el ecosistema marino.
+                <strong>🦎 {{ __('messages.corrales_conservation_tip_title') }}</strong>
+                {{ __('messages.corrales_conservation_tip_body') }}
             </div>
         </section>
     </div>
