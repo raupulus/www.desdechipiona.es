@@ -25,12 +25,12 @@
             <div>
                 <h2 class="text-white text-sm font-extrabold uppercase tracking-wider mb-4">{{ __('messages.footer_explore_heading') }}</h2>
                 <ul class="space-y-2.5 text-sm">
-                    <li><a href="{{ route('home', ['group' => 'historia']) }}" class="text-slate-300 hover:text-white">🏛️ Historia Documentada</a></li>
-                    <li><a href="{{ route('home', ['group' => 'monumentos']) }}" class="text-slate-300 hover:text-white">🗼 Faro y Monumentos</a></li>
-                    <li><a href="{{ route('home', ['group' => 'playas']) }}" class="text-slate-300 hover:text-white">🏖️ Playas y Corrales de Pesca</a></li>
-                    <li><a href="{{ route('home', ['group' => 'fauna']) }}" class="text-slate-300 hover:text-white">🦎 Camaleón y Fauna</a></li>
-                    <li><a href="{{ route('home', ['group' => 'gastronomia']) }}" class="text-slate-300 hover:text-white">🍷 Moscatel y Recetas</a></li>
-                    <li><a href="{{ route('proverbs.index') }}" class="text-slate-300 hover:text-white">🗣️ Refranero Popular</a></li>
+                    <li><a href="{{ route('home', ['group' => 'historia']) }}" class="text-slate-300 hover:text-white">🏛️ {{ __('filament.group_historia') }}</a></li>
+                    <li><a href="{{ route('home', ['group' => 'monumentos']) }}" class="text-slate-300 hover:text-white">🗼 {{ __('filament.group_monumentos') }}</a></li>
+                    <li><a href="{{ route('home', ['group' => 'playas']) }}" class="text-slate-300 hover:text-white">🏖️ {{ __('filament.group_playas') }}</a></li>
+                    <li><a href="{{ route('home', ['group' => 'fauna']) }}" class="text-slate-300 hover:text-white">🦎 {{ __('filament.group_fauna') }}</a></li>
+                    <li><a href="{{ route('home', ['group' => 'gastronomia']) }}" class="text-slate-300 hover:text-white">🍷 {{ __('filament.group_gastronomia') }}</a></li>
+                    <li><a href="{{ route('proverbs.index') }}" class="text-slate-300 hover:text-white">🗣️ {{ __('filament.group_refranes') }}</a></li>
                 </ul>
             </div>
 
@@ -51,11 +51,11 @@
             <div>
                 <h2 class="text-white text-sm font-extrabold uppercase tracking-wider mb-4">{{ __('messages.footer_links_legal_heading') }}</h2>
                 <ul class="space-y-2.5 text-sm">
-                    <li><a href="{{ route('legal') }}" class="text-slate-300 hover:text-white">⚖️ Autoría y Aviso Legal</a></li>
+                    <li><a href="{{ route('legal') }}" class="text-slate-300 hover:text-white">⚖️ {{ __('messages.authorship_box_title') }}</a></li>
                     <li><a href="{{ route('about') }}" class="text-slate-300 hover:text-white">{{ __('messages.about') }}</a></li>
                     <li><a href="{{ route('privacy') }}" class="text-slate-300 hover:text-white">{{ __('messages.privacy') }}</a></li>
                     <li><a href="{{ route('cookies') }}" class="text-slate-300 hover:text-white">{{ __('messages.cookies') }}</a></li>
-                    <li><a href="https://t.me/desdechipiona" target="_blank" rel="noopener noreferrer" class="text-sky-300 hover:text-white font-semibold">📢 Canal de Telegram</a></li>
+                    <li><a href="https://t.me/desdechipiona" target="_blank" rel="noopener noreferrer" class="text-sky-300 hover:text-white font-semibold">📢 {{ __('messages.top_bar_telegram') }}</a></li>
                 </ul>
                 <div class="mt-4 rounded-xl border border-slate-800 bg-slate-900 p-3 text-xs text-slate-300 space-y-1.5">
                     <p>{{ __('messages.footer_content_license') }}</p>
@@ -66,7 +66,7 @@
 
         <div class="border-t border-slate-800 mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-300">
             <p>&copy; {{ date('Y') }} {{ setting('site_title', config('app.name')) }} · Raúl Caro Pastorino. {{ __('messages.all_rights_reserved') }}.</p>
-            <p>Contacto: <a href="mailto:info@desdechipiona.es" class="underline hover:text-white">info@desdechipiona.es</a></p>
+            <p>{{ __('messages.contact') }}: <a href="mailto:info@desdechipiona.es" class="underline hover:text-white">info@desdechipiona.es</a></p>
         </div>
     </div>
 </footer>

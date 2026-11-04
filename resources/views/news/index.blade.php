@@ -4,34 +4,34 @@
 <header class="bg-gradient-to-br from-slate-950 via-blue-950 to-violet-950 text-white border-b-4 border-orange-700">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3.5 py-1 text-xs font-extrabold text-amber-300 mb-4">
-            📰 Sección independiente de Noticias y Nuevos Legajos
+            📰 {{ __('messages.news_independent_section_badge') }}
         </span>
         <h1 class="font-serif text-3xl sm:text-5xl font-extrabold text-white mb-4">
-            Noticias y Hallazgos Documentales de Chipiona
+            {{ __('messages.news_index_title') }}
         </h1>
         <p class="max-w-3xl text-base sm:text-lg text-slate-200 leading-relaxed">
-            Crónicas de investigación, nuevos documentos localizados en archivos históricos y actualidad del patrimonio natural y cultural de Chipiona.
+            {{ __('messages.news_index_subtitle') }}
         </p>
 
-        <form action="{{ route('news.index') }}" method="GET" role="search" aria-label="Buscar noticias" class="mt-6 max-w-2xl flex flex-col sm:flex-row gap-3">
+        <form action="{{ route('news.index') }}" method="GET" role="search" aria-label="{{ __('messages.news_index_title') }}" class="mt-6 max-w-2xl flex flex-col sm:flex-row gap-3">
             @if(!empty($category))
                 <input type="hidden" name="category" value="{{ $category }}">
             @endif
-            <label for="news-search-q" class="sr-only">Buscar en noticias y hallazgos</label>
+            <label for="news-search-q" class="sr-only">{{ __('messages.news_search_placeholder') }}</label>
             <input
                 type="search"
                 id="news-search-q"
                 name="q"
                 value="{{ $search }}"
-                placeholder="Buscar en noticias y hallazgos..."
+                placeholder="{{ __('messages.news_search_placeholder') }}"
                 class="flex-1 rounded-xl border-2 border-slate-300 bg-white px-4 py-2.5 text-base sm:text-sm font-bold text-slate-950 placeholder:text-slate-600"
             >
             <button type="submit" class="rounded-xl bg-orange-700 px-6 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 cursor-pointer">
-                Buscar
+                {{ __('messages.search') }}
             </button>
             @if($search !== '' || !empty($category))
                 <a href="{{ route('news.index') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-500 bg-slate-900 px-4 py-2.5 text-xs font-extrabold text-amber-300 hover:bg-slate-800">
-                    Limpiar filtros
+                    {{ __('messages.clear_filters') }}
                 </a>
             @endif
         </form>
@@ -95,7 +95,7 @@
                         @endif
 
                         <a href="{{ route('news.show', $news->slug) }}" class="inline-flex items-center gap-1.5 text-sm font-extrabold text-orange-800 hover:underline">
-                            <span>Leer crónica completa</span>
+                            <span>{{ __('messages.read_full_news') }}</span>
                             <span aria-hidden="true">→</span>
                         </a>
                     </div>

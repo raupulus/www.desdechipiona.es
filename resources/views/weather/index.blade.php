@@ -12,10 +12,10 @@
             🌊 {{ $weather['source'] ?? 'AEMET Municipio 11016 (Chipiona)' }}
         </span>
         <h1 class="font-serif text-3xl sm:text-5xl font-extrabold text-white mb-4">
-            El Tiempo y Tabla de Mareas en Chipiona
+            {{ __('messages.weather_header_title') }}
         </h1>
         <p class="max-w-3xl text-base sm:text-lg text-slate-200 leading-relaxed">
-            Previsión meteorológica para el municipio de Chipiona (código AEMET <code class="text-amber-300 font-bold">{{ $summary['aemet_code'] ?? '11016' }}</code>) y horarios diarios de pleamar y bajamar para visitar nuestras playas y observar los corrales de pesca.
+            {{ __('messages.weather_header_subtitle') }}
         </p>
     </div>
 </header>
@@ -27,38 +27,38 @@
         <section class="lg:col-span-5 rounded-2xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-6">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
-                    <h2 class="font-serif text-2xl font-extrabold text-slate-950">☀️ El Tiempo Hoy en Chipiona</h2>
-                    <p class="text-xs font-bold text-slate-700">Actualizado: {{ $summary['updated_at'] ?? '' }}</p>
+                    <h2 class="font-serif text-2xl font-extrabold text-slate-950">{{ __('messages.weather_today_title') }}</h2>
+                    <p class="text-xs font-bold text-slate-700">{{ __('messages.weather_updated', ['date' => $summary['updated_at'] ?? '']) }}</p>
                 </div>
                 <span class="rounded-xl bg-blue-950 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-300">AEMET 11016</span>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="rounded-xl border border-orange-200 bg-orange-50 p-4">
-                    <span class="block text-xs font-extrabold uppercase text-orange-950">Máxima prevista</span>
+                    <span class="block text-xs font-extrabold uppercase text-orange-950">{{ __('messages.weather_temp_max') }}</span>
                     <span class="font-serif text-3xl font-extrabold text-slate-950">{{ $weather['temp_max'] ?? 22 }} °C</span>
                 </div>
                 <div class="rounded-xl border border-sky-200 bg-sky-50 p-4">
-                    <span class="block text-xs font-extrabold uppercase text-sky-950">Mínima prevista</span>
+                    <span class="block text-xs font-extrabold uppercase text-sky-950">{{ __('messages.weather_temp_min') }}</span>
                     <span class="font-serif text-3xl font-extrabold text-slate-950">{{ $weather['temp_min'] ?? 15 }} °C</span>
                 </div>
             </div>
 
             <dl class="space-y-3 text-sm border-t border-slate-200 pt-4">
                 <div class="flex justify-between">
-                    <dt class="font-bold text-slate-700">Estado del cielo:</dt>
+                    <dt class="font-bold text-slate-700">{{ __('messages.weather_sky_state') }}</dt>
                     <dd class="font-extrabold text-slate-950">{{ $weather['sky_state'] ?? 'Despejado' }}</dd>
                 </div>
                 <div class="flex justify-between">
-                    <dt class="font-bold text-slate-700">Viento dominante:</dt>
+                    <dt class="font-bold text-slate-700">{{ __('messages.weather_wind') }}</dt>
                     <dd class="font-extrabold text-slate-950">{{ $weather['wind_direction'] ?? 'Poniente' }} ({{ $weather['wind_speed_kmh'] ?? 15 }} km/h)</dd>
                 </div>
                 <div class="flex justify-between">
-                    <dt class="font-bold text-slate-700">Probabilidad de lluvia:</dt>
+                    <dt class="font-bold text-slate-700">{{ __('messages.weather_rain_prob') }}</dt>
                     <dd class="font-extrabold text-slate-950">{{ $weather['rain_prob'] ?? 5 }} %</dd>
                 </div>
                 <div class="flex justify-between">
-                    <dt class="font-bold text-slate-700">Índice Ultravioleta (UV):</dt>
+                    <dt class="font-bold text-slate-700">{{ __('messages.weather_uv') }}</dt>
                     <dd class="font-extrabold text-slate-950">Nivel {{ $weather['uv_max'] ?? 6 }}</dd>
                 </div>
                 <div class="flex justify-between">
@@ -72,11 +72,11 @@
         <section class="lg:col-span-7 rounded-2xl border-2 border-blue-900 bg-white p-6 sm:p-8 shadow-xs space-y-6">
             <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
-                    <h2 class="font-serif text-2xl font-extrabold text-slate-950">🌊 Tabla de Mareas y Corrales de Pesca</h2>
+                    <h2 class="font-serif text-2xl font-extrabold text-slate-950">{{ __('messages.weather_tides_title') }}</h2>
                     <p class="text-sm font-bold text-blue-950 mt-1">{{ $tides['type_label'] ?? '' }}</p>
                 </div>
                 <div class="rounded-xl bg-slate-950 px-4 py-2 text-center">
-                    <span class="block text-xs font-extrabold uppercase tracking-wider text-amber-300">Coeficiente</span>
+                    <span class="block text-xs font-extrabold uppercase tracking-wider text-amber-300">{{ __('messages.weather_tides_coef') }}</span>
                     <span class="font-mono text-2xl font-extrabold text-white">{{ $tides['coefficient'] ?? 72 }}</span>
                 </div>
             </div>
@@ -86,10 +86,10 @@
                     <caption class="sr-only">Horarios diarios de pleamar y bajamar, altura en metros y estado de los corrales de pesca de Chipiona</caption>
                     <thead>
                         <tr class="border-b-2 border-slate-300 text-xs font-extrabold uppercase text-slate-800">
-                            <th scope="col" class="py-3 pr-4">Marea</th>
-                            <th scope="col" class="py-3 px-4">Hora local</th>
-                            <th scope="col" class="py-3 px-4">Altura</th>
-                            <th scope="col" class="py-3 pl-4">Estado de los Corrales de Pesca</th>
+                            <th scope="col" class="py-3 pr-4">{{ __('messages.tides_col_tide') }}</th>
+                            <th scope="col" class="py-3 px-4">{{ __('messages.tides_col_time') }}</th>
+                            <th scope="col" class="py-3 px-4">{{ __('messages.tides_col_height') }}</th>
+                            <th scope="col" class="py-3 pl-4">{{ __('messages.tides_col_state') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 text-sm">
@@ -116,7 +116,7 @@
 
     @if($coastalPages->count() > 0)
         <section class="space-y-4">
-            <h2 class="font-serif text-2xl font-extrabold text-slate-950">🏖️ Páginas enlazadas sobre nuestras playas y mar</h2>
+            <h2 class="font-serif text-2xl font-extrabold text-slate-950">🏖️ {{ __('messages.coastal_linked_heading') }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 @foreach($coastalPages as $coastal)
                     <a href="{{ route('pages.show', $coastal->slug) }}" class="rounded-2xl border border-slate-200 bg-white p-5 hover:border-orange-600 transition block">

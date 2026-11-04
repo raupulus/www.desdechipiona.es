@@ -10,16 +10,16 @@
     $activeSort = (string) ($filters['sort'] ?? 'featured');
 
     $groupMeta = [
-        'all' => ['label' => '📚 Todo el catálogo', 'border' => 'border-t-orange-600'],
-        'historia' => ['label' => '🏛️ Historia', 'border' => 'border-t-amber-600'],
-        'monumentos' => ['label' => '🗼 Monumentos', 'border' => 'border-t-blue-700'],
-        'playas' => ['label' => '🏖️ Playas y Corrales', 'border' => 'border-t-sky-600'],
-        'fauna' => ['label' => '🦎 Fauna', 'border' => 'border-t-emerald-700'],
-        'flora' => ['label' => '🌲 Flora y Pinares', 'border' => 'border-t-green-700'],
-        'gastronomia' => ['label' => '🍷 Recetas y Vino', 'border' => 'border-t-purple-700'],
-        'personajes' => ['label' => '👤 Personajes', 'border' => 'border-t-rose-700'],
-        'fiestas' => ['label' => '🎭 Fiestas', 'border' => 'border-t-red-700'],
-        'refranes' => ['label' => '🗣️ Refranes', 'border' => 'border-t-indigo-700'],
+        'all' => ['label' => '📚 ' . __('messages.group_all'), 'border' => 'border-t-orange-600'],
+        'historia' => ['label' => '🏛️ ' . __('filament.group_historia'), 'border' => 'border-t-amber-600'],
+        'monumentos' => ['label' => '🗼 ' . __('filament.group_monumentos'), 'border' => 'border-t-blue-700'],
+        'playas' => ['label' => '🏖️ ' . __('filament.group_playas'), 'border' => 'border-t-sky-600'],
+        'fauna' => ['label' => '🦎 ' . __('filament.group_fauna'), 'border' => 'border-t-emerald-700'],
+        'flora' => ['label' => '🌲 ' . __('filament.group_flora'), 'border' => 'border-t-green-700'],
+        'gastronomia' => ['label' => '🍷 ' . __('filament.group_gastronomia'), 'border' => 'border-t-purple-700'],
+        'personajes' => ['label' => '👤 ' . __('filament.group_personajes'), 'border' => 'border-t-rose-700'],
+        'fiestas' => ['label' => '🎭 ' . __('filament.group_fiestas'), 'border' => 'border-t-red-700'],
+        'refranes' => ['label' => '🗣️ ' . __('filament.group_refranes'), 'border' => 'border-t-indigo-700'],
     ];
 @endphp
 
@@ -46,7 +46,7 @@
             action="{{ route('home') }}"
             method="GET"
             role="search"
-            aria-label="Buscador y filtrador de contenidos de Chipiona"
+            aria-label="{{ __('messages.home_search_form_aria') }}"
             class="max-w-4xl mx-auto rounded-2xl border-2 border-amber-500/70 bg-white p-5 sm:p-7 text-slate-950 shadow-2xl space-y-5"
         >
             <div>
@@ -103,10 +103,10 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-slate-200">
                 <div>
                     <label for="filter-era" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
-                        2. Época o siglo:
+                        {{ __('messages.home_filter_era_title') }}
                     </label>
                     @php
-                        $eraOptions = ['all' => '⏳ Todas las épocas'];
+                        $eraOptions = ['all' => '⏳ ' . __('messages.home_filter_era_all')];
                         foreach(\App\Enums\HistoricalEra::cases() as $eraCase) {
                             $eraOptions[$eraCase->value] = $eraCase->label();
                         }
@@ -121,10 +121,10 @@
 
                 <div>
                     <label for="filter-evidence" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
-                        3. Rigor (Hechos vs. Leyendas):
+                        {{ __('messages.home_filter_evidence_title') }}
                     </label>
                     @php
-                        $evidenceOptions = ['all' => '⚖️ Todos los niveles'];
+                        $evidenceOptions = ['all' => '⚖️ ' . __('messages.home_filter_evidence_all')];
                         foreach(\App\Enums\EvidenceLevel::cases() as $evCase) {
                             $evidenceOptions[$evCase->value] = $evCase->label();
                         }
@@ -139,7 +139,7 @@
 
                 <div>
                     <label for="filter-year-from" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
-                        4. Rango de años:
+                        {{ __('messages.home_filter_year_label') }}
                     </label>
                     <div class="flex items-center gap-1.5">
                         <input
@@ -149,7 +149,7 @@
                             min="-10000"
                             max="2100"
                             value="{{ $filters['year_from'] ?? '' }}"
-                            placeholder="Desde (ej. 1477)"
+                            placeholder="{{ __('messages.home_filter_year_from_placeholder') }}"
                             class="w-1/2 rounded-xl border border-slate-300 px-2.5 py-2 text-base sm:text-sm font-bold text-slate-950"
                         >
                         <input
@@ -157,9 +157,9 @@
                             name="year_to"
                             min="-10000"
                             max="2100"
-                            aria-label="Hasta el año"
+                            aria-label="{{ __('messages.home_filter_year_to_aria') }}"
                             value="{{ $filters['year_to'] ?? '' }}"
-                            placeholder="Hasta (ej. 1900)"
+                            placeholder="{{ __('messages.home_filter_year_to_placeholder') }}"
                             class="w-1/2 rounded-xl border border-slate-300 px-2.5 py-2 text-base sm:text-sm font-bold text-slate-950"
                         >
                     </div>
@@ -167,17 +167,17 @@
 
                 <div>
                     <label for="filter-sort" class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-1.5">
-                        5. Ordenar por:
+                        {{ __('messages.home_filter_sort_label') }}
                     </label>
                     <select
                         id="filter-sort"
                         name="sort"
                         class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm font-bold text-slate-950 focus:border-orange-700 focus:ring-orange-700"
                     >
-                        <option value="featured" @selected($activeSort === 'featured')>⭐ Destacados e importantes</option>
-                        <option value="chronological_asc" @selected($activeSort === 'chronological_asc')>📜 Más antiguos primero</option>
-                        <option value="chronological_desc" @selected($activeSort === 'chronological_desc')>🕰️ Más recientes en la historia</option>
-                        <option value="recent" @selected($activeSort === 'recent')>🆕 Últimos publicados</option>
+                        <option value="featured" @selected($activeSort === 'featured')>{{ __('messages.home_sort_featured') }}</option>
+                        <option value="chronological_asc" @selected($activeSort === 'chronological_asc')>{{ __('messages.home_sort_chronological_asc') }}</option>
+                        <option value="chronological_desc" @selected($activeSort === 'chronological_desc')>{{ __('messages.home_sort_chronological_desc') }}</option>
+                        <option value="recent" @selected($activeSort === 'recent')>{{ __('messages.home_sort_recent') }}</option>
                     </select>
                 </div>
             </div>
@@ -188,14 +188,14 @@
                         href="{{ route('home') }}"
                         class="text-xs font-bold text-slate-700 hover:text-orange-700 underline"
                     >
-                        Limpiar todos los filtros
+                        {{ __('messages.clear_all_filters') }}
                     </a>
                 @endif
                 <button
                     type="submit"
                     class="rounded-xl bg-slate-900 px-5 py-2 text-xs sm:text-sm font-extrabold text-white shadow-xs hover:bg-orange-800 transition cursor-pointer"
                 >
-                    Aplicar filtros
+                    {{ __('messages.apply_filters') }}
                 </button>
             </div>
         </form>
@@ -205,13 +205,13 @@
 {{-- ============================================================
      BANDA DE ADVERTENCIA METODOLÓGICA: HECHOS VS. MITOS Y LEYENDAS
      ============================================================ --}}
-<section aria-label="Compromiso con la verdad histórica" class="border-b border-amber-200 bg-amber-50/90 py-4">
+<section aria-label="{{ __('messages.home_truth_commitment_heading') }}" class="border-b border-amber-200 bg-amber-50/90 py-4">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div class="flex items-start gap-3">
             <span class="text-xl shrink-0" aria-hidden="true">🧭</span>
             <p class="text-xs sm:text-sm text-slate-900 leading-relaxed">
-                <strong class="font-extrabold text-slate-950">Nuestro compromiso con la verdad histórica:</strong>
-                En <strong>Desde Chipiona</strong> jamás mezclamos leyendas con datos de archivo sin avisarte claramente al principio de cada página.
+                <strong class="font-extrabold text-slate-950">{{ __('messages.home_truth_commitment_title') }}</strong>
+                {!! __('messages.home_truth_commitment_body') !!}
             </p>
         </div>
         <div class="flex flex-wrap gap-2 shrink-0">
@@ -219,10 +219,10 @@
                 <span>🛡️ {{ __('messages.home_verified_sources_pill') }}</span>
             </a>
             <a href="{{ route('home', ['evidence' => 'tradicion']) }}" class="inline-flex items-center gap-1.5 rounded-lg border border-amber-800 bg-amber-100/80 px-3 py-1 text-xs font-extrabold text-amber-950 hover:bg-amber-200">
-                <span>🗣️ Mito, Leyenda o Tradición Oral</span>
+                <span>🗣️ {{ __('messages.home_tradition_pill') }}</span>
             </a>
             <a href="{{ route('home', ['evidence' => 'discutido']) }}" class="inline-flex items-center gap-1.5 rounded-lg border border-rose-800 bg-rose-50 px-3 py-1 text-xs font-extrabold text-rose-950 hover:bg-rose-100">
-                <span>⚠️ Dato Discutido o Sin Contrastar</span>
+                <span>⚠️ {{ __('messages.home_disputed_pill') }}</span>
             </a>
         </div>
     </div>
@@ -235,10 +235,10 @@
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
             <h2 class="font-serif text-2xl sm:text-3xl font-extrabold text-slate-950">
-                Explorador de Contenidos de Chipiona
+                {{ __('messages.home_explorer_title') }}
             </h2>
             <p class="text-sm text-slate-800 mt-1">
-                Mostrando <strong class="text-orange-800 font-extrabold">{{ $pages->total() }}</strong> páginas documentadas y enlazadas según tus filtros.
+                {!! __('messages.home_explorer_showing_count', ['count' => '<strong class="text-orange-800 font-extrabold">' . $pages->total() . '</strong>']) !!}
             </p>
         </div>
 
@@ -248,14 +248,14 @@
                 class="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs sm:text-sm font-bold transition {{ $onlyMap ? 'border-slate-950 bg-slate-950 text-white' : 'border-slate-300 bg-white text-slate-900 hover:bg-slate-100' }}"
             >
                 <span aria-hidden="true">📍</span>
-                <span>{{ $onlyMap ? 'Mostrando solo lugares con mapa GPS' : 'Ver solo lugares con mapa GPS' }}</span>
+                <span>{{ $onlyMap ? __('messages.home_map_filter_active') : __('messages.home_map_filter_cta') }}</span>
             </a>
             @if(!empty(array_filter($filters)))
                 <a
                     href="{{ route('home') }}"
                     class="inline-flex items-center gap-1.5 rounded-xl border border-rose-300 bg-rose-50 px-3.5 py-2 text-xs sm:text-sm font-bold text-rose-950 hover:bg-rose-100"
                 >
-                    <span>Limpiar filtros</span>
+                    <span>{{ __('messages.clear_filters') }}</span>
                 </a>
             @endif
         </div>
@@ -344,7 +344,7 @@
                             @if($pageItem->youtube_url)
                                 <span class="inline-flex items-center gap-1 rounded bg-rose-50 px-2 py-0.5 text-rose-950 border border-rose-200">
                                     <span aria-hidden="true">▶️</span>
-                                    <span>Incluye vídeo</span>
+                                    <span>{{ __('messages.includes_video') }}</span>
                                 </span>
                             @endif
                         </div>
@@ -352,7 +352,7 @@
                         @if($pageItem->relatedPages->count() > 0)
                             <div>
                                 <span class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-1.5">
-                                    Páginas enlazadas:
+                                    {{ __('messages.linked_pages_label') }}
                                 </span>
                                 <div class="flex flex-wrap gap-1.5">
                                     @foreach($pageItem->relatedPages->take(3) as $relPage)
@@ -371,7 +371,7 @@
                             href="{{ route('pages.show', $pageItem->slug) }}"
                             class="flex items-center justify-center gap-2 w-full rounded-xl bg-slate-950 px-4 py-2.5 text-xs sm:text-sm font-extrabold text-white hover:bg-orange-800 transition"
                         >
-                            <span>Leer reportaje completo</span>
+                            <span>{{ __('messages.read_full_story') }}</span>
                             <span aria-hidden="true">→</span>
                         </a>
                     </div>
@@ -386,14 +386,14 @@
         <div class="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-12 text-center max-w-2xl mx-auto">
             <p class="text-lg font-extrabold text-slate-950 mb-2">{{ __('messages.no_results') }}</p>
             <p class="text-sm text-slate-700 mb-6">
-                Prueba con otra palabra clave, limpia los filtros o sugiere tú mismo este tema para que lo investiguemos e incorporemos al archivo.
+                {{ __('messages.home_empty_state_desc') }}
             </p>
             <div class="flex flex-wrap justify-center gap-3">
                 <a href="{{ route('home') }}" class="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-bold text-white hover:bg-slate-800">
-                    Ver todo el catálogo
+                    {{ __('messages.view_all_catalog') }}
                 </a>
                 <a href="{{ route('suggestions.create') }}" class="rounded-xl bg-orange-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-orange-800">
-                    ✍️ Proponer este contenido
+                    {{ __('messages.propose_content_btn') }}
                 </a>
             </div>
         </div>
@@ -409,7 +409,7 @@
         <div class="rounded-2xl border-2 border-amber-500/70 bg-amber-50/60 p-6 flex flex-col justify-between">
             <div>
                 <span class="inline-flex items-center gap-1.5 rounded-lg bg-amber-200/80 px-3 py-1 text-xs font-extrabold text-amber-950 mb-4">
-                    🗣️ Sabiduría y Refranero de Chipiona
+                    🗣️ {{ __('messages.home_proverbs_badge') }}
                 </span>
                 @if($featuredProverb)
                     <blockquote class="font-serif text-xl font-extrabold text-slate-950 leading-snug mb-3">
@@ -422,20 +422,20 @@
                     @endif
                 @else
                     <blockquote class="font-serif text-xl font-extrabold text-slate-950 leading-snug mb-3">
-                        «Con marea de aguaje, el corral se sale y el marisco se coge a puñados.»
+                        «{{ __('messages.home_proverb_fallback_text') }}»
                     </blockquote>
                     <p class="text-sm text-slate-800 leading-relaxed mb-4">
-                        Dicho marinero sobre las grandes mareas vivas que dejan al descubierto los corrales de pesca de Chipiona.
+                        {{ __('messages.home_proverb_fallback_meaning') }}
                     </p>
                 @endif
             </div>
             <div class="flex flex-wrap gap-2 pt-4 border-t border-amber-200">
                 <a href="{{ route('proverbs.index') }}" class="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800">
-                    <span>Ver todos los refranes</span>
+                    <span>{{ __('messages.view_all_proverbs') }}</span>
                     <span aria-hidden="true">→</span>
                 </a>
                 <a href="{{ route('proverbs.index') }}#subir-refran" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-900 bg-white px-4 py-2 text-xs font-bold text-slate-950 hover:bg-amber-100">
-                    <span>Subir mi refrán</span>
+                    <span>{{ __('messages.submit_proverb_cta') }}</span>
                 </a>
             </div>
         </div>
@@ -444,11 +444,11 @@
         <div class="lg:col-span-2 space-y-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="font-serif text-2xl font-extrabold text-slate-950">Noticias y Nuevos Legajos</h2>
-                    <p class="text-sm text-slate-700">Actualizaciones del archivo histórico, crónicas y novedades locales.</p>
+                    <h2 class="font-serif text-2xl font-extrabold text-slate-950">{{ __('messages.home_news_title') }}</h2>
+                    <p class="text-sm text-slate-700">{{ __('messages.home_news_subtitle') }}</p>
                 </div>
                 <a href="{{ route('news.index') }}" class="text-sm font-extrabold text-orange-800 hover:underline">
-                    Ver todas las noticias →
+                    {{ __('messages.view_all_news') }} →
                 </a>
             </div>
 
@@ -473,13 +473,13 @@
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
                             <a href="{{ route('news.show', $newsItem->slug) }}" class="text-xs font-extrabold text-blue-900 hover:underline">
-                                Leer noticia completa →
+                                {{ __('messages.read_full_news') }} →
                             </a>
                         </div>
                     </article>
                 @empty
                     <div class="md:col-span-2 rounded-2xl border border-slate-200 bg-stone-50 p-6 text-sm text-slate-800">
-                        Consulta las novedades documentales y hallazgos de archivo en la sección de <a href="{{ route('news.index') }}" class="font-bold underline text-blue-900">Noticias de Chipiona</a>.
+                        {{ __('messages.home_news_empty') }}
                     </div>
                 @endforelse
             </div>

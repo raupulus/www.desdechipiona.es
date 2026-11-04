@@ -159,8 +159,8 @@
 
             {{-- Vídeo opcional de YouTube --}}
             @if($page->youtube_embed_url)
-                <section aria-label="Vídeo documental relacionado" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs space-y-3">
-                    <h2 class="font-serif text-xl font-extrabold text-slate-950">▶️ Vídeo documental relacionado</h2>
+                <section aria-label="{{ __('messages.related_video_heading') }}" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs space-y-3">
+                    <h2 class="font-serif text-xl font-extrabold text-slate-950">▶️ {{ __('messages.related_video_heading') }}</h2>
                     <div class="aspect-video w-full overflow-hidden rounded-xl bg-slate-950">
                         <iframe
                             src="{{ $page->youtube_embed_url }}"
@@ -228,10 +228,10 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="font-serif text-xl font-extrabold text-slate-950">
-                            ✏️ ¿Has detectado una errata o tienes un dato documental más preciso?
+                            ✏️ {{ __('messages.propose_correction_title') }}
                         </h2>
                         <p class="text-sm text-slate-800 mt-1">
-                            Ayúdanos a mejorar esta página. Tu propuesta llega directamente a la pestaña «Sugerencias del contenido» de nuestra intranet para su revisión.
+                            {{ __('messages.propose_correction_subtitle') }}
                         </p>
                     </div>
                     <button
@@ -239,7 +239,7 @@
                         onclick="document.getElementById('correction-dialog').showModal()"
                         class="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-extrabold text-white hover:bg-orange-800 transition cursor-pointer"
                     >
-                        <span>Proponer corrección</span>
+                        <span>{{ __('messages.propose_correction_btn') }}</span>
                     </button>
                 </div>
             </section>
@@ -324,13 +324,13 @@
             </dialog>
 
             {{-- Sección de Comentarios y Memoria Vecinal --}}
-            <section id="comentarios" aria-label="Comentarios y recuerdos vecinales" class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-6">
+            <section id="comentarios" aria-label="{{ __('messages.comments_section_title') }}" class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-6">
                 <div>
                     <h2 class="font-serif text-2xl font-extrabold text-slate-950">
-                        💬 Comentarios y Recuerdos ({{ $page->comments->count() }})
+                        💬 {{ __('messages.comments_section_title') }} ({{ $page->comments->count() }})
                     </h2>
                     <p class="text-sm text-slate-700 mt-1">
-                        Comparte tus recuerdos o impresiones sobre este lugar o acontecimiento de Chipiona.
+                        {{ __('messages.comments_section_subtitle') }}
                     </p>
                 </div>
 
@@ -419,7 +419,7 @@
             @if($page->hasCoordinates())
                 <div class="rounded-2xl border-2 border-slate-200 bg-white p-5 shadow-xs space-y-4">
                     <div class="flex items-center justify-between">
-                        <h2 class="font-serif text-lg font-extrabold text-slate-950">📍 Ubicación en Chipiona</h2>
+                        <h2 class="font-serif text-lg font-extrabold text-slate-950">📍 {{ __('messages.location_chipiona_heading') }}</h2>
                         <span class="rounded bg-emerald-100 px-2 py-0.5 font-mono text-xs font-bold text-emerald-950">GPS</span>
                     </div>
                     @if($page->location_name)
@@ -445,16 +445,16 @@
                         rel="noopener noreferrer"
                         class="flex items-center justify-center gap-2 w-full rounded-xl bg-blue-900 px-4 py-2.5 text-xs font-extrabold text-white hover:bg-blue-950 transition"
                     >
-                        <span>🗺️ Abrir ubicación en Google Maps</span>
+                        <span>🗺️ {{ __('messages.open_google_maps') }}</span>
                     </a>
                 </div>
             @endif
 
             {{-- Páginas Enlazadas (Red de Conocimiento) --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-4">
-                <h2 class="font-serif text-lg font-extrabold text-slate-950">🔗 Páginas Enlazadas</h2>
+                <h2 class="font-serif text-lg font-extrabold text-slate-950">🔗 {{ __('messages.linked_pages_heading') }}</h2>
                 <p class="text-xs text-slate-700">
-                    Todo el contenido de Desde Chipiona está conectado entre sí para que puedas seguir el hilo histórico.
+                    {{ __('messages.linked_pages_desc') }}
                 </p>
                 @if(isset($allLinkedPages) && $allLinkedPages->count() > 0)
                     <ul class="space-y-2.5">
@@ -477,7 +477,7 @@
                     </ul>
                 @else
                     <a href="{{ route('home') }}" class="inline-flex items-center gap-1 text-xs font-extrabold text-blue-900 hover:underline">
-                        Explorar todo el catálogo relacionado →
+                        {{ __('messages.explore_catalog_related') }} →
                     </a>
                 @endif
             </div>
@@ -485,7 +485,7 @@
             {{-- Noticias relacionadas --}}
             @if($page->news->count() > 0)
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-3">
-                    <h2 class="font-serif text-lg font-extrabold text-slate-950">📰 Noticias relacionadas</h2>
+                    <h2 class="font-serif text-lg font-extrabold text-slate-950">📰 {{ __('messages.related_news_heading') }}</h2>
                     <ul class="space-y-2.5">
                         @foreach($page->news as $relatedNews)
                             <li>

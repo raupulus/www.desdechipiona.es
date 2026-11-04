@@ -58,7 +58,7 @@
 
         @if($news->youtube_embed_url)
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs space-y-3">
-                <h2 class="font-serif text-xl font-extrabold text-slate-950">▶️ Vídeo relacionado</h2>
+                <h2 class="font-serif text-xl font-extrabold text-slate-950">▶️ {{ __('messages.related_video_heading') }}</h2>
                 <div class="aspect-video w-full overflow-hidden rounded-xl bg-slate-950">
                     <iframe src="{{ $news->youtube_embed_url }}" title="{{ $title }}" class="h-full w-full border-0" allowfullscreen loading="lazy"></iframe>
                 </div>
@@ -120,7 +120,7 @@
 
         {{-- Proponer corrección sobre la noticia --}}
         <section class="rounded-2xl border-2 border-amber-500/80 bg-amber-50/70 p-6 space-y-4">
-            <h2 class="font-serif text-xl font-extrabold text-slate-950">✏️ Proponer corrección o ampliación sobre esta noticia</h2>
+            <h2 class="font-serif text-xl font-extrabold text-slate-950">✏️ {{ __('messages.propose_correction_title') }}</h2>
             <x-social-identity-banner />
             <form action="{{ route('corrections.store') }}" method="POST" class="space-y-4">
                 @csrf
@@ -129,19 +129,19 @@
                 @if(!session('public_social_identity'))
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label for="news-corr-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre</label>
+                            <label for="news-corr-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.author_name_label') }}</label>
                             <input type="text" id="news-corr-name" name="author_name" value="{{ old('author_name') }}" autocomplete="name" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">
                             <x-input-error :messages="$errors->get('author_name')" class="mt-1" />
                         </div>
                         <div>
-                            <label for="news-corr-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu correo (opcional)</label>
+                            <label for="news-corr-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.author_email_optional_label') }}</label>
                             <input type="email" id="news-corr-email" name="author_email" value="{{ old('author_email') }}" autocomplete="email" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">
                             <x-input-error :messages="$errors->get('author_email')" class="mt-1" />
                         </div>
                     </div>
                 @endif
                 <div>
-                    <label for="news-proposed" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Corrección propuesta *</label>
+                    <label for="news-proposed" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proposed_correction_label') }}</label>
                     <textarea id="news-proposed" name="proposed_correction" rows="3" required minlength="10" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">{{ old('proposed_correction') }}</textarea>
                     <x-input-error :messages="$errors->get('proposed_correction')" class="mt-1" />
                 </div>
@@ -154,14 +154,14 @@
                 </div>
                 @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
                 <button type="submit" class="rounded-xl bg-orange-700 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800">
-                    Enviar corrección
+                    {{ __('messages.send_correction_btn') }}
                 </button>
             </form>
         </section>
 
         {{-- Comentarios --}}
         <section class="rounded-2xl border border-slate-200 bg-white p-6 space-y-5">
-            <h2 class="font-serif text-2xl font-extrabold text-slate-950">💬 Comentarios ({{ $news->comments->count() }})</h2>
+            <h2 class="font-serif text-2xl font-extrabold text-slate-950">💬 {{ __('messages.comments_section_title') }} ({{ $news->comments->count() }})</h2>
             @foreach($news->comments as $comment)
                 <div class="rounded-xl border border-slate-200 bg-stone-50 p-4 space-y-1">
                     <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
@@ -236,7 +236,7 @@
     <aside class="lg:col-span-4 space-y-6">
         @if($news->hasCoordinates())
             <div class="rounded-2xl border border-slate-200 bg-white p-5 space-y-3">
-                <h2 class="font-serif text-lg font-extrabold text-slate-950">📍 Lugar de la noticia</h2>
+                <h2 class="font-serif text-lg font-extrabold text-slate-950">📍 {{ __('messages.location_chipiona_heading') }}</h2>
                 @if($news->location_name)
                     <p class="text-sm font-bold text-slate-900">{{ $news->location_name }}</p>
                 @endif
@@ -255,14 +255,14 @@
                     <span>Lng: {{ number_format($news->longitude, 4) }}</span>
                 </div>
                 <a href="https://www.google.com/maps/search/?api=1&amp;query={{ $news->latitude }},{{ $news->longitude }}" target="_blank" rel="noopener noreferrer" class="block text-center rounded-xl bg-blue-900 px-4 py-2.5 text-xs font-extrabold text-white hover:bg-blue-950 transition">
-                    🗺️ Abrir ubicación en Google Maps
+                    🗺️ {{ __('messages.open_google_maps') }}
                 </a>
             </div>
         @endif
 
         @if($news->relatedPages->count() > 0)
             <div class="rounded-2xl border border-slate-200 bg-white p-5 space-y-3">
-                <h2 class="font-serif text-lg font-extrabold text-slate-950">🔗 Páginas relacionadas</h2>
+                <h2 class="font-serif text-lg font-extrabold text-slate-950">🔗 {{ __('messages.linked_pages_heading') }}</h2>
                 <ul class="space-y-2">
                     @foreach($news->relatedPages as $relPage)
                         <li>

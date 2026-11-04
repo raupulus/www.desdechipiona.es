@@ -72,6 +72,53 @@ class ChipionaFeaturesTest extends TestCase
             ->assertDontSee('Leyenda de la Virgen de Regla');
     }
 
+    public function test_home_renders_bilingual_labels_in_spanish_and_english(): void
+    {
+        $page = Page::factory()->published()->create([
+            'slug' => 'faro-de-chipiona',
+            'title' => ['es' => 'El Faro de Chipiona', 'en' => 'Chipiona Lighthouse'],
+            'content_group' => ContentGroup::Monumentos,
+            'evidence_level' => EvidenceLevel::Consolidated,
+        ]);
+
+        $related = Page::factory()->published()->create([
+            'slug' => 'las-canteras',
+            'title' => ['es' => 'Playa de Las Canteras', 'en' => 'Las Canteras Beach'],
+        ]);
+        $page->relatedPages()->attach($related->id);
+
+        News::factory()->published()->create([
+            'title' => ['es' => 'Nueva excavación', 'en' => 'New excavation'],
+            'content' => ['es' => 'Detalle', 'en' => 'Detail'],
+        ]);
+
+        // Versión en español
+        $this->withSession(['locale' => 'es'])
+            ->get(route('home'))
+            ->assertStatus(200)
+            ->assertSee('Explorador de Contenidos de Chipiona')
+            ->assertSee('Nuestro compromiso con la verdad histórica:')
+            ->assertSee('2. Época o siglo:')
+            ->assertSee('3. Rigor (Hechos vs. Leyendas):')
+            ->assertSee('4. Rango de años:')
+            ->assertSee('Páginas enlazadas:')
+            ->assertSee('Leer reportaje completo')
+            ->assertSee('Ver todas las noticias');
+
+        // Versión en inglés
+        $this->withSession(['locale' => 'en'])
+            ->get(route('home'))
+            ->assertStatus(200)
+            ->assertSee('Chipiona Content Explorer')
+            ->assertSee('Our commitment to historical truth:')
+            ->assertSee('2. Historical era or century:')
+            ->assertSee('3. Rigor (Facts vs. Legends):')
+            ->assertSee('4. Year range:')
+            ->assertSee('Linked pages:')
+            ->assertSee('Read full story')
+            ->assertSee('View all news');
+    }
+
     public function test_page_show_renders_linked_pages_coordinates_youtube_and_evidence_banner(): void
     {
         $salmedina = Page::factory()->published()->create([
@@ -198,24 +245,35 @@ class ChipionaFeaturesTest extends TestCase
         OfficialPhone::factory()->create(['name' => 'Policía Local de Chipiona', 'phone' => '956 92 90 60']);
         Proverb::factory()->approved()->create(['text' => 'En Chipiona el sol se esconde en la mar.']);
 
-        $this->get(route('weather.index'))
+        $this->withSession(['locale' => 'es'])
+            ->get(route('weather.index'))
             ->assertStatus(200)
             ->assertSee('AEMET')
             ->assertSee('Tabla de Mareas');
 
-        $this->get(route('phones.index'))
+        $this->withSession(['locale' => 'en'])
+            ->get(route('weather.index'))
+            ->assertStatus(200)
+            ->assertSee('AEMET')
+            ->assertSee('Tide Table');
+
+        $this->withSession(['locale' => 'es'])
+            ->get(route('phones.index'))
             ->assertStatus(200)
             ->assertSee('Policía Local de Chipiona')
             ->assertSee('tel:956929060');
 
-        $this->get(route('proverbs.index'))
+        $this->withSession(['locale' => 'es'])
+            ->get(route('proverbs.index'))
             ->assertStatus(200)
             ->assertSee('En Chipiona el sol se esconde en la mar.');
 
-        $this->get(route('suggestions.create'))
+        $this->withSession(['locale' => 'es'])
+            ->get(route('suggestions.create'))
             ->assertStatus(200);
 
-        $this->get(route('legal'))
+        $this->withSession(['locale' => 'es'])
+            ->get(route('legal'))
             ->assertStatus(200)
             ->assertSee('Raúl Caro Pastorino')
             ->assertSee('raupulus.dev')
