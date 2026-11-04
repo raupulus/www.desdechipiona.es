@@ -24,15 +24,23 @@ class NewsController extends Controller
             ->orderByDesc('featured')
             ->orderByDesc('published_at');
 
-        $search = trim((string) $request->query('q', ''));
+        $search = mb_substr(trim((string) $request->query('q', '')), 0, 120);
         if ($search !== '') {
-            $likeOp = $query->getConnection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $isPgsql = $query->getConnection()->getDriverName() === 'pgsql';
+            $likeOp = $isPgsql ? 'ILIKE' : 'LIKE';
             $term = '%'.addcslashes($search, '%_\\').'%';
-            $query->where(function ($sub) use ($likeOp, $term): void {
-                $sub->where('title', $likeOp, $term)
-                    ->orWhere('excerpt', $likeOp, $term)
-                    ->orWhere('content', $likeOp, $term)
-                    ->orWhere('location_name', $likeOp, $term);
+            $query->where(function ($sub) use ($isPgsql, $likeOp, $term): void {
+                if ($isPgsql) {
+                    $sub->whereRaw('title::text ILIKE ?', [$term])
+                        ->orWhereRaw('excerpt::text ILIKE ?', [$term])
+                        ->orWhereRaw('content::text ILIKE ?', [$term])
+                        ->orWhere('location_name', $likeOp, $term);
+                } else {
+                    $sub->where('title', $likeOp, $term)
+                        ->orWhere('excerpt', $likeOp, $term)
+                        ->orWhere('content', $likeOp, $term)
+                        ->orWhere('location_name', $likeOp, $term);
+                }
             });
         }
 

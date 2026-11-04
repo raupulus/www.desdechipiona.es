@@ -38,6 +38,8 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request, EmailService $emailService): JsonResponse
     {
+        abort_unless(config('auth.registration_enabled', false), 404);
+
         [$user, $token] = DB::transaction(function () use ($request) {
             // Crear el usuario — el cast 'hashed' en el modelo User se encarga de hashear la contraseña
             $user = User::create([

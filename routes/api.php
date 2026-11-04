@@ -22,7 +22,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/reset-password', [AuthController::class, 'resetPassword'])
             ->middleware('throttle:5,1')
             ->name('api.v1.auth.reset-password');
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
             Route::post('/logout', [AuthController::class, 'logout'])->name('api.v1.auth.logout');
             Route::get('/user', [AuthController::class, 'user'])->name('api.v1.auth.user');
         });

@@ -138,13 +138,13 @@
                     <div class="space-y-6">
                         @foreach($rawContent as $block)
                             @if(($block['type'] ?? '') === 'text')
-                                <div class="prose-chipiona">{!! $block['data']['content'] ?? '' !!}</div>
+                                <div class="prose-chipiona">{!! \App\Models\Page::sanitizeHtmlString((string) ($block['data']['content'] ?? '')) !!}</div>
                             @elseif(($block['type'] ?? '') === 'cta')
                                 <div class="rounded-2xl border border-orange-200 bg-orange-50 p-6">
                                     <h3 class="font-serif text-xl font-extrabold text-slate-950 mb-2">{{ $block['data']['title'] ?? '' }}</h3>
                                     <p class="text-sm text-slate-800 mb-4">{{ $block['data']['description'] ?? '' }}</p>
                                     @if(!empty($block['data']['button_url']))
-                                        <a href="{{ $block['data']['button_url'] }}" class="inline-flex items-center rounded-xl bg-orange-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-orange-800">
+                                        <a href="{{ \App\Models\Page::sanitizeUrlString((string) $block['data']['button_url']) }}" class="inline-flex items-center rounded-xl bg-orange-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-orange-800">
                                             {{ $block['data']['button_text'] ?? __('messages.read_more') }}
                                         </a>
                                     @endif

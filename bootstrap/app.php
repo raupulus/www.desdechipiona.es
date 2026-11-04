@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
         $middleware->appendToGroup('web', SetLocale::class);
         $middleware->appendToGroup('web', EnsureUserIsActive::class);
         $middleware->appendToGroup('api', EnsureUserIsActive::class);

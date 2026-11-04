@@ -10,8 +10,22 @@ class AuthApiTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_api_register_returns_404_when_disabled_by_default(): void
+    {
+        config(['auth.registration_enabled' => false]);
+
+        $response = $this->postJson('/api/v1/auth/register', [
+            'name' => 'Test User', 'email' => 'test@example.com',
+            'password' => 'password', 'password_confirmation' => 'password',
+        ]);
+
+        $response->assertNotFound();
+    }
+
     public function test_user_can_register_via_api(): void
     {
+        config(['auth.registration_enabled' => true]);
+
         $response = $this->postJson('/api/v1/auth/register', [
             'name' => 'Test User', 'email' => 'test@example.com',
             'password' => 'password', 'password_confirmation' => 'password',

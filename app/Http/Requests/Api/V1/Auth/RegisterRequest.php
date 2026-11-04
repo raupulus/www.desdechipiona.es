@@ -18,6 +18,8 @@ class RegisterRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        abort_unless(config('auth.registration_enabled', false), 404);
+
         return true;
     }
 

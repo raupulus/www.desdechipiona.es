@@ -145,6 +145,8 @@
                             type="number"
                             id="filter-year-from"
                             name="year_from"
+                            min="-10000"
+                            max="2100"
                             value="{{ $filters['year_from'] ?? '' }}"
                             placeholder="Desde (ej. 1477)"
                             class="w-1/2 rounded-xl border border-slate-300 px-2.5 py-2 text-base sm:text-sm font-bold text-slate-950"
@@ -152,6 +154,8 @@
                         <input
                             type="number"
                             name="year_to"
+                            min="-10000"
+                            max="2100"
                             aria-label="Hasta el año"
                             value="{{ $filters['year_to'] ?? '' }}"
                             placeholder="Hasta (ej. 1900)"

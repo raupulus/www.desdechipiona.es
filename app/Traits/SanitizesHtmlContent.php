@@ -26,14 +26,37 @@ trait SanitizesHtmlContent
 
                 $sanitized = [];
                 foreach ($translations as $locale => $html) {
-                    $sanitized[$locale] = is_string($html)
-                        ? static::sanitizeHtmlString($html)
-                        : $html;
+                    $sanitized[$locale] = static::sanitizeContentValue($html);
                 }
 
                 $model->setTranslations($field, $sanitized);
             }
         });
+    }
+
+    /**
+     * Sanea recursivamente un valor traducible (string o array de bloques).
+     */
+    protected static function sanitizeContentValue(mixed $value): mixed
+    {
+        if (is_string($value)) {
+            return static::sanitizeHtmlString($value);
+        }
+
+        if (is_array($value)) {
+            $result = [];
+            foreach ($value as $k => $v) {
+                if ($k === 'button_url' && is_string($v)) {
+                    $result[$k] = static::sanitizeUrlString($v);
+                } else {
+                    $result[$k] = static::sanitizeContentValue($v);
+                }
+            }
+
+            return $result;
+        }
+
+        return $value;
     }
 
     /**
@@ -63,13 +86,34 @@ trait SanitizesHtmlContent
             $clean
         ) ?? $clean;
 
-        // Neutralizar protocolos javascript: o vbscript: en href/src
-        $clean = preg_replace(
-            '#(\b(?:href|src|action)\s*=\s*["\']?)\s*(?:javascript|vbscript|data\s*:\s*text/html)\s*:[^"\'\s>]*#i',
-            '$1#',
+        // Neutralizar protocolos javascript:, vbscript: o data: (incluso ofuscados con entidades HTML o caracteres de control)
+        $clean = preg_replace_callback(
+            '#\b(href|src|action|formaction|xlink:href)\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s"\'=<>`]+))#i',
+            function (array $matches): string {
+                $attr = $matches[1];
+                $rawVal = ($matches[2] ?? '') !== '' ? $matches[2] : (($matches[3] ?? '') !== '' ? $matches[3] : ($matches[4] ?? ''));
+                $safeVal = static::sanitizeUrlString($rawVal);
+
+                return $attr.'="'.htmlspecialchars($safeVal, ENT_QUOTES, 'UTF-8').'"';
+            },
             $clean
         ) ?? $clean;
 
         return $clean;
+    }
+
+    /**
+     * Valida y limpia una URL para impedir esquemas ejecutables (javascript:, vbscript:, data:).
+     */
+    public static function sanitizeUrlString(string $url): string
+    {
+        $decoded = html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $normalized = preg_replace('/[\x00-\x20]+/', '', $decoded) ?? '';
+
+        if (preg_match('/^(?:javascript|vbscript|data):/i', $normalized)) {
+            return '#';
+        }
+
+        return trim($url);
     }
 }

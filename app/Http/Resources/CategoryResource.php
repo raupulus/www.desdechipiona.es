@@ -24,7 +24,7 @@ class CategoryResource extends JsonResource
             'name' => $this->name,
             'description' => $this->whenHas('description'),
             'image' => $this->whenHas('image'),
-            'sort_order' => $this->whenHas('sort_order'),
+            'order' => $this->whenHas('order'),
         ];
     }
 }

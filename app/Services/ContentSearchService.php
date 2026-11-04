@@ -97,18 +97,28 @@ class ContentSearchService
      */
     private function applyFilters(Builder $query, array $filters): void
     {
-        $search = trim((string) ($filters['q'] ?? ''));
+        $search = mb_substr(trim((string) ($filters['q'] ?? '')), 0, 120);
         if ($search !== '') {
-            $likeOp = $query->getConnection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $isPgsql = $query->getConnection()->getDriverName() === 'pgsql';
+            $likeOp = $isPgsql ? 'ILIKE' : 'LIKE';
             $term = '%'.addcslashes($search, '%_\\').'%';
 
-            $query->where(function (Builder $sub) use ($likeOp, $term): void {
-                $sub->where('title', $likeOp, $term)
-                    ->orWhere('excerpt', $likeOp, $term)
-                    ->orWhere('content', $likeOp, $term)
-                    ->orWhere('location_name', $likeOp, $term)
-                    ->orWhere('period_label', $likeOp, $term)
-                    ->orWhere('source_references', $likeOp, $term);
+            $query->where(function (Builder $sub) use ($isPgsql, $likeOp, $term): void {
+                if ($isPgsql) {
+                    $sub->whereRaw('title::text ILIKE ?', [$term])
+                        ->orWhereRaw('excerpt::text ILIKE ?', [$term])
+                        ->orWhereRaw('content::text ILIKE ?', [$term])
+                        ->orWhere('location_name', $likeOp, $term)
+                        ->orWhere('period_label', $likeOp, $term)
+                        ->orWhereRaw('source_references::text ILIKE ?', [$term]);
+                } else {
+                    $sub->where('title', $likeOp, $term)
+                        ->orWhere('excerpt', $likeOp, $term)
+                        ->orWhere('content', $likeOp, $term)
+                        ->orWhere('location_name', $likeOp, $term)
+                        ->orWhere('period_label', $likeOp, $term)
+                        ->orWhere('source_references', $likeOp, $term);
+                }
             });
         }
 
@@ -133,7 +143,7 @@ class ContentSearchService
         }
 
         if (isset($filters['year_from']) && $filters['year_from'] !== '' && is_numeric($filters['year_from'])) {
-            $yearFrom = (int) $filters['year_from'];
+            $yearFrom = max(-32000, min(32000, (int) $filters['year_from']));
             $query->where(function (Builder $q) use ($yearFrom): void {
                 $q->where('year_start', '>=', $yearFrom)
                     ->orWhere('year_end', '>=', $yearFrom);
@@ -141,7 +151,7 @@ class ContentSearchService
         }
 
         if (isset($filters['year_to']) && $filters['year_to'] !== '' && is_numeric($filters['year_to'])) {
-            $yearTo = (int) $filters['year_to'];
+            $yearTo = max(-32000, min(32000, (int) $filters['year_to']));
             $query->where('year_start', '<=', $yearTo);
         }
 
