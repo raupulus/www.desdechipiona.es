@@ -18,36 +18,47 @@ class ChipionaWeatherService
 {
     /**
      * Obtiene la previsión meteorológica y el estado de las mareas de Chipiona para hoy.
-     * Los datos se cachean en servidor durante 30 minutos (1800 s) para máxima rapidez y resiliencia.
+     * Si la API remota responde se cachea 30 minutos (1800 s); ante un fallo puntual de conexión
+     * se aplica el cálculo de contingencia cacheado solo 5 minutos (300 s) para reintentar pronto.
      *
      * @return array<string, mixed>
      */
     public function getTodaySummary(): array
     {
-        return Cache::remember('chipiona_weather_and_tides_'.now()->format('Y_m_d_H'), 1800, function (): array {
-            // 1. Intentar consultar la API centralizada api.raupulus.dev
-            $remoteData = $this->fetchFromRaupulusApi();
-            if ($remoteData !== null) {
-                return $remoteData;
-            }
+        $cacheKey = 'chipiona_weather_and_tides_'.now()->format('Y_m_d_H');
+        $cached = Cache::get($cacheKey);
+        if (is_array($cached)) {
+            return $cached;
+        }
 
-            // 2. Fallback resiliente si la API remota no está configurada o no responde
-            $weather = $this->fallbackWeather();
-            $tides = $this->calculateChipionaTides(Carbon::now('Europe/Madrid'));
+        // 1. Intentar consultar la API centralizada api.raupulus.dev (V2 Official)
+        $remoteData = $this->fetchFromRaupulusApi();
+        if ($remoteData !== null) {
+            Cache::put($cacheKey, $remoteData, 1800);
 
-            return [
-                'municipality' => 'Chipiona (Cádiz)',
-                'aemet_code' => config('services.aemet.municipality_code', '11016'),
-                'updated_at' => Carbon::now('Europe/Madrid')->format('d/m/Y H:i'),
-                'weather' => $weather,
-                'tides' => $tides,
-            ];
-        });
+            return $remoteData;
+        }
+
+        // 2. Fallback resiliente si la API remota no está configurada o no responde
+        $weather = $this->fallbackWeather();
+        $tides = $this->calculateChipionaTides(Carbon::now('Europe/Madrid'));
+
+        $fallbackData = [
+            'municipality' => 'Chipiona (Cádiz)',
+            'aemet_code' => (string) config('services.aemet.municipality_code', '11016'),
+            'updated_at' => Carbon::now('Europe/Madrid')->format('d/m/Y H:i'),
+            'weather' => $weather,
+            'tides' => $tides,
+        ];
+
+        Cache::put($cacheKey, $fallbackData, 300);
+
+        return $fallbackData;
     }
 
     /**
-     * Consulta el endpoint meteorológico en api.raupulus.dev enviando cabeceras
-     * de origen y referer para validación de dominio permitido en el servidor.
+     * Consulta el endpoint oficial de meteorología y mareas en api.raupulus.dev
+     * enviando token Bearer (si está configurado) y cabeceras de identificación.
      *
      * @return array<string, mixed>|null
      */
@@ -61,25 +72,40 @@ class ChipionaWeatherService
         try {
             $timeout = (int) config('services.raupulus_weather.timeout', 4);
             $appUrl = (string) config('app.url', 'https://desdechipiona.es');
+            $token = config('services.raupulus_weather.token');
 
-            $response = Http::withHeaders([
+            $headers = [
                 'Origin' => $appUrl,
                 'Referer' => $appUrl,
                 'Accept' => 'application/json',
                 'User-Agent' => 'DesdeChipiona/1.0 (+https://desdechipiona.es)',
-            ])
+            ];
+
+            if (! empty($token)) {
+                $headers['Authorization'] = 'Bearer '.$token;
+            }
+
+            $response = Http::withHeaders($headers)
                 ->connectTimeout(2)
                 ->timeout($timeout)
                 ->get($apiUrl);
 
             if ($response->successful()) {
-                /** @var array<string, mixed>|null $data */
-                $data = $response->json();
+                /** @var array<string, mixed>|null $payload */
+                $payload = $response->json();
+
+                // Desenvolver el envelope estándar ApiResponseTrait {"success": true, "data": { ... }}
+                $data = (is_array($payload) && isset($payload['data']) && is_array($payload['data']))
+                    ? $payload['data']
+                    : $payload;
+
                 if (is_array($data) && isset($data['weather'], $data['tides'])) {
                     return [
                         'municipality' => (string) ($data['municipality'] ?? 'Chipiona (Cádiz)'),
+                        'province' => (string) ($data['province'] ?? 'Cádiz'),
                         'aemet_code' => (string) ($data['aemet_code'] ?? '11016'),
                         'updated_at' => (string) ($data['updated_at'] ?? Carbon::now('Europe/Madrid')->format('d/m/Y H:i')),
+                        'updated_at_iso' => (string) ($data['updated_at_iso'] ?? null),
                         'weather' => (array) $data['weather'],
                         'tides' => (array) $data['tides'],
                     ];

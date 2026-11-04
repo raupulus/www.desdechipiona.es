@@ -1,6 +1,6 @@
 # Integración de APIs en la Aplicación
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-04*
 
 > Este directorio documenta cómo nuestra aplicación utiliza e integra APIs de terceros y servicios externos.
 
@@ -16,6 +16,4 @@
 
 ## Índice de Integraciones
 
-*(Cuando se incorporen APIs externas, registrar aquí su archivo de especificación de integración).*
-
-- [Ejemplo de Integración / Plantilla](../../apis/README.md)
+- [API Meteorología y Mareas (`api.raupulus.dev`)](weather-raupulus.md) — Consumo de parte meteorológico oficial de Chipiona, estación local y tabla diaria de mareas para corrales de pesca.

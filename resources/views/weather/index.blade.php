@@ -30,10 +30,16 @@
                     <h2 class="font-serif text-2xl font-extrabold text-slate-950">{{ __('messages.weather_today_title') }}</h2>
                     <p class="text-xs font-bold text-slate-700">{{ __('messages.weather_updated', ['date' => $summary['updated_at'] ?? '']) }}</p>
                 </div>
-                <span class="rounded-xl bg-blue-950 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-300">AEMET 11016</span>
+                <span class="rounded-xl bg-blue-950 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-300">AEMET {{ $summary['aemet_code'] ?? '11016' }}</span>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 {{ isset($weather['current_temp']) ? 'sm:grid-cols-3' : '' }} gap-4">
+                @if(isset($weather['current_temp']))
+                    <div class="rounded-xl border border-amber-300 bg-amber-50 p-4 col-span-2 sm:col-span-1">
+                        <span class="block text-xs font-extrabold uppercase text-amber-950">{{ __('messages.weather_temp_current') }}</span>
+                        <span class="font-serif text-3xl font-extrabold text-amber-950">{{ $weather['current_temp'] }} °C</span>
+                    </div>
+                @endif
                 <div class="rounded-xl border border-orange-200 bg-orange-50 p-4">
                     <span class="block text-xs font-extrabold uppercase text-orange-950">{{ __('messages.weather_temp_max') }}</span>
                     <span class="font-serif text-3xl font-extrabold text-slate-950">{{ $weather['temp_max'] ?? 22 }} °C</span>
@@ -66,6 +72,12 @@
                     <dd class="font-extrabold text-blue-950">~{{ $weather['sea_temp'] ?? 19 }} °C</dd>
                 </div>
             </dl>
+
+            @if(!empty($weather['source']))
+                <p class="text-xs text-slate-500 font-medium pt-3 border-t border-slate-100">
+                    <span class="font-bold text-slate-600">{{ __('messages.weather_source_label') }}:</span> {{ $weather['source'] }}
+                </p>
+            @endif
         </section>
 
         {{-- Tabla de Mareas y Corrales de Pesca --}}

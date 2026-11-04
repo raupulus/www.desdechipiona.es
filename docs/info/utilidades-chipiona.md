@@ -1,9 +1,9 @@
 # Módulo de Utilidades Locales: El Tiempo, Mareas y Teléfonos Oficiales
 
-*Última actualización: 2026-11-03*
+*Última actualización: 2026-11-04*
 
 ## 1. Resumen del Módulo
-Proporciona servicios de utilidad pública directa para vecinos y visitantes de Chipiona: directorio de teléfonos oficiales (`official_phones`) con llamada directa `tel:`, previsión meteorológica oficial de AEMET (municipio `11016`) y tabla diaria de pleamares, bajamares y coeficientes de marea para los corrales de pesca (`ChipionaWeatherService`), además del buscador multicriterio (`ContentSearchService`).
+Proporciona servicios de utilidad pública directa para vecinos y visitantes de Chipiona: directorio de teléfonos oficiales (`official_phones`) con llamada directa `tel:`, previsión meteorológica oficial y tabla diaria de pleamares, bajamares y coeficientes de marea para los corrales de pesca conectada a la API centralizada `api.raupulus.dev` (`ChipionaWeatherService`), además del buscador multicriterio (`ContentSearchService`).
 
 ## 2. Archivos Principales Involucrados
 
