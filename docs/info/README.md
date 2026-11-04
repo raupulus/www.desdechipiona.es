@@ -1,6 +1,6 @@
 # Documentación técnica de módulos
 
-*Última actualización: 2026-11-03*
+*Última actualización: 2026-11-04*
 
 Este directorio contiene la documentación técnica viva y detallada de cada módulo implementado en la plataforma. Cada archivo describe el objetivo, la arquitectura, los archivos involucrados, los campos, las relaciones, qué es editable desde el panel y el comportamiento de un módulo concreto.
 

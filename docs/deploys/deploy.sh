@@ -1,9 +1,13 @@
 #!/bin/bash
-# Script de despliegue en producción para Skeleton Laravel Project
+# Script de despliegue en producción para Desde Chipiona (desdechipiona.es)
+# *Última actualización: 2026-11-04*
 # Uso: bash docs/deploys/deploy.sh
 # Requiere: git, composer, pnpm, php 8.5
 
-set -e
+set -euo pipefail
+
+# Garantizar que el sitio vuelva a estar activo aunque falle algún paso intermedio
+trap 'php artisan up || true' EXIT
 
 echo "=== Iniciando despliegue ==="
 
@@ -16,8 +20,9 @@ git pull origin main
 # 3. Instalar dependencias PHP (sin dev)
 composer install --no-dev --optimize-autoloader
 
-# 4. Instalar dependencias JS y compilar assets con pnpm
+# 4. Instalar dependencias JS, asegurar ausencia de public/hot y compilar assets con pnpm
 pnpm install --frozen-lockfile
+rm -f public/hot
 pnpm run build
 
 # 5. Ejecutar migraciones pendientes
@@ -33,8 +38,8 @@ php artisan optimize
 # 7. Regenerar sitemap
 php artisan sitemap:generate
 
-# 8. Reiniciar worker de colas (si se usa)
-# php artisan queue:restart
+# 8. Reiniciar worker de colas
+php artisan queue:restart
 
 # 9. Desactivar modo mantenimiento
 php artisan up

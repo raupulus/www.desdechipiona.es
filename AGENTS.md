@@ -233,42 +233,44 @@ La documentación de cada módulo se encuentra en `docs/info/`. **Es obligatorio
 > ⚠️ **Nota para agentes**: Esta estructura debe mantenerse actualizada si se añaden o eliminan directorios relevantes.
 
 ```
-skeleton-laravel-project/
-├── .agents/                      # Configuración centralizada de agentes y automatizaciones
+www.desdechipiona.es/
+├── .agents/                      # Configuración centralizada de agentes, skills y automatizaciones
 ├── .claude -> .agents            # Enlace simbólico a .agents
 ├── .github -> .agents            # Enlace simbólico a .agents
 ├── CLAUDE.md -> AGENTS.md        # Enlace simbólico a AGENTS.md
 ├── AGENTS.md                     # Directrices maestras del proyecto
 ├── README.md                     # Documentación de instalación y despliegue
 ├── app/
-│   ├── Console/Commands/         # ProjectInstall, ProjectClear, ProjectDummy, GenerateSitemap, GenerateManualPdf
-│   ├── Enums/                    # Role (superadmin, admin, user), ContentStatus, EmailStatus
+│   ├── Console/Commands/         # ProjectInstall, ProjectClear, ProjectDummy, ImportChipionaCorpus, GenerateSitemap, GenerateManualPdf
+│   ├── Enums/                    # Role, ContentStatus, EmailStatus, ContentGroup, HistoricalEra, EvidenceLevel, SuggestionStatus
 │   ├── Filament/
 │   │   ├── Admin/                # Panel Admin (/admin): Resources, Pages, Widgets
 │   │   │   ├── Pages/            # ClearCache, RegenerateSitemap, ViewLogs
-│   │   │   ├── Resources/        # User, Post, Page, Category, Slide, Section, Setting, SentEmail
+│   │   │   ├── Resources/        # User, Post, Page, News, Category, Slide, Section, OfficialPhone, Proverb, ContentSuggestion, CorrectionRequest, Comment, Setting, SentEmail
 │   │   │   └── Widgets/          # StatsOverviewWidget, PostsChartWidget, LatestEmailsWidget, LogDownloadWidget
+│   │   ├── Auth/                 # Login personalizado de Filament con Turnstile/reCAPTCHA
 │   │   ├── Components/           # ImageCropField (helper de imágenes con croppers estándar)
 │   │   └── Panel/                # Panel Usuario (/panel): EditProfile, ApiTokens, WelcomeWidget
 │   ├── Helpers/                  # helpers.php (setting, media_url, storage_image, format_date)
 │   ├── Http/
-│   │   ├── Controllers/          # Controladores Web, Auth y API v1
-│   │   ├── Middleware/           # SetLocale, SecurityHeaders
-│   │   └── Requests/             # FormRequests (ContactRequest, LoginRequest, Api/V1/Auth/*)
+│   │   ├── Controllers/          # Controladores Web (Home, Page, News, Proverb, Weather, OfficialPhone, ContentSuggestion, CorrectionRequest, Comment, SocialAuth, Post, Contact, StaticPage, Language, LogDownload), Auth y API v1
+│   │   ├── Middleware/           # SetLocale, SecurityHeaders, EnsureUserIsActive
+│   │   ├── Requests/             # FormRequests (ContactRequest, LoginRequest, Api/V1/Auth/*)
+│   │   └── Resources/            # JsonResources API v1 (PostResource, PageResource, CategoryResource, UserResource)
 │   ├── Mail/                     # ContactMail, WelcomeMail, GenericMail
-│   ├── Models/                   # User, Post, Page, Category, Slide, Section, Setting, SentEmail
+│   ├── Models/                   # User, Post, Page, News, Category, Slide, Section, OfficialPhone, Proverb, ContentSuggestion, CorrectionRequest, Comment, Setting, SentEmail
 │   ├── Policies/                 # Políticas de autorización por modelo
 │   ├── Providers/
 │   │   └── Filament/             # AdminPanelProvider (/admin), PanelUserProvider (/panel)
-│   ├── Rules/                    # Reglas de validación personalizadas (Recaptcha)
-│   ├── Services/                 # EmailService, SeoService, SettingService, SitemapService
-│   └── Traits/                   # HasSlug, HasStatus, HasSeo, BelongsToUser
+│   ├── Rules/                    # Reglas de validación personalizadas (Recaptcha, Turnstile)
+│   ├── Services/                 # ContentSearchService, ChipionaWeatherService, EmailService, SeoService, SettingService, SitemapService
+│   └── Traits/                   # HasSlug, HasStatus, HasSeo, BelongsToUser, SanitizesHtmlContent
 ├── bootstrap/                    # Arranque del framework y configuración de proveedores
 ├── config/                       # Archivos de configuración (app, database, locales, services, scribe, etc.)
 ├── database/
 │   ├── factories/                # Factorías de modelos para tests
 │   ├── migrations/               # Migraciones comentadas de PostgreSQL
-│   └── seeders/                  # DatabaseSeeder, DummyDataSeeder, UserSeeder, SettingSeeder, CategorySeeder, PageSeeder, PostSeeder, SlideSeeder, SectionSeeder
+│   └── seeders/                  # DatabaseSeeder, DummyDataSeeder, ChipionaStructureSeeder, UserSeeder, SettingSeeder, CategorySeeder, PageSeeder, PostSeeder, SlideSeeder, SectionSeeder
 ├── docs/
 │   ├── apis/                     # Documentación técnica oficial externa de APIs
 │   ├── auditorias/               # Auditorías solicitadas de código (gitignored)
@@ -283,7 +285,7 @@ skeleton-laravel-project/
 ├── resources/
 │   ├── css/                      # app.css con Tailwind CSS v4 (@theme)
 │   ├── js/                       # app.js y componentes
-│   └── views/                    # Plantillas Blade (auth/, components/, layouts/, posts/, pages/, static/, etc.)
+│   └── views/                    # Plantillas Blade (auth/, components/, layouts/, news/, pages/, phones/, posts/, proverbs/, static/, suggestions/, weather/, etc.)
 ├── routes/                       # web.php, auth.php, api.php, console.php
 └── tests/                        # Tests Feature y Unit (Auth, Web, Admin, Api, Console, Services)
 ```
@@ -293,11 +295,33 @@ skeleton-laravel-project/
 ## 11. Mapa Completo de Rutas
 
 ### Rutas Web Públicas
-- `GET  /` (`home`): Portada principal del sitio con carrusel, secciones dinámicas y novedades.
+- `GET  /` (`home`): Portada principal con buscador multicriterio, filtros de época/evidencia y explorador de fichas de Chipiona.
+- `GET  /explorar` (`explore`): Redirección 301 al explorador principal con sus parámetros de filtro.
+- `GET  /pages/{slug}` (`pages.show`): Ficha enciclopédica o página documental con fuentes `[F-XXXX]`, mapa GPS, correcciones y comentarios.
+- `GET  /noticias` (`news.index`): Listado paginado de noticias y hallazgos documentales con buscador.
+- `GET  /noticias/{slug}` (`news.show`): Crónica detallada de noticia documental con propuestas de corrección y comentarios.
+- `GET  /refranero` (`proverbs.index`): Refranero popular chipionero filtrable por categoría y búsqueda, con formulario de envío.
+- `POST /refranero` (`proverbs.store`, `throttle:10,1`): Envío de nuevo refrán popular protegido con Turnstile.
+- `GET  /el-tiempo-y-mareas` (`weather.index`): Previsión meteorológica oficial (AEMET 11016) y tabla diaria de mareas y corrales de pesca.
+- `GET  /telefonos-oficiales` (`phones.index`): Directorio de teléfonos oficiales y de urgencia de Chipiona con buscador y filtro.
+- `GET  /aportar-contenido` (`suggestions.create`): Formulario ciudadano para sugerir y aportar nuevos contenidos sobre Chipiona.
+- `POST /aportar-contenido` (`suggestions.store`, `throttle:10,1`): Envío de propuesta de contenido protegida con Turnstile.
+- `POST /participacion/correcciones` (`corrections.store`, `throttle:10,1`): Envío de corrección documental sobre una página o noticia.
+- `POST /participacion/comentarios` (`comments.store`, `throttle:10,1`): Publicación de comentario o recuerdo vecinal.
+- `GET  /auth/social/{provider}/redirect` (`social.redirect`, `throttle:10,1`): Inicio de identificación social ligera (Facebook / Google) sin cuenta local.
+- `GET  /auth/social/{provider}/callback` (`social.callback`, `throttle:10,1`): Callback OAuth de identificación social en sesión.
+- `POST /auth/social/disconnect` (`social.disconnect`, `throttle:10,1`): Desconexión de la identidad social de la sesión actual.
+- `GET  /autoria-y-legal` (`legal`): Página de autoría verificada, propiedad intelectual y licencia AGPLv3.
 - `GET  /blog` (`blog.index`): Listado paginado de posts publicados con filtro de categorías.
 - `GET  /blog/{slug}` (`blog.show`): Vista detallada de un artículo de blog.
-- `GET  /pages/{slug}` (`pages.show`): Vista de página de contenido dinámico o legal.
-- `GET  /contact` (`contact`): Formulario de contacto con rate limiting y reCAPTCHA v3.
+- `GET  /contact` (`contact`): Formulario de contacto con rate limiting, Turnstile y reCAPTCHA v3.
+- `POST /contact` (`contact.send`): Envío del formulario de contacto (`throttle:10,1`).
+- `GET  /about` (`about`): Página institucional Sobre Nosotros.
+- `GET  /privacy` (`privacy`): Política de privacidad.
+- `GET  /cookies` (`cookies`): Política de cookies.
+- `GET  /lang/{locale}` (`language.switch`): Cambio de idioma activo en sesión.
+- `GET  /admin/logs/download/{filename}` (`admin.logs.download`): Descarga segura de archivo de log (solo admin activo).
+- `GET  /up`: Health check nativo de Laravel.
 - `POST /contact` (`contact.send`): Envío del formulario de contacto (`throttle:10,1`).
 - `GET  /about` (`about`): Página institucional Sobre Nosotros.
 - `GET  /privacy` (`privacy`): Política de privacidad.
@@ -330,10 +354,16 @@ skeleton-laravel-project/
 - CRUDs de Administración:
   - `/admin/users`: Listado, creación y edición de usuarios.
   - `/admin/posts`: Gestión de artículos de blog y traducciones.
-  - `/admin/pages`: Gestión de páginas y metadatos SEO.
+  - `/admin/pages`: Gestión de páginas enciclopédicas, épocas, fuentes y metadatos SEO.
+  - `/admin/news`: Gestión de noticias y hallazgos documentales de Chipiona.
   - `/admin/categories`: Gestión de categorías compartidas.
   - `/admin/slides`: Gestión de carruseles de imágenes por zona.
   - `/admin/sections`: Gestión de bloques dinámicos de contenido.
+  - `/admin/official-phones`: Gestión del directorio de teléfonos oficiales y urgencias.
+  - `/admin/proverbs`: Moderación y gestión del refranero popular chipionero.
+  - `/admin/content-suggestions`: Bandeja de sugerencias y aportaciones ciudadanas (`Sugerencias del contenido`).
+  - `/admin/correction-requests`: Bandeja de propuestas de corrección documental sobre páginas y noticias.
+  - `/admin/comments`: Moderación de comentarios y recuerdos vecinales.
   - `/admin/settings`: Ajustes clave-valor globales de la plataforma.
   - `/admin/sent-emails`: Auditoría de emails enviados y errores.
 - Acciones de Sistema:
@@ -343,10 +373,9 @@ skeleton-laravel-project/
 
 ### Rutas Panel Usuario Filament (`/panel`)
 - `GET  /panel` (`filament.panel.pages.dashboard`): Dashboard del usuario con bienvenida y resumen de tokens.
-- `GET  /panel/edit-profile` (`filament.panel.pages.edit-profile`): Edición de datos del perfil y contraseña propia.
+- `GET  /panel/edit-profile` (`filament.panel.pages.edit-profile`): Edición de datos del perfil y contraseña propia (requiere contraseña actual).
 - `GET  /panel/api-tokens` (`filament.panel.pages.api-tokens`): Creación y revocación de tokens API personales Sanctum.
 - `GET  /panel/login`: Login de usuarios al panel.
-- `GET  /panel/register`: Registro directo desde el panel.
 
 ### Rutas API REST (`/api/v1`)
 - **Públicas**:

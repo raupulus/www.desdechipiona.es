@@ -1,6 +1,6 @@
 # Módulo: Frontend público
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-04*
 
 > Layout principal, barra de navegación, pie de página, componentes Blade reutilizables y páginas públicas del sitio web con Tailwind CSS y Alpine.js.
 
@@ -37,6 +37,8 @@ El frontend público incluye el layout HTML5 con Tailwind CSS v4, la barra de na
 | `<x-section-block :section="$section" />` | `components/section-block.blade.php` | Bloque de sección dinámica: título, descripción, contenido, imagen |
 | `<x-pagination :paginator="$posts" />` | `components/pagination.blade.php` | Paginación personalizada con Tailwind |
 | `<x-recaptcha-script action="..." />` | `components/recaptcha-script.blade.php` | Inyección invisible de Google reCAPTCHA v3 al enviar formularios públicos |
+| `<x-turnstile-widget action="..." />` | `components/turnstile-widget.blade.php` | Widget anti-spam de Cloudflare Turnstile para formularios de participación y login |
+| `<x-social-identity-banner />` | `components/social-identity-banner.blade.php` | Identificación social ligera en sesión (Facebook / Google) sin cuenta local |
 
 ---
 
@@ -44,10 +46,17 @@ El frontend público incluye el layout HTML5 con Tailwind CSS v4, la barra de na
 
 | Página | Vista | Ruta | Controlador |
 |--------|-------|------|-------------|
-| Home | `home.blade.php` | `/` | `HomeController@index` |
+| Home y Explorador Multicriterio | `home.blade.php` | `/` | `HomeController@index` |
+| Ficha / Página documental | `pages/show.blade.php` | `/pages/{slug}` | `PageController@show` |
+| Noticias (listado) | `news/index.blade.php` | `/noticias` | `NewsController@index` |
+| Noticia (detalle) | `news/show.blade.php` | `/noticias/{slug}` | `NewsController@show` |
+| Refranero Popular | `proverbs/index.blade.php` | `/refranero` | `ProverbController@index/store` |
+| El Tiempo y Mareas (AEMET 11016) | `weather/index.blade.php` | `/el-tiempo-y-mareas` | `WeatherController@index` |
+| Teléfonos Oficiales | `phones/index.blade.php` | `/telefonos-oficiales` | `OfficialPhoneController@index` |
+| Sugerir y Aportar Contenido | `suggestions/create.blade.php` | `/aportar-contenido` | `ContentSuggestionController@create/store` |
+| Autoría y Aviso Legal | `static/legal.blade.php` | `/autoria-y-legal` | `StaticPageController@legal` |
 | Blog (listado) | `posts/index.blade.php` | `/blog` | `PostController@index` |
 | Blog (detalle) | `posts/show.blade.php` | `/blog/{slug}` | `PostController@show` |
-| Página dinámica | `pages/show.blade.php` | `/pages/{slug}` | `PageController@show` |
 | Sobre nosotros | `static/about.blade.php` | `/about` | `StaticPageController@about` |
 | Contacto | `contact.blade.php` | `/contact` | `ContactController@show/send` |
 | Privacidad | `static/privacy.blade.php` | `/privacy` | `StaticPageController@privacy` |

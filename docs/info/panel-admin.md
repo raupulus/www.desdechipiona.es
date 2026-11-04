@@ -1,8 +1,8 @@
 # Módulo: Panel Admin (Filament)
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-04*
 
-> Panel de administración completo en `/admin` con CRUD de todos los modelos, dashboard con widgets y navegación organizada por grupos.
+> Panel de administración completo en `/admin` con CRUD de todos los modelos, moderación de participación ciudadana, dashboard con widgets y navegación organizada por grupos.
 
 ---
 
@@ -41,8 +41,14 @@ El panel admin está construido con Filament 5 y se accede en `/admin`. Solo pue
 |----------|--------|:-------------------:|-------|
 | `UserResource` | User | Sistema | `heroicon-o-users` |
 | `PageResource` | Page | Contenido | `heroicon-o-document-text` |
+| `NewsResource` | News | Contenido | `heroicon-o-megaphone` |
 | `PostResource` | Post | Contenido | `heroicon-o-newspaper` |
 | `CategoryResource` | Category | Contenido | `heroicon-o-tag` |
+| `OfficialPhoneResource` | OfficialPhone | Contenido | `heroicon-o-phone` |
+| `ContentSuggestionResource` | ContentSuggestion | Sugerencias del contenido | `heroicon-o-light-bulb` |
+| `CorrectionRequestResource` | CorrectionRequest | Sugerencias del contenido | `heroicon-o-pencil-square` |
+| `ProverbResource` | Proverb | Sugerencias del contenido | `heroicon-o-chat-bubble-bottom-center-text` |
+| `CommentResource` | Comment | Sugerencias del contenido | `heroicon-o-chat-bubble-left-right` |
 | `SlideResource` | Slide | Media | `heroicon-o-photo` |
 | `SectionResource` | Section | Frontend | `heroicon-o-squares-2x2` |
 | `SettingResource` | Setting | Sistema | `heroicon-o-cog-6-tooth` |

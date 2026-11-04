@@ -1,14 +1,14 @@
 # Módulo: Enums
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-04*
 
-> Enumeraciones PHP backed que definen los valores constantes del sistema: roles de usuario, estados de contenido y estados de email.
+> Enumeraciones PHP backed que definen los valores constantes del sistema: roles de usuario, estados de contenido, estados de email, apartados enciclopédicos de Chipiona, épocas históricas, niveles de evidencia documental y estados de moderación.
 
 ---
 
 ## Resumen
 
-La plataforma usa tres enums PHP 8.5 (`string`-backed) para tipado fuerte y consistencia. Cada enum incluye un método `label(): string` traducible mediante `__('filament.*')` (con claves en `lang/es/filament.php` y `lang/en/filament.php`) y métodos adicionales según su propósito.
+La plataforma usa siete enums PHP 8.5 (`string`-backed) para tipado fuerte y consistencia. Cada enum incluye un método `label(): string` traducible o descriptivo y métodos auxiliares para badges y clasificación en Filament y el frontend.
 
 ---
 
@@ -67,3 +67,42 @@ Define los estados de los emails enviados.
 - `color(): string` — Color para badges en Filament
 
 **Cast en SentEmail**: `'status' => EmailStatus::class`
+
+---
+
+## ContentGroup
+
+**Archivo**: `app/Enums/ContentGroup.php`
+
+Clasifica las fichas enciclopédicas de Chipiona (`Page`) y las sugerencias ciudadanas (`ContentSuggestion`) en 8 grandes apartados temáticos:
+- `Historia` (`historia`), `Monumentos` (`monumentos`), `Playas` (`playas`), `Naturaleza` (`naturaleza`), `Fauna` (`fauna`), `Flora` (`flora`), `Gastronomia` (`gastronomia`), `Fiestas` (`fiestas`), `Personajes` (`personajes`).
+
+---
+
+## HistoricalEra
+
+**Archivo**: `app/Enums/HistoricalEra.php`
+
+Define los grandes periodos cronológicos de la historia de Chipiona para filtrado y ordenación:
+- `PrehistoryAntiquity` (`prehistoria-antiguedad`), `MiddleAges` (`edad-media`), `EarlyModern` (`edad-moderna`), `Contemporary` (`edad-contemporanea`), `PresentNature` (`actualidad-naturaleza`).
+
+---
+
+## EvidenceLevel
+
+**Archivo**: `app/Enums/EvidenceLevel.php`
+
+Distingue el rigor historiográfico de cada página o noticia:
+- `Consolidated` (`consolidado`): Contrastado con fuentes primarias o académicas `[F-XXXX]`.
+- `Documented` (`documentado`): Respaldado por bibliografía o documentación oficial.
+- `Tradition` (`tradicion`): Tradición oral, memoria vecinal, mito o leyenda local explícita.
+- `Disputed` (`discutido`): Hipótesis abierta o discrepancia entre fuentes históricas.
+
+---
+
+## SuggestionStatus
+
+**Archivo**: `app/Enums/SuggestionStatus.php`
+
+Define el estado de moderación en el panel admin para sugerencias (`ContentSuggestion`), correcciones (`CorrectionRequest`) y refranes (`Proverb`):
+- `Pending` (`pending`), `Approved` (`approved`), `Rejected` (`rejected`).
