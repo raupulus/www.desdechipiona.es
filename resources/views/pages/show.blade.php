@@ -88,7 +88,7 @@
                 @else
                     <div class="rounded-2xl border-2 border-slate-800 bg-slate-900/90 p-6 shadow-xl space-y-3">
                         <div class="flex items-center gap-3">
-                            <img src="{{ asset('images/logo.png') }}" alt="Desde Chipiona" class="h-12 w-12 rounded-full border border-amber-400">
+                            <img src="{{ asset('images/logo.webp') }}" alt="Desde Chipiona" class="h-12 w-12 rounded-full border border-amber-400">
                             <div>
                                 <p class="text-xs font-extrabold uppercase tracking-wider text-amber-300">Ficha Documental</p>
                                 <p class="text-sm font-bold text-white">Archivo Desde Chipiona</p>

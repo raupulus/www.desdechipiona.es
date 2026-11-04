@@ -69,7 +69,7 @@
             {{-- Marca oficial con medallón heráldico --}}
             <a href="{{ route('home') }}" class="flex items-center gap-3 group min-w-0 shrink">
                 <img
-                    src="{{ asset('images/logo.png') }}"
+                    src="{{ asset('images/logo.webp') }}"
                     alt="{{ setting('site_title', config('app.name')) }}"
                     width="48"
                     height="48"

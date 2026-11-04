@@ -16,9 +16,9 @@ class ImageCropField
      * @var array<int, string>
      */
     public const ACCEPTED_MIME_TYPES = [
+        'image/webp',
         'image/jpeg',
         'image/png',
-        'image/webp',
     ];
 
     /**

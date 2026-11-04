@@ -3,7 +3,7 @@
     $seoData = $seoInstance->toArray();
     $pageTitle = $seoData['title'] ?? setting('site_title', config('app.name'));
     $pageDescription = $seoData['description'] ?? setting('site_description', '');
-    $pageImage = $seoData['image'] ?? asset('images/redes-sociales/og-image.png');
+    $pageImage = $seoData['image'] ?? asset('images/redes-sociales/og-image.webp');
     $baseUrl = $seoData['baseUrl'] ?? url()->current();
     $pageUrl = $seoData['url'] ?? url()->current();
     $pageType = $seoData['type'] ?? 'website';
@@ -71,8 +71,8 @@
 </script>
 @endunless
 <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
-<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logos/logo-180x180.png') }}" />
-<link rel="icon" type="image/png" sizes="64x64" href="{{ asset('images/logos/logo-64x64.png') }}" />
-<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logos/logo-32x32.png') }}" />
-<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logos/logo-16x16.png') }}" />
+<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logos/logo-180x180.webp') }}" />
+<link rel="icon" type="image/webp" sizes="64x64" href="{{ asset('images/logos/logo-64x64.webp') }}" />
+<link rel="icon" type="image/webp" sizes="32x32" href="{{ asset('images/logos/logo-32x32.webp') }}" />
+<link rel="icon" type="image/webp" sizes="16x16" href="{{ asset('images/logos/logo-16x16.webp') }}" />
 <link rel="manifest" href="{{ asset('site.webmanifest') }}" />

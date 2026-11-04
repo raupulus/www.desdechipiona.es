@@ -3,14 +3,14 @@
     "short_name": "Desde Chipiona",
     "icons": [
         {
-            "src": "/images/logos/logo-180x180.png",
+            "src": "/images/logos/logo-180x180.webp",
             "sizes": "180x180",
-            "type": "image/png"
+            "type": "image/webp"
         },
         {
-            "src": "/images/logos/logo-64x64.png",
+            "src": "/images/logos/logo-64x64.webp",
             "sizes": "64x64",
-            "type": "image/png"
+            "type": "image/webp"
         }
     ],
     "theme_color": "#020617",

@@ -25,7 +25,7 @@ class SlideFactory extends Factory
         return [
             'title' => ['es' => fake()->sentence(3), 'en' => fake()->sentence(3)],
             'content' => ['es' => fake()->paragraph(), 'en' => fake()->paragraph()],
-            'image' => 'images/default/default_800x600.png',
+            'image' => 'images/default/default_800x600.webp',
             'image_vertical' => null,
             'url' => fake()->optional()->url(),
             'zone' => fake()->randomElement(['home', 'about', 'services']),

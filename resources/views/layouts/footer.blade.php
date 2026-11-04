@@ -4,7 +4,7 @@
             {{-- Columna 1: Identidad y Autoría --}}
             <div class="space-y-4">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('images/logo.png') }}" alt="{{ setting('site_title', config('app.name')) }}" width="44" height="44" class="h-11 w-11 rounded-full border border-amber-400">
+                    <img src="{{ asset('images/logo.webp') }}" alt="{{ setting('site_title', config('app.name')) }}" width="44" height="44" class="h-11 w-11 rounded-full border border-amber-400">
                     <div>
                         <h2 class="font-serif text-lg font-extrabold text-white">{{ setting('site_title', config('app.name')) }}</h2>
                         <p class="text-xs text-amber-300 font-semibold">https://desdechipiona.es</p>

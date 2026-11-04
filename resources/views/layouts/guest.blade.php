@@ -18,7 +18,7 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-stone-50">
             <div>
                 <a href="{{ route('home') }}" class="flex flex-col items-center gap-2" aria-label="{{ setting('site_title', config('app.name', 'Desde Chipiona')) }} — {{ __('messages.home') }}">
-                    <img src="{{ asset('images/logo.png') }}" alt="{{ setting('site_title', config('app.name', 'Desde Chipiona')) }}" width="64" height="64" class="w-16 h-16 rounded-full border-2 border-amber-500 shadow-sm object-cover" />
+                    <img src="{{ asset('images/logo.webp') }}" alt="{{ setting('site_title', config('app.name', 'Desde Chipiona')) }}" width="64" height="64" class="w-16 h-16 rounded-full border-2 border-amber-500 shadow-sm object-cover" />
                     <span class="font-serif text-lg font-extrabold text-slate-950">{{ setting('site_title', config('app.name', 'Desde Chipiona')) }}</span>
                 </a>
             </div>

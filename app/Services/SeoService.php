@@ -269,7 +269,7 @@ class SeoService
             }
         }
 
-        $rawImage = $this->image ?: asset('images/redes-sociales/og-image.png');
+        $rawImage = $this->image ?: asset('images/redes-sociales/og-image.webp');
         $imageUrl = str_starts_with($rawImage, 'http') ? $rawImage : url($rawImage);
 
         return [
@@ -300,7 +300,7 @@ class SeoService
         $data = $this->toArray();
         $siteTitle = (string) setting('site_title', config('app.name'));
         $siteUrl = url('/');
-        $logoUrl = asset('images/logos/logo-180x180.png');
+        $logoUrl = asset('images/logos/logo-180x180.webp');
 
         $sameAs = array_values(array_filter([
             setting('facebook_url'),

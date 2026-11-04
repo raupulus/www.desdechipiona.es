@@ -103,8 +103,14 @@ La plataforma implementa tres roles definidos mediante el enum respaldado `App\E
   ```
   O para archivos estáticos en `public/`:
   ```blade
-  <img src="{{ asset('images/logo.png') }}" alt="Logo">
+  <img src="{{ asset('images/logo.webp') }}" alt="Logo">
   ```
+
+### ⚠️ Formato de Imágenes — OBLIGATORIO: SIEMPRE WebP (.webp)
+**Todas las imágenes del proyecto deben guardarse y servirse obligatoriamente en formato WebP (`.webp`).**
+- **Queda estrictamente prohibido versionar, enlazar o almacenar imágenes en `.jpg`, `.jpeg` o `.png`** en `public/images/`, `database/`, seeders, vistas o modelos (a excepción del vector `favicon.svg` y `favicon.ico` multirresolución por compatibilidad con navegadores antiguos).
+- Todo asset visual nuevo (fotografías, logotipos, portadas de páginas, noticias, cabeceras, slides, avatares y redes sociales) debe convertirse a `.webp` optimizado antes de su inclusión.
+- En Filament, los campos de carga configurados con `App\Filament\Components\ImageCropField` deben priorizar y guardar las imágenes procesadas en formato WebP.
 
 ### ⚠️ Textos y Traducciones en Vistas Blade — OBLIGATORIO
 **NUNCA escribir textos hardcodeados en vistas Blade.**
