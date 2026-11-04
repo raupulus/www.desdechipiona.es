@@ -57,9 +57,12 @@ class NewsController extends Controller
         $title = $currentPage > 1
             ? __('messages.news_nav').' ('.__('messages.page_number', ['page' => $currentPage]).') — '.$siteTitle
             : __('messages.news_nav').' — '.$siteTitle;
+        $description = $currentPage > 1
+            ? __('messages.news_seo_description').' ('.__('messages.page_number', ['page' => $currentPage]).')'
+            : __('messages.news_seo_description');
 
         $seo->setTitle($title)
-            ->setDescription(__('messages.news_seo_description'))
+            ->setDescription($description)
             ->setUrl(route('news.index'))
             ->setBreadcrumbs([
                 ['name' => __('messages.home'), 'url' => route('home')],

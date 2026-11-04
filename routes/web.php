@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 // --- Página principal y Explorador Multicriterio de Chipiona ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/explore', [HomeController::class, 'index'])->name('explore');
+Route::permanentRedirect('/explorar', '/');
 
 // --- Blog / Artículos ---
 Route::get('/blog', [PostController::class, 'index'])->name('blog.index');

@@ -94,7 +94,11 @@
                             </div>
                         @endif
 
-                        <a href="{{ route('news.show', $news->slug) }}" class="inline-flex items-center gap-1.5 text-sm font-extrabold text-orange-800 hover:underline">
+                        <a
+                            href="{{ route('news.show', $news->slug) }}"
+                            aria-label="{{ __('messages.read_full_news') }}: {{ $news->getTranslation('title', app()->getLocale()) }}"
+                            class="inline-flex items-center gap-1.5 text-sm font-extrabold text-orange-800 hover:underline"
+                        >
                             <span>{{ __('messages.read_full_news') }}</span>
                             <span aria-hidden="true">→</span>
                         </a>

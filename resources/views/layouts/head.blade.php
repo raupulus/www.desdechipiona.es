@@ -19,7 +19,7 @@
 <meta name="theme-color" content="#020617" />
 <title>{{ $pageTitle }}</title>
 <meta name="description" content="{{ $pageDescription }}" />
-<meta name="author" content="{{ $seoData['author'] ?? setting('site_title', config('app.name')) }}" />
+<meta name="author" content="{{ $seoData['author'] ?? 'Raúl Caro Pastorino' }}" />
 <meta name="robots" content="{{ $pageRobots }}" />
 @unless($isErrorPage)
 @php

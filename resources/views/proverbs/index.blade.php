@@ -24,7 +24,7 @@
             {{ __('messages.proverbs_header_subtitle') }}
         </p>
 
-        <form action="{{ route('proverbs.index') }}" method="GET" role="search" aria-label="Buscar refranes de Chipiona" class="mt-6 max-w-2xl flex flex-col sm:flex-row gap-3">
+        <form action="{{ route('proverbs.index') }}" method="GET" role="search" aria-label="{{ __('messages.proverbs_search_aria') }}" class="mt-6 max-w-2xl flex flex-col sm:flex-row gap-3">
             @if($category !== '' && $category !== 'all')
                 <input type="hidden" name="category" value="{{ $category }}">
             @endif
@@ -89,7 +89,7 @@
                         </div>
 
                         <div class="mt-5 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-slate-700">
-                            <span>Aportado por: <strong class="text-slate-950">{{ $proverb->author_name }}</strong></span>
+                            <span>{{ __('messages.proverb_contributed_by') }} <strong class="text-slate-950">{{ $proverb->author_name }}</strong></span>
                             @if($proverb->relatedPage)
                                 <a href="{{ route('pages.show', $proverb->relatedPage->slug) }}" class="text-blue-900 underline font-extrabold">
                                     🔗 {{ \Illuminate\Support\Str::limit($proverb->relatedPage->getTranslation('title', app()->getLocale()), 24) }}
@@ -105,7 +105,7 @@
             </div>
         @else
             <div class="rounded-2xl border border-slate-200 bg-white p-10 text-center">
-                <p class="text-base font-extrabold text-slate-950">Aún no hay refranes en esta categoría. ¡Sé el primero en compartir uno debajo!</p>
+                <p class="text-base font-extrabold text-slate-950">{{ __('messages.proverbs_empty_category') }}</p>
             </div>
         @endif
     </section>
@@ -142,29 +142,29 @@
                 @csrf
 
                 <div>
-                    <label for="prov-text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Refrán o dicho popular *</label>
-                    <textarea id="prov-text" name="text" rows="2" required minlength="5" placeholder="Escribe el refrán tal como se dice en Chipiona..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base font-bold text-slate-950">{{ old('text') }}</textarea>
+                    <label for="prov-text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proverb_text_label') }}</label>
+                    <textarea id="prov-text" name="text" rows="2" required minlength="5" placeholder="{{ __('messages.proverb_text_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base font-bold text-slate-950">{{ old('text') }}</textarea>
                     <x-input-error :messages="$errors->get('text')" class="mt-1" />
                 </div>
 
                 <div>
-                    <label for="prov-meaning" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">¿Qué significa o cuándo se usa?</label>
-                    <textarea id="prov-meaning" name="meaning" rows="3" placeholder="Explica brevemente su sentido marinero, del campo o del pueblo..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('meaning') }}</textarea>
+                    <label for="prov-meaning" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proverb_meaning_label') }}</label>
+                    <textarea id="prov-meaning" name="meaning" rows="3" placeholder="{{ __('messages.proverb_meaning_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('meaning') }}</textarea>
                     <x-input-error :messages="$errors->get('meaning')" class="mt-1" />
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="prov-category" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tema del refrán *</label>
+                        <label for="prov-category" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proverb_category_label') }}</label>
                         <x-searchable-select
                             name="category"
                             id="prov-category"
                             :options="[
-                                'mar' => 'La Mar, Mareas y Corrales',
-                                'campo' => 'El Campo, Huerta y Moscatel',
-                                'vientos' => 'Vientos (Levante y Poniente)',
-                                'fiestas' => 'Fiestas y Tradiciones',
-                                'vida' => 'Vida Cotidiana del Pueblo',
+                                'mar' => __('messages.proverbs_cat_mar'),
+                                'campo' => __('messages.proverbs_cat_campo'),
+                                'vientos' => __('messages.proverbs_cat_vientos'),
+                                'fiestas' => __('messages.proverbs_cat_fiestas'),
+                                'vida' => __('messages.proverbs_cat_vida'),
                             ]"
                             value="mar"
                             required
@@ -172,9 +172,9 @@
                     </div>
 
                     <div>
-                        <label for="prov-page" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Página relacionada (opcional)</label>
+                        <label for="prov-page" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proverb_related_page_label') }}</label>
                         @php
-                            $proverbPageOptions = ['' => '— Ninguna página en concreto —'];
+                            $proverbPageOptions = ['' => __('messages.proverb_no_related_page')];
                             foreach($pages as $p) {
                                 $proverbPageOptions[(string) $p->id] = $p->getTranslation('title', app()->getLocale());
                             }
@@ -184,7 +184,7 @@
                             id="prov-page"
                             :options="$proverbPageOptions"
                             value=""
-                            placeholder="Escribe para buscar página..."
+                            :placeholder="__('messages.proverb_search_page_placeholder')"
                         />
                     </div>
                 </div>
@@ -200,7 +200,7 @@
                 @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
 
                 <button type="submit" class="w-full rounded-xl bg-orange-700 px-6 py-3.5 text-base font-extrabold text-white shadow-md hover:bg-orange-800 transition cursor-pointer">
-                    Enviar refrán al archivo de Chipiona
+                    {{ __('messages.proverb_submit_archive_btn') }}
                 </button>
             </form>
         @endif

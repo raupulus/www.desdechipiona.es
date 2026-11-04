@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Spatie\Translatable\HasTranslations;
 
 /**
@@ -85,7 +86,52 @@ class Post extends Model
      */
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image ? Storage::disk('public')->url($this->image) : null;
+        if (empty($this->image)) {
+            return null;
+        }
+
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+
+        if (str_starts_with($this->image, 'images/')) {
+            return asset($this->image);
+        }
+
+        return Storage::disk('public')->url($this->image);
+    }
+
+    /**
+     * Renderiza el contenido del idioma activo a HTML seguro (soporta Markdown y HTML)
+     * y envuelve tablas de datos en un contenedor accesible con scroll horizontal.
+     */
+    public function getRenderedContentAttribute(): string
+    {
+        $raw = $this->getTranslation('content', app()->getLocale());
+
+        if (is_array($raw)) {
+            return '';
+        }
+
+        $text = (string) $raw;
+        if ($text === '') {
+            return '';
+        }
+
+        $text = (string) preg_replace('/^\s*#\s+[^\r\n]+\R*/u', '', $text);
+
+        if (preg_match('/<(p|div|section|article|h2|h3|ul|ol|table)\b/i', $text)) {
+            $html = static::sanitizeHtmlString($text);
+        } else {
+            $html = static::sanitizeHtmlString(Str::markdown($text, [
+                'html_input' => 'strip',
+                'allow_unsafe_links' => false,
+            ]));
+        }
+
+        $html = (string) preg_replace('/<h1(\b[^>]*)>(.*?)<\/h1>/is', '<h2$1>$2</h2>', $html);
+
+        return Page::wrapTablesInResponsiveContainer($html);
     }
 
     // =========================================================

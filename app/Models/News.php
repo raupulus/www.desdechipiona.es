@@ -211,6 +211,8 @@ class News extends Model
             return '';
         }
 
+        $text = (string) preg_replace('/^\s*#\s+[^\r\n]+\R*/u', '', $text);
+
         if (preg_match('/<(p|div|section|article|h2|h3|ul|ol|table)\b/i', $text)) {
             $html = static::sanitizeHtmlString($text);
         } else {
@@ -219,6 +221,8 @@ class News extends Model
                 'allow_unsafe_links' => false,
             ]));
         }
+
+        $html = (string) preg_replace('/<h1(\b[^>]*)>(.*?)<\/h1>/is', '<h2$1>$2</h2>', $html);
 
         return Page::wrapTablesInResponsiveContainer($html);
     }

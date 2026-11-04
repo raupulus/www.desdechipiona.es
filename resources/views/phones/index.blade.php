@@ -24,7 +24,7 @@
             {{ __('messages.phones_header_subtitle') }}
         </p>
 
-        <form action="{{ route('phones.index') }}" method="GET" role="search" aria-label="Buscar teléfonos oficiales" class="mt-6 max-w-2xl flex flex-col sm:flex-row gap-3">
+        <form action="{{ route('phones.index') }}" method="GET" role="search" aria-label="{{ __('messages.phones_search_aria') }}" class="mt-6 max-w-2xl flex flex-col sm:flex-row gap-3">
             @if($category !== '' && $category !== 'all')
                 <input type="hidden" name="category" value="{{ $category }}">
             @endif

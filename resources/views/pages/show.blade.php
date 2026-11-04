@@ -22,7 +22,7 @@
 <header class="bg-gradient-to-br from-slate-950 via-blue-950 to-violet-950 text-white border-b-4 border-orange-700">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         {{-- Migas de pan --}}
-        <nav aria-label="Migas de pan" class="mb-5 text-xs font-bold text-slate-300 flex flex-wrap items-center gap-2">
+        <nav aria-label="{{ __('messages.breadcrumbs_aria') }}" class="mb-5 text-xs font-bold text-slate-300 flex flex-wrap items-center gap-2">
             <a href="{{ route('home') }}" class="hover:text-white underline">{{ __('messages.home') }}</a>
             <span aria-hidden="true">/</span>
             @if($page->content_group)
@@ -90,12 +90,12 @@
                         <div class="flex items-center gap-3">
                             <img src="{{ asset('images/logo.webp') }}" alt="Desde Chipiona" class="h-12 w-12 rounded-full border border-amber-400">
                             <div>
-                                <p class="text-xs font-extrabold uppercase tracking-wider text-amber-300">Ficha Documental</p>
-                                <p class="text-sm font-bold text-white">Archivo Desde Chipiona</p>
+                                <p class="text-xs font-extrabold uppercase tracking-wider text-amber-300">{{ __('messages.documentary_record_badge') }}</p>
+                                <p class="text-sm font-bold text-white">{{ __('messages.documentary_archive_brand') }}</p>
                             </div>
                         </div>
                         <p class="text-xs text-slate-300 leading-relaxed">
-                            Cada entrada cuenta con metadatos específicos para redes sociales y trazabilidad hacia las fuentes del corpus documental de Chipiona.
+                            {{ __('messages.documentary_card_fallback_desc') }}
                         </p>
                     </div>
                 @endif
@@ -112,7 +112,7 @@
         {{-- Columna principal de lectura --}}
         <article class="lg:col-span-8 space-y-8">
             {{-- Advertencia de rigor documental: Hechos contrastados vs. mitos/leyendas --}}
-            <div role="note" aria-label="Nivel de verificación histórica" class="rounded-2xl border-2 p-5 {{ $evidenceBannerClasses }}">
+            <div role="note" aria-label="{{ __('messages.evidence_verification_aria') }}" class="rounded-2xl border-2 p-5 {{ $evidenceBannerClasses }}">
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                     <span class="text-sm font-extrabold uppercase tracking-wider">
                         ⚖️ {{ $evidence->label() }}
@@ -120,13 +120,13 @@
                     @if(count($sources) > 0)
                         <div class="flex flex-wrap gap-1.5">
                             <span class="rounded-lg bg-white/90 px-3 py-1 font-bold text-xs text-slate-950 border border-current/30 shadow-2xs">
-                                📚 {{ count($sources) }} {{ count($sources) === 1 ? (app()->getLocale() === 'en' ? 'verified official source' : 'fuente oficial verificada') : (app()->getLocale() === 'en' ? 'verified official sources' : 'fuentes oficiales verificadas') }}
+                                📚 {{ count($sources) }} {{ count($sources) === 1 ? __('messages.verified_official_source_singular') : __('messages.verified_official_sources_plural') }}
                             </span>
                         </div>
                     @endif
                 </div>
                 <p class="text-sm leading-relaxed">
-                    {{ $evidenceNote ?: 'Esta ficha distingue expresamente los datos verificados en fuentes documentales y arqueológicas de las tradiciones orales o leyendas locales de Chipiona.' }}
+                    {{ $evidenceNote ?: __('messages.evidence_default_note') }}
                 </p>
             </div>
 
@@ -164,7 +164,7 @@
                     <div class="aspect-video w-full overflow-hidden rounded-xl bg-slate-950">
                         <iframe
                             src="{{ $page->youtube_embed_url }}"
-                            title="Vídeo sobre {{ $title }}"
+                            title="{{ __('messages.video_about_title', ['title' => $title]) }}"
                             class="h-full w-full border-0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen
@@ -190,10 +190,10 @@
                                 <div class="font-bold text-slate-950">
                                     @if(!empty($source['url']))
                                         <a href="{{ $source['url'] }}" target="_blank" rel="noopener noreferrer" class="text-blue-900 hover:text-orange-700 hover:underline">
-                                            {{ $source['title'] ?? 'Documento oficial' }} ↗
+                                            {{ $source['title'] ?? __('messages.official_document_fallback') }} ↗
                                         </a>
                                     @else
-                                        <span>{{ $source['title'] ?? 'Documento oficial' }}</span>
+                                        <span>{{ $source['title'] ?? __('messages.official_document_fallback') }}</span>
                                     @endif
                                 </div>
                                 <div class="text-xs text-slate-600 mt-0.5">
@@ -249,15 +249,15 @@
                 <div class="p-6 sm:p-8 space-y-5">
                     <div class="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
                         <div>
-                            <h3 id="correction-dialog-title" class="font-serif text-2xl font-extrabold text-slate-950">Proponer corrección documental</h3>
-                            <p class="text-xs font-bold text-slate-700 mt-1">Página: {{ $title }}</p>
+                            <h3 id="correction-dialog-title" class="font-serif text-2xl font-extrabold text-slate-950">{{ __('messages.correction_dialog_title') }}</h3>
+                            <p class="text-xs font-bold text-slate-700 mt-1">{{ __('messages.correction_dialog_page_label', ['title' => $title]) }}</p>
                         </div>
                         <button
                             type="button"
                             onclick="document.getElementById('correction-dialog').close()"
                             class="rounded-lg border border-slate-300 px-3 py-1 text-xs font-extrabold text-slate-900 hover:bg-slate-100"
                         >
-                            ✕ Cerrar
+                            {{ __('messages.close_btn') }}
                         </button>
                     </div>
 
@@ -283,20 +283,20 @@
                             <input type="hidden" name="correctable_id" value="{{ $page->id }}">
 
                             <div>
-                                <label for="quoted_text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Frase o dato actual que deseas corregir (opcional)</label>
-                                <input type="text" id="quoted_text" name="quoted_text" value="{{ old('quoted_text') }}" placeholder="Copia aquí la frase o fecha que aparece en el texto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                <label for="quoted_text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.quoted_text_label') }}</label>
+                                <input type="text" id="quoted_text" name="quoted_text" value="{{ old('quoted_text') }}" placeholder="{{ __('messages.quoted_text_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
                                 <x-input-error :messages="$errors->get('quoted_text')" class="mt-1" />
                             </div>
 
                             <div>
-                                <label for="proposed_correction" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">¿Cuál es la corrección o aclaración propuesta? *</label>
-                                <textarea id="proposed_correction" name="proposed_correction" rows="4" required minlength="10" placeholder="Explica con detalle el dato correcto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('proposed_correction') }}</textarea>
+                                <label for="proposed_correction" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proposed_correction_full_label') }}</label>
+                                <textarea id="proposed_correction" name="proposed_correction" rows="4" required minlength="10" placeholder="{{ __('messages.proposed_correction_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('proposed_correction') }}</textarea>
                                 <x-input-error :messages="$errors->get('proposed_correction')" class="mt-1" />
                             </div>
 
                             <div>
-                                <label for="sources_info" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Fuente documental, libro o testimonio (opcional)</label>
-                                <input type="text" id="sources_info" name="sources_info" value="{{ old('sources_info') }}" placeholder="Ej. Archivo Municipal, libro de bautismos, fotografía familiar..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                <label for="sources_info" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sources_info_label') }}</label>
+                                <input type="text" id="sources_info" name="sources_info" value="{{ old('sources_info') }}" placeholder="{{ __('messages.sources_info_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
                                 <x-input-error :messages="$errors->get('sources_info')" class="mt-1" />
                             </div>
 
@@ -312,10 +312,10 @@
 
                             <div class="flex justify-end gap-3 pt-2">
                                 <button type="button" onclick="document.getElementById('correction-dialog').close()" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-800 hover:bg-slate-100">
-                                    Cancelar
+                                    {{ __('messages.cancel_btn') }}
                                 </button>
                                 <button type="submit" class="rounded-xl bg-orange-700 px-6 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800">
-                                    Enviar propuesta de corrección
+                                    {{ __('messages.submit_correction_proposal_btn') }}
                                 </button>
                             </div>
                         </form>
@@ -359,7 +359,7 @@
                                                         </span>
                                                     @else
                                                         <span class="rounded-md bg-blue-100 px-2 py-0.5 text-[11px] font-bold text-blue-950">
-                                                            Verificado con {{ ucfirst($comment->oauth_provider) }}
+                                                            {{ __('messages.verified_with_provider', ['provider' => ucfirst($comment->oauth_provider)]) }}
                                                         </span>
                                                     @endif
                                                 @endif
@@ -375,12 +375,12 @@
                 @endif
 
                 <div class="pt-4 border-t border-slate-200 space-y-4">
-                    <h3 class="text-base font-extrabold text-slate-950">Dejar un comentario</h3>
+                    <h3 class="text-base font-extrabold text-slate-950">{{ __('messages.leave_comment_heading') }}</h3>
 
                     @if(!session('public_social_identity') && !auth()->check())
                         <div class="rounded-xl border-2 border-slate-300 bg-stone-50 p-5 text-center space-y-3">
                             <p class="text-sm font-bold text-slate-900">
-                                🔒 Para proteger el portal contra spam y mantener el rigor del archivo, se requiere identificación previa en un clic:
+                                🔒 {{ __('messages.comment_locked_notice') }}
                             </p>
                             <x-social-identity-banner />
                         </div>
@@ -391,10 +391,10 @@
                             $userProvider = $socialUser['provider'] ?? 'cuenta';
                         @endphp
                         <div class="flex items-center justify-between rounded-xl bg-slate-100 p-3 text-xs font-bold text-slate-800">
-                            <span>Comentando como: <strong class="text-slate-950">{{ $userName }}</strong> ({{ ucfirst($userProvider) }})</span>
+                            <span>{{ __('messages.commenting_as_label') }} <strong class="text-slate-950">{{ $userName }}</strong> ({{ ucfirst($userProvider) }})</span>
                             <form action="{{ route('social.disconnect') }}" method="POST" class="inline">
                                 @csrf
-                                <button type="submit" class="text-red-700 hover:underline cursor-pointer">Cambiar cuenta</button>
+                                <button type="submit" class="text-red-700 hover:underline cursor-pointer">{{ __('messages.change_account_btn') }}</button>
                             </form>
                         </div>
 
@@ -404,13 +404,13 @@
                             <input type="hidden" name="commentable_id" value="{{ $page->id }}">
 
                             <div>
-                                <label for="comment-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu comentario o recuerdo *</label>
-                                <textarea id="comment-body" name="body" rows="3" required minlength="5" placeholder="Escribe aquí tu comentario con respeto (sin enlaces web)..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('body') }}</textarea>
+                                <label for="comment-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.comment_body_label') }}</label>
+                                <textarea id="comment-body" name="body" rows="3" required minlength="5" placeholder="{{ __('messages.comment_body_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('body') }}</textarea>
                                 <x-input-error :messages="$errors->get('body')" class="mt-1" />
                             </div>
 
                             <p class="text-xs text-slate-600">
-                                🛡️ Todos los comentarios pasan por moderación previa antes de su publicación para garantizar el respeto y la calidad del archivo.
+                                {{ __('messages.comment_moderation_notice') }}
                             </p>
 
                             <x-turnstile-widget action="comment" />
@@ -424,7 +424,7 @@
                             @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
 
                             <button type="submit" class="rounded-xl bg-slate-950 px-6 py-3 text-sm font-extrabold text-white hover:bg-orange-800 transition cursor-pointer">
-                                Enviar comentario a moderación
+                                {{ __('messages.submit_comment_moderation_btn') }}
                             </button>
                         </form>
                     @endif
@@ -447,7 +447,7 @@
                     <div class="aspect-4/3 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-inner">
                         <iframe
                             src="https://maps.google.com/maps?q={{ $page->latitude }},{{ $page->longitude }}&amp;z=15&amp;output=embed"
-                            title="Mapa de {{ $title }}"
+                            title="{{ __('messages.map_of_title', ['title' => $title]) }}"
                             class="h-full w-full border-0"
                             allowfullscreen
                             loading="lazy"
@@ -484,7 +484,7 @@
                                     class="block rounded-xl border border-slate-200 bg-stone-50 p-3 hover:border-orange-600 hover:bg-orange-50/40 transition"
                                 >
                                     <span class="block text-xs font-extrabold uppercase text-orange-800">
-                                        {{ $linked->content_group?->label() ?? 'Ficha relacionada' }}
+                                        {{ $linked->content_group?->label() ?? __('messages.related_record_fallback') }}
                                         @if($linked->period_label) · {{ $linked->period_label }} @endif
                                     </span>
                                     <span class="block font-bold text-sm text-slate-950 mt-0.5">

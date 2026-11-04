@@ -457,6 +457,13 @@ class ImportChipionaCorpus extends Command
      */
     protected function cleanMarkdownBody(string $text): string
     {
+        // 0. Eliminar el H1 inicial del Markdown (# Título) para no duplicar el <h1> de la cabecera
+        $text = (string) preg_replace('/^\s*#\s+[^\r\n]+\R*/u', '', $text);
+
+        // 0b. Eliminar imágenes relativas internas del corpus privado (04-recursos o formatos no WebP) y enlaces a 04-recursos
+        $text = (string) preg_replace('/!\[[^\]]*\]\((?:[^)]*04-recursos[^)]*|[^)]*\.(?:jpe?g|png|gif))(?:\s+"[^"]*")?\)\R*/iu', '', $text);
+        $text = (string) preg_replace('/\[([^\]]+)\]\([^)]*04-recursos[^)]*\)/iu', '$1', $text);
+
         // 1. Eliminar secciones de trabajo interno
         $text = (string) preg_replace('/(?ms)\n##\s+Notas de investigación\b.*?(?=\n##\s+|\Z)/u', '', $text);
         $text = (string) preg_replace('/(?ms)\n##\s+Cómo citar esta ficha\b.*?(?=\n##\s+|\Z)/u', '', $text);

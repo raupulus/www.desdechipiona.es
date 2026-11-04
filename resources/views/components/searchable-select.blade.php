@@ -1,6 +1,7 @@
 @props([
     'name',
     'id' => null,
+    'label' => null,
     'value' => null,
     'placeholder' => null,
     'options' => [], // array asociativo [valor => etiqueta] o array de arrays [['value' => ..., 'label' => ...]]
@@ -10,6 +11,7 @@
 
 @php
     $placeholderText = $placeholder ?? __('messages.select_option_placeholder');
+    $accessibleLabel = $label ?? $placeholderText;
     $inputId = $id ?? $name;
     $normalizedOptions = [];
     foreach ($options as $optKey => $optVal) {
@@ -113,6 +115,7 @@
         type="button"
         @click="open = !open"
         role="combobox"
+        aria-label="{{ $accessibleLabel }}"
         :aria-expanded="open"
         aria-haspopup="listbox"
         class="w-full flex items-center justify-between gap-2 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-left text-base sm:text-sm font-bold text-slate-950 shadow-xs hover:border-slate-400 focus:border-orange-700 focus:ring-2 focus:ring-orange-700 transition cursor-pointer"
@@ -121,16 +124,21 @@
         <div class="flex items-center gap-1 shrink-0 text-slate-600">
             <template x-if="selected && !{{ $required ? 'true' : 'false' }}">
                 <span
+                    role="button"
+                    tabindex="0"
+                    aria-label="{{ __('messages.clear_selection_title') }}"
                     @click.stop="clear()"
+                    @keydown.enter.stop.prevent="clear()"
+                    @keydown.space.stop.prevent="clear()"
                     title="{{ __('messages.clear_selection_title') }}"
-                    class="p-0.5 rounded-full hover:bg-slate-200 text-slate-600 hover:text-slate-900 cursor-pointer"
+                    class="p-0.5 rounded-full hover:bg-slate-200 text-slate-600 hover:text-slate-900 cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-700"
                 >
-                    <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
                 </span>
             </template>
-            <svg class="h-4 w-4 transition-transform duration-200" :class="open ? 'rotate-180 text-orange-700' : ''" viewBox="0 0 20 20" fill="currentColor">
+            <svg class="h-4 w-4 transition-transform duration-200" :class="open ? 'rotate-180 text-orange-700' : ''" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
         </div>

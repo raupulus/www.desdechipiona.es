@@ -32,7 +32,7 @@ class SitemapService
     /**
      * Genera el archivo sitemap.xml con todas las URLs públicas indexables del sitio.
      */
-    public function generate(): void
+    public function generate(?string $outputPath = null): void
     {
         $sitemap = Sitemap::create();
 
@@ -48,8 +48,16 @@ class SitemapService
         // Añadir noticias publicadas
         $this->addNews($sitemap);
 
-        // Guardar el sitemap en el directorio público
-        $sitemap->writeToFile(public_path('sitemap.xml'));
+        // Guardar el sitemap en el directorio público (o en ruta de test si estamos en entorno testing)
+        $targetPath = $outputPath ?? (app()->environment('testing')
+            ? storage_path('framework/testing/sitemap.xml')
+            : public_path('sitemap.xml'));
+
+        if (! is_dir(dirname($targetPath))) {
+            mkdir(dirname($targetPath), 0755, true);
+        }
+
+        $sitemap->writeToFile($targetPath);
     }
 
     /**

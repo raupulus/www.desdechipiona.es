@@ -230,6 +230,11 @@ class Page extends Model
             return '';
         }
 
+        // Eliminar H1 inicial en Markdown (# Título) e imágenes/enlaces relativos al corpus privado (04-recursos / .jpg)
+        $text = (string) preg_replace('/^\s*#\s+[^\r\n]+\R*/u', '', $text);
+        $text = (string) preg_replace('/!\[[^\]]*\]\((?:[^)]*04-recursos[^)]*|[^)]*\.(?:jpe?g|png|gif))(?:\s+"[^"]*")?\)\R*/iu', '', $text);
+        $text = (string) preg_replace('/\[([^\]]+)\]\([^)]*04-recursos[^)]*\)/iu', '$1', $text);
+
         // Si ya contiene bloques HTML principales, devolver saneado directamente
         if (preg_match('/<(p|div|section|article|h2|h3|ul|ol|table)\b/i', $text)) {
             $html = static::sanitizeHtmlString($text);
@@ -239,6 +244,9 @@ class Page extends Model
                 'allow_unsafe_links' => false,
             ]));
         }
+
+        // Garantizar que ningún bloque interno del cuerpo genere un segundo <h1> en la vista
+        $html = (string) preg_replace('/<h1(\b[^>]*)>(.*?)<\/h1>/is', '<h2$1>$2</h2>', $html);
 
         return static::wrapTablesInResponsiveContainer($html);
     }
@@ -261,8 +269,9 @@ class Page extends Model
 
                 $attrs = $matches[2];
                 $inner = $matches[3];
+                $label = e(__('messages.table_data_label'));
 
-                return '<div class="table-responsive-wrapper" tabindex="0" role="region" aria-label="Tabla de datos"><table'.$attrs.'>'.$inner.'</table></div>';
+                return '<div class="table-responsive-wrapper" tabindex="0" role="region" aria-label="'.$label.'"><table'.$attrs.'>'.$inner.'</table></div>';
             },
             $html
         );

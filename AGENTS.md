@@ -302,32 +302,25 @@ www.desdechipiona.es/
 
 ### Rutas Web Públicas
 - `GET  /` (`home`): Portada principal con buscador multicriterio, filtros de época/evidencia y explorador de fichas de Chipiona.
-- `GET  /explorar` (`explore`): Redirección 301 al explorador principal con sus parámetros de filtro.
+- `GET  /explore` (`explore`) y `/explorar` (301 → `/`): Acceso directo al explorador principal con sus parámetros de filtro.
 - `GET  /pages/{slug}` (`pages.show`): Ficha enciclopédica o página documental con fuentes `[F-XXXX]`, mapa GPS, correcciones y comentarios.
-- `GET  /noticias` (`news.index`): Listado paginado de noticias y hallazgos documentales con buscador.
-- `GET  /noticias/{slug}` (`news.show`): Crónica detallada de noticia documental con propuestas de corrección y comentarios.
-- `GET  /refranero` (`proverbs.index`): Refranero popular chipionero filtrable por categoría y búsqueda, con formulario de envío.
-- `POST /refranero` (`proverbs.store`, `throttle:10,1`): Envío de nuevo refrán popular protegido con Turnstile.
-- `GET  /el-tiempo-y-mareas` (`weather.index`): Previsión meteorológica oficial (AEMET 11016) y tabla diaria de mareas y corrales de pesca.
-- `GET  /telefonos-oficiales` (`phones.index`): Directorio de teléfonos oficiales y de urgencia de Chipiona con buscador y filtro.
-- `GET  /aportar-contenido` (`suggestions.create`): Formulario ciudadano para sugerir y aportar nuevos contenidos sobre Chipiona.
-- `POST /aportar-contenido` (`suggestions.store`, `throttle:10,1`): Envío de propuesta de contenido protegida con Turnstile.
-- `POST /participacion/correcciones` (`corrections.store`, `throttle:10,1`): Envío de corrección documental sobre una página o noticia.
-- `POST /participacion/comentarios` (`comments.store`, `throttle:10,1`): Publicación de comentario o recuerdo vecinal.
-- `GET  /auth/social/{provider}/redirect` (`social.redirect`, `throttle:10,1`): Inicio de identificación social ligera (Facebook / Google) sin cuenta local.
-- `GET  /auth/social/{provider}/callback` (`social.callback`, `throttle:10,1`): Callback OAuth de identificación social en sesión.
-- `POST /auth/social/disconnect` (`social.disconnect`, `throttle:10,1`): Desconexión de la identidad social de la sesión actual.
-- `GET  /autoria-y-legal` (`legal`): Página de autoría verificada, propiedad intelectual y licencia AGPLv3.
+- `GET  /news` (`news.index`): Listado paginado de noticias y hallazgos documentales con buscador.
+- `GET  /news/{slug}` (`news.show`): Crónica detallada de noticia documental con propuestas de corrección y comentarios.
+- `GET  /proverbs` (`proverbs.index`): Refranero popular chipionero filtrable por categoría y búsqueda, con formulario de envío.
+- `POST /proverbs` (`proverbs.store`, `throttle:10,1`): Envío de nuevo refrán popular protegido con Turnstile.
+- `GET  /weather` (`weather.index`): Previsión meteorológica oficial y tabla diaria de mareas y corrales de pesca.
+- `GET  /phones` (`phones.index`): Directorio de teléfonos oficiales y de urgencia de Chipiona con buscador y filtro.
+- `GET  /suggestions` (`suggestions.create`): Formulario ciudadano para sugerir y aportar nuevos contenidos sobre Chipiona.
+- `POST /suggestions` (`suggestions.store`, `throttle:10,1`): Envío de propuesta de contenido protegida con Turnstile.
+- `POST /corrections` (`corrections.store`, `throttle:10,1`): Envío de corrección documental sobre una página o noticia.
+- `POST /comments` (`comments.store`, `throttle:10,1`): Publicación de comentario o recuerdo vecinal.
+- `GET  /auth/social/{provider}/redirect` (`social.redirect`, `throttle:15,1`): Inicio de identificación social ligera (Facebook / Google) sin cuenta local.
+- `GET  /auth/social/{provider}/callback` (`social.callback`, `throttle:15,1`): Callback OAuth de identificación social en sesión.
+- `POST /auth/social/disconnect` (`social.disconnect`, `throttle:15,1`): Desconexión de la identidad social de la sesión actual.
+- `GET  /legal` (`legal`): Página de autoría verificada, propiedad intelectual y licencia AGPLv3.
 - `GET  /blog` (`blog.index`): Listado paginado de posts publicados con filtro de categorías.
 - `GET  /blog/{slug}` (`blog.show`): Vista detallada de un artículo de blog.
 - `GET  /contact` (`contact`): Formulario de contacto con rate limiting, Turnstile y reCAPTCHA v3.
-- `POST /contact` (`contact.send`): Envío del formulario de contacto (`throttle:10,1`).
-- `GET  /about` (`about`): Página institucional Sobre Nosotros.
-- `GET  /privacy` (`privacy`): Política de privacidad.
-- `GET  /cookies` (`cookies`): Política de cookies.
-- `GET  /lang/{locale}` (`language.switch`): Cambio de idioma activo en sesión.
-- `GET  /admin/logs/download/{filename}` (`admin.logs.download`): Descarga segura de archivo de log (solo admin activo).
-- `GET  /up`: Health check nativo de Laravel.
 - `POST /contact` (`contact.send`): Envío del formulario de contacto (`throttle:10,1`).
 - `GET  /about` (`about`): Página institucional Sobre Nosotros.
 - `GET  /privacy` (`privacy`): Política de privacidad.

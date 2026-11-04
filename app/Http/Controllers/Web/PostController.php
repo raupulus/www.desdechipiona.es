@@ -31,9 +31,12 @@ class PostController extends Controller
         $title = $currentPage > 1
             ? __('messages.blog').' ('.__('messages.page_number', ['page' => $currentPage]).') - '.setting('site_title', config('app.name'))
             : $baseTitle;
+        $description = $currentPage > 1
+            ? __('messages.blog_seo_description').' ('.__('messages.page_number', ['page' => $currentPage]).')'
+            : __('messages.blog_seo_description');
 
         $seo->setTitle($title)
-            ->setDescription(__('messages.blog_seo_description'))
+            ->setDescription($description)
             ->setUrl(route('blog.index'))
             ->setBreadcrumbs([
                 ['name' => __('messages.home'), 'url' => route('home')],

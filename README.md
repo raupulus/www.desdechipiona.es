@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/images/banner.png" alt="Desde Chipiona — Portal de Historia Moderna y Patrimonio Documental" width="100%">
+<img src="docs/images/banner.webp" alt="Desde Chipiona — Portal de Historia Moderna y Patrimonio Documental" width="100%">
 
 # Desde Chipiona
 

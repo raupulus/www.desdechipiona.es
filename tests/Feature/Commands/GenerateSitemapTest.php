@@ -15,8 +15,9 @@ class GenerateSitemapTest extends TestCase
         $this->artisan('sitemap:generate')
             ->assertSuccessful();
 
-        $this->assertFileExists(public_path('sitemap.xml'));
-        $content = File::get(public_path('sitemap.xml'));
+        $expectedPath = storage_path('framework/testing/sitemap.xml');
+        $this->assertFileExists($expectedPath);
+        $content = File::get($expectedPath);
         $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>', $content);
     }
 }

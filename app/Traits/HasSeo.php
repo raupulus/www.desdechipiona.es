@@ -39,10 +39,13 @@ trait HasSeo
         $rawTitle = (string) ($title ?? '');
         $siteTitle = (string) setting('site_title', config('app.name'));
         if ($rawTitle !== '' && $siteTitle !== '' && ! str_contains($rawTitle, $siteTitle)) {
-            return $rawTitle.' — '.$siteTitle;
+            $withBrand = $rawTitle.' — '.$siteTitle;
+            if (mb_strlen($withBrand) <= 68) {
+                return $withBrand;
+            }
         }
 
-        return $rawTitle;
+        return Str::limit($rawTitle, 65, '…');
     }
 
     /**

@@ -384,6 +384,7 @@
 
                         <a
                             href="{{ route('pages.show', $pageItem->slug) }}"
+                            aria-label="{{ __('messages.read_full_story') }}: {{ $pageItem->getTranslation('title', app()->getLocale()) }}"
                             class="flex items-center justify-center gap-2 w-full rounded-xl bg-slate-950 px-4 py-2.5 text-xs sm:text-sm font-extrabold text-white hover:bg-orange-800 transition"
                         >
                             <span>{{ __('messages.read_full_story') }}</span>

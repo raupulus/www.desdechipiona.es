@@ -60,9 +60,12 @@ class HomeController extends Controller
         $title = $currentPage > 1
             ? $baseTitle.' ('.__('messages.page_number', ['page' => $currentPage]).')'
             : $baseTitle;
-        $description = app()->getLocale() === 'en'
+        $baseDescription = app()->getLocale() === 'en'
             ? __('messages.about_seo_description')
             : (string) setting('site_description', __('messages.about_seo_description'));
+        $description = $currentPage > 1
+            ? $baseDescription.' ('.__('messages.page_number', ['page' => $currentPage]).')'
+            : $baseDescription;
 
         $seo->setTitle($title)
             ->setDescription($description)

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\News;
 use App\Models\Page;
 use App\Models\Post;
+use Illuminate\Support\Str;
 
 /**
  * Servicio para la gestión dinámica de meta tags SEO y Schema.org JSON-LD.
@@ -16,6 +17,9 @@ class SeoService
 {
     /** @var string Título de la página */
     private string $title = '';
+
+    /** @var string Titular limpio sin sufijo de marca para Schema.org headline */
+    private string $headline = '';
 
     /** @var string Descripción de la página */
     private string $description = '';
@@ -184,6 +188,13 @@ class SeoService
      */
     public function fromModel(object $model): static
     {
+        if (isset($model->title)) {
+            $rawTitle = $model->title;
+            if (is_array($rawTitle)) {
+                $rawTitle = $rawTitle[app()->getLocale()] ?? $rawTitle[config('app.fallback_locale')] ?? '';
+            }
+            $this->headline = Str::limit(trim(strip_tags((string) $rawTitle)), 110, '');
+        }
         if (method_exists($model, 'getSeoTitleText')) {
             $this->title = $model->getSeoTitleText() ?: $this->title;
         }
@@ -246,7 +257,12 @@ class SeoService
 
         $params = [];
         $langParam = request()->query('lang');
-        if ($langParam && in_array($langParam, config('locales.available', ['es', 'en']), true)) {
+        $defaultLocale = (string) config('locales.default', 'es');
+        if (
+            $langParam
+            && $langParam !== $defaultLocale
+            && in_array($langParam, config('locales.available', ['es', 'en']), true)
+        ) {
             $params['lang'] = $langParam;
         }
 
@@ -278,7 +294,9 @@ class SeoService
 
         return [
             'title' => $this->title ?: $siteTitle,
+            'headline' => $this->headline ?: ($this->title ?: $siteTitle),
             'description' => $this->description ?: $defaultDescription,
+            'siteDescription' => $defaultDescription,
             'keywords' => $this->keywords ?: (string) setting('default_meta_keywords', ''),
             'baseUrl' => $baseUrl,
             'url' => $canonicalUrl,
@@ -286,7 +304,7 @@ class SeoService
             'schemaType' => $this->schemaType,
             'image' => $imageUrl,
             'robots' => $robots,
-            'author' => $this->author ?: $siteTitle,
+            'author' => $this->author ?: 'Raúl Caro Pastorino',
             'publishedAt' => $this->publishedAt,
             'modifiedAt' => $this->modifiedAt,
             'breadcrumbs' => $this->breadcrumbs,
@@ -338,7 +356,7 @@ class SeoService
             '@type' => 'WebSite',
             '@id' => $siteUrl.'/#website',
             'name' => $siteTitle,
-            'description' => $data['description'],
+            'description' => $data['siteDescription'] ?? $data['description'],
             'url' => $siteUrl,
             'inLanguage' => app()->getLocale(),
             'publisher' => [
@@ -354,7 +372,21 @@ class SeoService
             ],
         ]);
 
-        $graph = [$organization, $webSite];
+        $webPageNode = array_filter([
+            '@type' => 'WebPage',
+            '@id' => $data['url'].'#webpage',
+            'name' => $data['title'],
+            'description' => $data['description'],
+            'url' => $data['url'],
+            'inLanguage' => app()->getLocale(),
+            'isPartOf' => [
+                '@id' => $siteUrl.'/#website',
+            ],
+            'datePublished' => $data['publishedAt'],
+            'dateModified' => $data['modifiedAt'],
+        ]);
+
+        $graph = [$organization, $webSite, $webPageNode];
 
         if ($data['type'] === 'article') {
             $articleNode = [
@@ -362,10 +394,10 @@ class SeoService
                 '@id' => $data['url'].'#article',
                 'mainEntityOfPage' => [
                     '@type' => 'WebPage',
-                    '@id' => $data['url'],
+                    '@id' => $data['url'].'#webpage',
                 ],
-                'headline' => $data['title'],
-                'name' => $data['title'],
+                'headline' => $data['headline'] ?? $data['title'],
+                'name' => $data['headline'] ?? $data['title'],
                 'description' => $data['description'],
                 'image' => [$data['image']],
                 'url' => $data['url'],
@@ -387,7 +419,7 @@ class SeoService
             if ($this->geo !== null) {
                 $articleNode['contentLocation'] = [
                     '@type' => 'Place',
-                    'name' => $this->geo['name'] ?? $data['title'],
+                    'name' => $this->geo['name'] ?? ($data['headline'] ?? $data['title']),
                     'geo' => [
                         '@type' => 'GeoCoordinates',
                         'latitude' => $this->geo['latitude'],
@@ -397,20 +429,6 @@ class SeoService
             }
 
             $graph[] = array_filter($articleNode, fn ($v) => $v !== null && $v !== '');
-        } else {
-            $graph[] = array_filter([
-                '@type' => 'WebPage',
-                '@id' => $data['url'].'#webpage',
-                'name' => $data['title'],
-                'description' => $data['description'],
-                'url' => $data['url'],
-                'inLanguage' => app()->getLocale(),
-                'isPartOf' => [
-                    '@id' => $siteUrl.'/#website',
-                ],
-                'datePublished' => $data['publishedAt'],
-                'dateModified' => $data['modifiedAt'],
-            ]);
         }
 
         if ($this->geo !== null) {

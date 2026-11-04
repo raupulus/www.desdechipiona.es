@@ -46,7 +46,7 @@ class SitemapServiceTest extends TestCase
         $service = app(SitemapService::class);
         $service->generate();
 
-        $sitemapPath = public_path('sitemap.xml');
+        $sitemapPath = storage_path('framework/testing/sitemap.xml');
         $this->assertFileExists($sitemapPath);
 
         $content = File::get($sitemapPath);

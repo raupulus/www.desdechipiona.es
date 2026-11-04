@@ -53,9 +53,12 @@ class ProverbController extends Controller
         $title = $currentPage > 1
             ? __('messages.proverbs_nav').' ('.__('messages.page_number', ['page' => $currentPage]).') — '.$siteTitle
             : __('messages.proverbs_nav').' — '.$siteTitle;
+        $description = $currentPage > 1
+            ? __('messages.proverbs_seo_description').' ('.__('messages.page_number', ['page' => $currentPage]).')'
+            : __('messages.proverbs_seo_description');
 
         $seo->setTitle($title)
-            ->setDescription(__('messages.proverbs_seo_description'))
+            ->setDescription($description)
             ->setUrl(route('proverbs.index'))
             ->setBreadcrumbs([
                 ['name' => __('messages.home'), 'url' => route('home')],

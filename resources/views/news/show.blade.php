@@ -8,7 +8,7 @@
 
 <header class="bg-gradient-to-br from-slate-950 via-blue-950 to-violet-950 text-white border-b-4 border-orange-700">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 space-y-4">
-        <nav aria-label="Migas de pan" class="text-xs font-bold text-slate-300 flex flex-wrap items-center gap-2">
+        <nav aria-label="{{ __('messages.breadcrumbs_aria') }}" class="text-xs font-bold text-slate-300 flex flex-wrap items-center gap-2">
             <a href="{{ route('home') }}" class="hover:text-white underline">{{ __('messages.home') }}</a>
             <span>/</span>
             <a href="{{ route('news.index') }}" class="text-amber-300 hover:text-white underline">{{ __('messages.news_nav') }}</a>
@@ -81,10 +81,10 @@
                             <div class="font-bold text-slate-950">
                                 @if(is_array($source) && !empty($source['url']))
                                     <a href="{{ $source['url'] }}" target="_blank" rel="noopener noreferrer" class="text-blue-900 hover:text-orange-700 hover:underline">
-                                        {{ $source['title'] ?? 'Documento oficial' }} ↗
+                                        {{ $source['title'] ?? __('messages.official_document_fallback') }} ↗
                                     </a>
                                 @elseif(is_array($source))
-                                    <span>{{ $source['title'] ?? 'Documento oficial' }}</span>
+                                    <span>{{ $source['title'] ?? __('messages.official_document_fallback') }}</span>
                                 @else
                                     <span>{{ $source }}</span>
                                 @endif
@@ -187,7 +187,7 @@
                                             </span>
                                         @else
                                             <span class="rounded-md bg-blue-100 px-2 py-0.5 text-[11px] font-bold text-blue-950">
-                                                Verificado con {{ ucfirst($comment->oauth_provider) }}
+                                                {{ __('messages.verified_with_provider', ['provider' => ucfirst($comment->oauth_provider)]) }}
                                             </span>
                                         @endif
                                     @endif
@@ -201,12 +201,12 @@
             @endforeach
 
             <div class="pt-4 border-t border-slate-200 space-y-4">
-                <h3 class="text-base font-extrabold text-slate-950">Dejar un comentario</h3>
+                <h3 class="text-base font-extrabold text-slate-950">{{ __('messages.leave_comment_heading') }}</h3>
 
                 @if(!session('public_social_identity') && !auth()->check())
                     <div class="rounded-xl border-2 border-slate-300 bg-stone-50 p-5 text-center space-y-3">
                         <p class="text-sm font-bold text-slate-900">
-                            🔒 Para proteger el portal contra spam y mantener el rigor de la hemeroteca, se requiere identificación previa en un clic:
+                            🔒 {{ __('messages.comment_locked_notice') }}
                         </p>
                         <x-social-identity-banner />
                     </div>
@@ -217,10 +217,10 @@
                         $userProvider = $socialUser['provider'] ?? 'cuenta';
                     @endphp
                     <div class="flex items-center justify-between rounded-xl bg-slate-100 p-3 text-xs font-bold text-slate-800">
-                        <span>Comentando como: <strong class="text-slate-950">{{ $userName }}</strong> ({{ ucfirst($userProvider) }})</span>
+                        <span>{{ __('messages.commenting_as_label') }} <strong class="text-slate-950">{{ $userName }}</strong> ({{ ucfirst($userProvider) }})</span>
                         <form action="{{ route('social.disconnect') }}" method="POST" class="inline">
                             @csrf
-                            <button type="submit" class="text-red-700 hover:underline cursor-pointer">Cambiar cuenta</button>
+                            <button type="submit" class="text-red-700 hover:underline cursor-pointer">{{ __('messages.change_account_btn') }}</button>
                         </form>
                     </div>
 
@@ -229,10 +229,10 @@
                         <input type="hidden" name="commentable_type" value="news">
                         <input type="hidden" name="commentable_id" value="{{ $news->id }}">
                         <div>
-                            <label for="news-comm-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu comentario *</label>
-                            <textarea id="news-comm-body" name="body" rows="3" required minlength="5" placeholder="Escribe tu reflexión o memoria sobre esta noticia..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm focus:border-orange-600 focus:ring-orange-600">{{ old('body') }}</textarea>
+                            <label for="news-comm-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.comment_body_label') }}</label>
+                            <textarea id="news-comm-body" name="body" rows="3" required minlength="5" placeholder="{{ __('messages.comment_body_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm focus:border-orange-600 focus:ring-orange-600">{{ old('body') }}</textarea>
                             <x-input-error :messages="$errors->get('body')" class="mt-1" />
-                            <p class="text-xs text-slate-500 mt-1">Los enlaces y menciones publicitarias externas no están permitidos.</p>
+                            <p class="text-xs text-slate-500 mt-1">{{ __('messages.no_external_links_notice') }}</p>
                         </div>
                         <x-turnstile-widget action="news_comment" />
                         <div class="flex items-start gap-2 pt-1">
@@ -244,9 +244,9 @@
                         @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
                         <div class="flex items-center justify-between">
                             <button type="submit" class="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 transition">
-                                Publicar comentario
+                                {{ __('messages.publish_comment_btn') }}
                             </button>
-                            <span class="text-xs text-slate-500">Moderación previa activa</span>
+                            <span class="text-xs text-slate-500">{{ __('messages.pre_moderation_active') }}</span>
                         </div>
                     </form>
                 @endif
@@ -264,7 +264,7 @@
                 <div class="aspect-4/3 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-inner">
                     <iframe
                         src="https://maps.google.com/maps?q={{ $news->latitude }},{{ $news->longitude }}&amp;z=15&amp;output=embed"
-                        title="Mapa de {{ $title }}"
+                        title="{{ __('messages.map_of_title', ['title' => $title]) }}"
                         class="h-full w-full border-0"
                         allowfullscreen
                         loading="lazy"

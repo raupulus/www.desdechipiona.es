@@ -38,7 +38,7 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="sugg-group" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">1. Selecciona el tipo de apartado *</label>
+                        <label for="sugg-group" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_step1_label') }}</label>
                         @php
                             $groupOptions = [];
                             foreach($groups as $group) {
@@ -55,9 +55,9 @@
                     </div>
 
                     <div>
-                        <label for="sugg-related" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">2. ¿Se relaciona con alguna página ya publicada?</label>
+                        <label for="sugg-related" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_step2_label') }}</label>
                         @php
-                            $pageOptions = ['' => '— Es un tema nuevo independiente —'];
+                            $pageOptions = ['' => __('messages.sugg_independent_topic')];
                             foreach($pages as $p) {
                                 $pageOptions[(string) $p->id] = $p->getTranslation('title', app()->getLocale());
                             }
@@ -67,39 +67,39 @@
                             id="sugg-related"
                             :options="$pageOptions"
                             :value="old('related_page_id')"
-                            placeholder="Escribe para buscar página..."
+                            :placeholder="__('messages.proverb_search_page_placeholder')"
                         />
                     </div>
                 </div>
 
                 <div>
-                    <label for="sugg-title" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">3. Título del tema, receta, personaje o historia *</label>
-                    <input type="text" id="sugg-title" name="title" value="{{ old('title') }}" required minlength="4" maxlength="255" placeholder="Ej. El antiguo cine de verano junto a la playa de Regla..." class="w-full rounded-xl border border-slate-300 px-3.5 py-3 text-base sm:text-sm font-bold text-slate-950">
+                    <label for="sugg-title" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_step3_label') }}</label>
+                    <input type="text" id="sugg-title" name="title" value="{{ old('title') }}" required minlength="4" maxlength="255" placeholder="{{ __('messages.sugg_step3_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-3 text-base sm:text-sm font-bold text-slate-950">
                     <x-input-error :messages="$errors->get('title')" class="mt-1" />
                 </div>
 
                 <div>
-                    <label for="sugg-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">4. Escribe aquí toda la información, historia o receta con detalle *</label>
-                    <textarea id="sugg-body" name="body" rows="9" required minlength="20" placeholder="Cuéntanos todos los detalles: fechas, nombres, cómo se preparaba, qué ocurría o qué recuerdas..." class="w-full rounded-xl border border-slate-300 px-4 py-3 text-base sm:text-sm font-medium text-slate-950 leading-relaxed">{{ old('body') }}</textarea>
+                    <label for="sugg-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_step4_label') }}</label>
+                    <textarea id="sugg-body" name="body" rows="9" required minlength="20" placeholder="{{ __('messages.sugg_step4_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-base sm:text-sm font-medium text-slate-950 leading-relaxed">{{ old('body') }}</textarea>
                     <x-input-error :messages="$errors->get('body')" class="mt-1" />
                 </div>
 
                 <div>
-                    <label for="sugg-sources" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">5. ¿Es un dato de archivo/prensa o un recuerdo/tradición oral?</label>
-                    <textarea id="sugg-sources" name="sources_info" rows="2" placeholder="Indica si procede de un documento, libro, recorte de prensa o tradición familiar para clasificar su nivel de evidencia..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('sources_info') }}</textarea>
+                    <label for="sugg-sources" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_step5_label') }}</label>
+                    <textarea id="sugg-sources" name="sources_info" rows="2" placeholder="{{ __('messages.sugg_step5_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('sources_info') }}</textarea>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                        <label for="sugg-location" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Lugar en Chipiona (opcional)</label>
-                        <input type="text" id="sugg-location" name="location_name" value="{{ old('location_name') }}" placeholder="Ej. Pago de Abulagar / Muelle" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">
+                        <label for="sugg-location" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_location_label') }}</label>
+                        <input type="text" id="sugg-location" name="location_name" value="{{ old('location_name') }}" placeholder="{{ __('messages.sugg_location_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">
                     </div>
                     <div>
-                        <label for="sugg-lat" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Latitud GPS (opcional)</label>
+                        <label for="sugg-lat" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_lat_label') }}</label>
                         <input type="number" step="0.000001" id="sugg-lat" name="latitude" value="{{ old('latitude') }}" placeholder="36.7378" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">
                     </div>
                     <div>
-                        <label for="sugg-lng" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Longitud GPS (opcional)</label>
+                        <label for="sugg-lng" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_lng_label') }}</label>
                         <input type="number" step="0.000001" id="sugg-lng" name="longitude" value="{{ old('longitude') }}" placeholder="-6.4425" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">
                     </div>
                 </div>
@@ -115,7 +115,7 @@
                 @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
 
                 <button type="submit" class="w-full rounded-xl bg-orange-700 px-6 py-4 text-base font-extrabold text-white shadow-md hover:bg-orange-800 transition cursor-pointer">
-                    Enviar aportación al equipo de Desde Chipiona
+                    {{ __('messages.sugg_submit_team_btn') }}
                 </button>
             </form>
         @endif

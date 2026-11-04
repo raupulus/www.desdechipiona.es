@@ -33,7 +33,7 @@
                 @if(!empty($summary['aemet_code']))
                     <span class="rounded-xl bg-blue-950 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-300">AEMET {{ $summary['aemet_code'] }}</span>
                 @else
-                    <span class="rounded-xl bg-blue-950 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-300">Oficial</span>
+                    <span class="rounded-xl bg-blue-950 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-300">{{ __('messages.official_badge') }}</span>
                 @endif
             </div>
 
@@ -69,7 +69,7 @@
                 </div>
                 <div class="flex justify-between">
                     <dt class="font-bold text-slate-700">{{ __('messages.weather_uv') }}</dt>
-                    <dd class="font-extrabold text-slate-950">Nivel {{ $weather['uv_max'] ?? 6 }}</dd>
+                    <dd class="font-extrabold text-slate-950">{{ __('messages.uv_level_prefix') }} {{ $weather['uv_max'] ?? 6 }}</dd>
                 </div>
                 <div class="flex justify-between">
                     <dt class="font-bold text-slate-700">{{ __('messages.weather_sea_temp') }}</dt>
@@ -97,9 +97,9 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto" tabindex="0" role="region" aria-label="Tabla de mareas y estado de los corrales de pesca">
+            <div class="overflow-x-auto" tabindex="0" role="region" aria-label="{{ __('messages.tides_region_aria') }}">
                 <table class="w-full min-w-[520px] sm:min-w-full text-left border-collapse">
-                    <caption class="sr-only">Horarios diarios de pleamar y bajamar, altura en metros y estado de los corrales de pesca de Chipiona</caption>
+                    <caption class="sr-only">{{ __('messages.tides_table_caption') }}</caption>
                     <thead>
                         <tr class="border-b-2 border-slate-300 text-xs font-extrabold uppercase text-slate-800">
                             <th scope="col" class="py-3 pr-4 whitespace-nowrap">{{ __('messages.tides_col_tide') }}</th>

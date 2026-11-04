@@ -247,4 +247,54 @@ class SeoAndResponsiveAuditTest extends TestCase
         $pageHtml = (string) $this->get(route('pages.show', $this->page->slug))->getContent();
         $this->assertStringContainsString('[overflow-wrap:anywhere]', $pageHtml);
     }
+
+    public function test_markdown_h1_demotion_and_broken_corpus_image_stripping(): void
+    {
+        $corpusPage = Page::create([
+            'slug' => 'corpora-test-h1-and-images',
+            'title' => [
+                'es' => 'Título de Prueba del Corpus',
+                'en' => 'Corpus Test Title',
+            ],
+            'excerpt' => [
+                'es' => 'Extracto de prueba para validar la limpieza del contenido Markdown.',
+                'en' => 'Test excerpt to validate Markdown content cleaning.',
+            ],
+            'content' => [
+                'es' => "# Título Duplicado\n\nTexto con imagen rota ![Foto](../../04-recursos/imagenes/antigua.jpg) y enlace a [Archivo](../../04-recursos/mapas/mapa.jpg).\n\n# Otra Sección H1\n\nPárrafo final.",
+                'en' => "# Duplicate Title\n\nText with broken image ![Photo](../../04-recursos/imagenes/antigua.jpg) and link to [File](../../04-recursos/mapas/mapa.jpg).\n\n# Another H1 Section\n\nFinal paragraph.",
+            ],
+            'status' => ContentStatus::Published,
+            'is_active' => true,
+            'published_at' => now()->subDay(),
+            'content_group' => ContentGroup::Historia,
+            'historical_era' => HistoricalEra::Contemporary,
+            'evidence_level' => EvidenceLevel::Consolidated,
+        ]);
+
+        $response = $this->get(route('pages.show', $corpusPage->slug).'?lang=es');
+        $response->assertOk();
+
+        $html = (string) $response->getContent();
+        $h1Count = preg_match_all('/<h1\b[^>]*>/i', $html);
+        $this->assertSame(1, $h1Count, 'Debe existir únicamente 1 etiqueta <h1> incluso si el Markdown original contenía encabezados #.');
+        $this->assertStringNotContainsString('04-recursos', $html);
+        $this->assertStringNotContainsString('antigua.jpg', $html);
+        $this->assertStringContainsString('Otra Sección H1', $html);
+    }
+
+    public function test_default_locale_query_param_canonicalizes_to_clean_url(): void
+    {
+        $pageUrl = route('pages.show', $this->page->slug);
+
+        // ?lang=es debe apuntar su canonical a la URL limpia sin ?lang=es
+        $esResponse = $this->get($pageUrl.'?lang=es');
+        $esResponse->assertOk();
+        $esResponse->assertSee('<link rel="canonical" href="'.$pageUrl.'" />', false);
+
+        // ?lang=en debe mantener ?lang=en en su canonical
+        $enResponse = $this->get($pageUrl.'?lang=en');
+        $enResponse->assertOk();
+        $enResponse->assertSee('<link rel="canonical" href="'.$pageUrl.'?lang=en" />', false);
+    }
 }
