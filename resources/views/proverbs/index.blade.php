@@ -3,46 +3,46 @@
 @section('content')
 @php
     $categories = [
-        'all' => '🌊 Todos los refranes',
-        'mar' => '⚓ La Mar, Mareas y Corrales',
-        'campo' => '🍇 El Campo, Huerta y Moscatel',
-        'vientos' => '🌬️ Vientos (Levante y Poniente)',
-        'fiestas' => '🎭 Fiestas y Tradiciones',
-        'vida' => '🏡 Vida Cotidiana del Pueblo',
+        'all' => __('messages.proverbs_cat_all'),
+        'mar' => __('messages.proverbs_cat_mar'),
+        'campo' => __('messages.proverbs_cat_campo'),
+        'vientos' => __('messages.proverbs_cat_vientos'),
+        'fiestas' => __('messages.proverbs_cat_fiestas'),
+        'vida' => __('messages.proverbs_cat_vida'),
     ];
 @endphp
 
 <header class="bg-gradient-to-br from-slate-950 via-blue-950 to-violet-950 text-white border-b-4 border-orange-700">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3.5 py-1 text-xs font-extrabold text-amber-300 mb-4">
-            🗣️ Memoria Oral de Nuestros Mayores
+            {{ __('messages.proverbs_header_badge') }}
         </span>
         <h1 class="font-serif text-3xl sm:text-5xl font-extrabold text-white mb-4">
-            Refranero Popular y Dichos de Chipiona
+            {{ __('messages.proverbs_header_title') }}
         </h1>
         <p class="max-w-3xl text-base sm:text-lg text-slate-200 leading-relaxed">
-            La sabiduría de los antiguos corraleros, marineros y viñistas de Chipiona conservada palabra por palabra. Si en tu casa se dice un refrán o dicho del pueblo, súbelo aquí mismo.
+            {{ __('messages.proverbs_header_subtitle') }}
         </p>
 
         <form action="{{ route('proverbs.index') }}" method="GET" role="search" aria-label="Buscar refranes de Chipiona" class="mt-6 max-w-2xl flex flex-col sm:flex-row gap-3">
             @if($category !== '' && $category !== 'all')
                 <input type="hidden" name="category" value="{{ $category }}">
             @endif
-            <label for="proverbs-search-q" class="sr-only">Buscar refrán o dicho popular</label>
+            <label for="proverbs-search-q" class="sr-only">{{ __('messages.search') }}</label>
             <input
                 type="search"
                 id="proverbs-search-q"
                 name="q"
                 value="{{ $search }}"
-                placeholder="Buscar refrán por palabra, viento, mar o moscatel..."
+                placeholder="{{ __('messages.proverbs_search_placeholder') }}"
                 class="flex-1 rounded-xl border-2 border-slate-300 bg-white px-4 py-2.5 text-base sm:text-sm font-bold text-slate-950 placeholder:text-slate-600"
             >
             <button type="submit" class="rounded-xl bg-orange-700 px-6 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 cursor-pointer">
-                Buscar
+                {{ __('messages.proverbs_search_btn') }}
             </button>
             @if($search !== '' || ($category !== '' && $category !== 'all'))
                 <a href="{{ route('proverbs.index') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-500 bg-slate-900 px-4 py-2.5 text-xs font-extrabold text-amber-300 hover:bg-slate-800">
-                    Limpiar
+                    {{ __('messages.proverbs_clear_btn') }}
                 </a>
             @endif
         </form>

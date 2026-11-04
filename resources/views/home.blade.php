@@ -31,13 +31,13 @@
         <div class="text-center max-w-4xl mx-auto mb-8">
             <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/90 px-4 py-1.5 text-xs font-bold text-amber-300 mb-5">
                 <span aria-hidden="true">🦎</span>
-                <span>Archivo abierto, riguroso y cercano sobre nuestra tierra</span>
+                <span>{{ __('messages.home_hero_badge_chipiona') }}</span>
             </span>
             <h1 class="font-serif text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight mb-4">
-                Todo lo que <span class="text-amber-300">Chipiona</span> fue, es y guarda en su memoria
+                {{ __('messages.home_hero_title_prefix') }} <span class="text-amber-300">Chipiona</span> {{ __('messages.home_hero_title_suffix') }}
             </h1>
             <p class="text-base sm:text-lg text-slate-200 max-w-2xl mx-auto leading-relaxed">
-                Busca de forma sencilla entre siglos de historia documentada, monumentos, playas, corrales de pesca, fauna, flora, refranes y personajes.
+                {{ __('messages.home_hero_subtitle_chipiona') }}
             </p>
         </div>
 
@@ -51,7 +51,7 @@
         >
             <div>
                 <label for="search-q" class="block text-sm font-extrabold text-slate-950 mb-2">
-                    🔎 ¿Qué quieres descubrir hoy sobre Chipiona?
+                    {{ __('messages.home_search_input_label') }}
                 </label>
                 <div class="flex flex-col sm:flex-row gap-3">
                     <input
@@ -59,14 +59,14 @@
                         id="search-q"
                         name="q"
                         value="{{ $searchQuery }}"
-                        placeholder="Escribe por ejemplo: Faro, Camaleón, Regla, Maremoto de 1755, Moscatel..."
+                        placeholder="{{ __('messages.home_search_placeholder_chipiona') }}"
                         class="flex-1 rounded-xl border-2 border-slate-300 bg-white px-4 py-3 text-base font-medium text-slate-950 placeholder:text-slate-600 focus:border-orange-700 focus:ring-2 focus:ring-orange-700"
                     >
                     <button
                         type="submit"
                         class="inline-flex items-center justify-center gap-2 rounded-xl bg-orange-700 px-7 py-3 text-base font-extrabold text-white shadow-md hover:bg-orange-800 transition cursor-pointer"
                     >
-                        <span>Buscar ahora</span>
+                        <span>{{ __('messages.home_search_button_label') }}</span>
                     </button>
                 </div>
             </div>
@@ -74,7 +74,7 @@
             {{-- 1. Filtrar por tema o apartado --}}
             <div>
                 <span class="block text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-2.5">
-                    1. Filtrar por tema o apartado:
+                    {{ __('messages.home_filter_group_title') }}
                 </span>
                 <input type="hidden" name="group" id="filter-group-input" value="{{ $activeGroup }}">
                 <div class="flex flex-wrap gap-2">
@@ -273,9 +273,14 @@
                         \App\Enums\EvidenceLevel::Tradition => 'border-amber-800 bg-amber-50 text-amber-950',
                         \App\Enums\EvidenceLevel::Disputed => 'border-rose-800 bg-rose-50 text-rose-950',
                     };
-                    $sources = is_array($pageItem->source_references) && count($pageItem->source_references) > 0
-                        ? implode(', ', array_slice($pageItem->source_references, 0, 2))
-                        : null;
+                    $sources = null;
+                    if (is_array($pageItem->source_references) && count($pageItem->source_references) > 0) {
+                        $firstSources = array_slice($pageItem->source_references, 0, 2);
+                        $mapped = array_map(function ($s) {
+                            return is_array($s) ? ($s['id'] ?? ($s['title'] ?? '')) : (string) $s;
+                        }, $firstSources);
+                        $sources = implode(', ', array_filter($mapped));
+                    }
                 @endphp
                 <article class="flex flex-col justify-between rounded-2xl border border-slate-200 border-t-4 {{ $borderClass }} bg-white shadow-sm hover:shadow-md transition overflow-hidden">
                     <div>

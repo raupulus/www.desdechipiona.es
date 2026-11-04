@@ -83,7 +83,9 @@ class ChipionaFeaturesTest extends TestCase
             'slug' => 'faro-de-chipiona',
             'title' => ['es' => 'El Faro de Chipiona', 'en' => 'Chipiona Lighthouse'],
             'youtube_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            'source_references' => ['F-0071'],
+            'source_references' => [
+                ['id' => 'F-0071', 'title' => 'Archivo Histórico Provincial de Cádiz', 'author' => 'Ministerio de Fomento', 'year' => 1867],
+            ],
         ]);
 
         $faro->relatedPages()->attach($salmedina->id);
@@ -93,8 +95,9 @@ class ChipionaFeaturesTest extends TestCase
             ->assertStatus(200)
             ->assertSee('El Faro de Chipiona')
             ->assertSee('El Bajo de Salmedina')
-            ->assertSee('F-0071')
-            ->assertSee('youtube-nocookie.com/embed/dQw4w9WgXcQ');
+            ->assertSee('Archivo Histórico Provincial de Cádiz')
+            ->assertSee('fuente oficial verificada')
+            ->assertSee('maps.google.com');
     }
 
     public function test_independent_news_section_and_detail_work(): void

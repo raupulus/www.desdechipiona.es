@@ -119,11 +119,9 @@
                     </span>
                     @if(count($sources) > 0)
                         <div class="flex flex-wrap gap-1.5">
-                            @foreach($sources as $code)
-                                <span class="rounded bg-white/90 px-2 py-0.5 font-mono text-xs font-extrabold text-slate-950 border border-current/30">
-                                    [{{ $code }}]
-                                </span>
-                            @endforeach
+                            <span class="rounded-lg bg-white/90 px-3 py-1 font-bold text-xs text-slate-950 border border-current/30 shadow-2xs">
+                                📚 {{ count($sources) }} {{ count($sources) === 1 ? (app()->getLocale() === 'en' ? 'verified official source' : 'fuente oficial verificada') : (app()->getLocale() === 'en' ? 'verified official sources' : 'fuentes oficiales verificadas') }}
+                            </span>
                         </div>
                     @endif
                 </div>

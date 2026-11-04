@@ -307,6 +307,20 @@ class ImportChipionaCorpus extends Command
         $items = [];
         $subdirs = ['02-historia', '03-actualidad'];
 
+        // Cargar diccionario de traducciones al inglés si existe
+        $enTranslations = [];
+        $enTransFile = database_path('seeders/data/chipiona_pages_translations_en.json');
+        if (File::exists($enTransFile)) {
+            $rawEn = json_decode(File::get($enTransFile), true);
+            if (is_array($rawEn)) {
+                foreach ($rawEn as $enItem) {
+                    if (isset($enItem['slug'])) {
+                        $enTranslations[$enItem['slug']] = $enItem;
+                    }
+                }
+            }
+        }
+
         foreach ($subdirs as $sub) {
             $targetDir = rtrim($corpusDir, '/').'/'.$sub;
             if (! File::isDirectory($targetDir)) {
@@ -374,21 +388,27 @@ class ImportChipionaCorpus extends Command
                 // Asegurar existencia de imagen WebP de cabecera y social
                 $this->ensureWebpImageExists($slug, $group);
 
+                $titleEs = (string) $meta['titulo'];
+                $titleEn = $enTranslations[$slug]['title_en'] ?? $titleEs;
+                $excerptEn = $enTranslations[$slug]['excerpt_en'] ?? $excerpt;
+                $contentEn = $enTranslations[$slug]['content_en'] ?? $cleanBody;
+                $evidenceNoteEn = $enTranslations[$slug]['evidence_note_en'] ?? (string) ($meta['nota_evidencia'] ?? '');
+
                 $items[] = [
                     'slug' => $slug,
-                    'title' => ['es' => (string) $meta['titulo'], 'en' => (string) $meta['titulo']],
-                    'excerpt' => ['es' => $excerpt, 'en' => $excerpt],
-                    'content' => ['es' => $cleanBody, 'en' => $cleanBody],
-                    'seo_title' => ['es' => $meta['titulo'].' | Desde Chipiona', 'en' => $meta['titulo'].' | Desde Chipiona'],
-                    'seo_description' => ['es' => $excerpt, 'en' => $excerpt],
-                    'seo_keywords' => ['es' => 'Chipiona, '.$meta['titulo'], 'en' => 'Chipiona, '.$meta['titulo']],
+                    'title' => ['es' => $titleEs, 'en' => $titleEn],
+                    'excerpt' => ['es' => $excerpt, 'en' => $excerptEn],
+                    'content' => ['es' => $cleanBody, 'en' => $contentEn],
+                    'seo_title' => ['es' => $titleEs.' | Desde Chipiona', 'en' => $titleEn.' | Desde Chipiona'],
+                    'seo_description' => ['es' => $excerpt, 'en' => $excerptEn],
+                    'seo_keywords' => ['es' => 'Chipiona, '.$titleEs, 'en' => 'Chipiona, '.$titleEn.', history, heritage, nature'],
                     'content_group' => $group,
                     'historical_era' => $era,
                     'period_label' => isset($meta['siglos']) && is_array($meta['siglos']) ? 'Siglos '.implode(', ', $meta['siglos']) : ($meta['periodo'] ?? null),
                     'year_start' => $yearStart,
                     'year_end' => $yearEnd,
                     'evidence_level' => $evidence,
-                    'evidence_note' => ['es' => (string) ($meta['nota_evidencia'] ?? ''), 'en' => (string) ($meta['nota_evidencia'] ?? '')],
+                    'evidence_note' => ['es' => (string) ($meta['nota_evidencia'] ?? ''), 'en' => $evidenceNoteEn],
                     'source_references' => $resolvedSources,
                     'image' => "images/pages/{$slug}-header.webp",
                     'social_image' => "images/pages/{$slug}-social.webp",
@@ -552,7 +572,7 @@ class ImportChipionaCorpus extends Command
                 [
                     'title' => ['es' => $nItem['title_es'], 'en' => $nItem['title_en'] ?? $nItem['title_es']],
                     'excerpt' => ['es' => $nItem['excerpt_es'], 'en' => $nItem['excerpt_en'] ?? $nItem['excerpt_es']],
-                    'content' => ['es' => $nItem['content_es'], 'en' => $nItem['content_es']],
+                    'content' => ['es' => $nItem['content_es'], 'en' => $nItem['content_en'] ?? $nItem['content_es']],
                     'seo_title' => ['es' => $nItem['title_es'].' | Desde Chipiona', 'en' => ($nItem['title_en'] ?? $nItem['title_es']).' | Desde Chipiona'],
                     'seo_description' => ['es' => $nItem['excerpt_es'], 'en' => $nItem['excerpt_en'] ?? $nItem['excerpt_es']],
                     'image' => "images/news/{$slug}-header.webp",
