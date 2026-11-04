@@ -261,65 +261,65 @@
                         </button>
                     </div>
 
-                    <x-social-identity-banner />
+                    @error('auth')
+                        <div class="rounded-xl border border-red-300 bg-red-50 p-3 text-xs font-bold text-red-800">
+                            {{ $message }}
+                        </div>
+                    @enderror
 
-                    <form action="{{ route('corrections.store') }}" method="POST" class="space-y-4">
-                        @csrf
-                        <input type="hidden" name="correctable_type" value="page">
-                        <input type="hidden" name="correctable_id" value="{{ $page->id }}">
+                    @if(!session('public_social_identity') && !auth()->check())
+                        <div class="rounded-xl border-2 border-slate-300 bg-stone-50 p-5 text-center space-y-3">
+                            <p class="text-sm font-bold text-slate-900">
+                                🔒 {{ __('messages.correction_form_locked_notice') }}
+                            </p>
+                            <x-social-identity-banner />
+                        </div>
+                    @else
+                        <x-social-identity-banner />
 
-                        @if(!session('public_social_identity'))
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="corr-author-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre</label>
-                                    <input type="text" id="corr-author-name" name="author_name" value="{{ old('author_name') }}" autocomplete="name" placeholder="Ej. María Gómez" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
-                                    <x-input-error :messages="$errors->get('author_name')" class="mt-1" />
-                                </div>
-                                <div>
-                                    <label for="corr-author-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu correo (opcional)</label>
-                                    <input type="email" id="corr-author-email" name="author_email" value="{{ old('author_email') }}" autocomplete="email" placeholder="Para avisarte al aprobarla" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
-                                    <x-input-error :messages="$errors->get('author_email')" class="mt-1" />
-                                </div>
+                        <form action="{{ route('corrections.store') }}" method="POST" class="space-y-4">
+                            @csrf
+                            <input type="hidden" name="correctable_type" value="page">
+                            <input type="hidden" name="correctable_id" value="{{ $page->id }}">
+
+                            <div>
+                                <label for="quoted_text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Frase o dato actual que deseas corregir (opcional)</label>
+                                <input type="text" id="quoted_text" name="quoted_text" value="{{ old('quoted_text') }}" placeholder="Copia aquí la frase o fecha que aparece en el texto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                <x-input-error :messages="$errors->get('quoted_text')" class="mt-1" />
                             </div>
-                        @endif
 
-                        <div>
-                            <label for="quoted_text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Frase o dato actual que deseas corregir (opcional)</label>
-                            <input type="text" id="quoted_text" name="quoted_text" value="{{ old('quoted_text') }}" placeholder="Copia aquí la frase o fecha que aparece en el texto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
-                            <x-input-error :messages="$errors->get('quoted_text')" class="mt-1" />
-                        </div>
+                            <div>
+                                <label for="proposed_correction" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">¿Cuál es la corrección o aclaración propuesta? *</label>
+                                <textarea id="proposed_correction" name="proposed_correction" rows="4" required minlength="10" placeholder="Explica con detalle el dato correcto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('proposed_correction') }}</textarea>
+                                <x-input-error :messages="$errors->get('proposed_correction')" class="mt-1" />
+                            </div>
 
-                        <div>
-                            <label for="proposed_correction" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">¿Cuál es la corrección o aclaración propuesta? *</label>
-                            <textarea id="proposed_correction" name="proposed_correction" rows="4" required minlength="10" placeholder="Explica con detalle el dato correcto..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('proposed_correction') }}</textarea>
-                            <x-input-error :messages="$errors->get('proposed_correction')" class="mt-1" />
-                        </div>
+                            <div>
+                                <label for="sources_info" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Fuente documental, libro o testimonio (opcional)</label>
+                                <input type="text" id="sources_info" name="sources_info" value="{{ old('sources_info') }}" placeholder="Ej. Archivo Municipal, libro de bautismos, fotografía familiar..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                <x-input-error :messages="$errors->get('sources_info')" class="mt-1" />
+                            </div>
 
-                        <div>
-                            <label for="sources_info" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Fuente documental, libro o testimonio (opcional)</label>
-                            <input type="text" id="sources_info" name="sources_info" value="{{ old('sources_info') }}" placeholder="Ej. Archivo Municipal, libro de bautismos, fotografía familiar..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
-                            <x-input-error :messages="$errors->get('sources_info')" class="mt-1" />
-                        </div>
+                            <x-turnstile-widget action="correction" />
 
-                        <x-turnstile-widget action="correction" />
+                            <div class="flex items-start gap-2 pt-1">
+                                <input type="checkbox" id="page-corr-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
+                                <label for="page-corr-privacy" class="text-xs text-slate-700">
+                                    {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
+                                </label>
+                            </div>
+                            @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
 
-                        <div class="flex items-start gap-2 pt-1">
-                            <input type="checkbox" id="page-corr-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
-                            <label for="page-corr-privacy" class="text-xs text-slate-700">
-                                {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
-                            </label>
-                        </div>
-                        @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
-
-                        <div class="flex justify-end gap-3 pt-2">
-                            <button type="button" onclick="document.getElementById('correction-dialog').close()" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-800 hover:bg-slate-100">
-                                Cancelar
-                            </button>
-                            <button type="submit" class="rounded-xl bg-orange-700 px-6 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800">
-                                Enviar propuesta de corrección
-                            </button>
-                        </div>
-                    </form>
+                            <div class="flex justify-end gap-3 pt-2">
+                                <button type="button" onclick="document.getElementById('correction-dialog').close()" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-800 hover:bg-slate-100">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="rounded-xl bg-orange-700 px-6 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800">
+                                    Enviar propuesta de corrección
+                                </button>
+                            </div>
+                        </form>
+                    @endif
                 </div>
             </dialog>
 

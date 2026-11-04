@@ -1,13 +1,14 @@
 {{--
-    Componente de identificación social ligera (Facebook / Google) sin cuentas locales.
-    Pensado especialmente para facilitar la participación a personas mayores procedentes de Facebook.
+    Componente de identificación social ligera obligatoria (Facebook / Google) sin cuentas locales.
+    Verifica la autoría en un clic para proteger todos los formularios ciudadanos contra el spam.
 --}}
 @php
     /** @var array{provider: string, id: string, name: string, email: ?string, avatar: ?string}|null $socialIdentity */
     $socialIdentity = session('public_social_identity');
+    $authUser = auth()->user();
 @endphp
 
-<div class="rounded-xl border border-slate-300 bg-slate-50 p-4">
+<div class="rounded-xl border border-slate-300 bg-slate-50 p-4 text-left">
     @if($socialIdentity)
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
@@ -22,7 +23,7 @@
                     <p class="text-sm font-bold text-slate-950">
                         {{ __('messages.social_connected_as', ['name' => $socialIdentity['name'], 'provider' => ucfirst($socialIdentity['provider'])]) }}
                     </p>
-                    <p class="text-xs text-slate-700">Sin cuenta ni contraseña en la web · Identidad verificada en tu sesión actual</p>
+                    <p class="text-xs text-slate-700">{{ __('messages.social_verified_session_note') }}</p>
                 </div>
             </div>
             <button
@@ -37,14 +38,30 @@
         @if(!empty($socialIdentity['email']))
             <input type="hidden" name="author_email" value="{{ $socialIdentity['email'] }}">
         @endif
+    @elseif($authUser)
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-900 font-bold text-white">
+                    {{ mb_substr($authUser->name, 0, 1) }}
+                </span>
+                <div>
+                    <p class="text-sm font-bold text-slate-950">
+                        {{ __('messages.social_connected_as', ['name' => $authUser->name, 'provider' => 'Desde Chipiona']) }}
+                    </p>
+                    <p class="text-xs text-slate-700">{{ __('messages.social_verified_session_note') }}</p>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="author_name" value="{{ $authUser->name }}">
+        <input type="hidden" name="author_email" value="{{ $authUser->email }}">
     @else
         <div class="space-y-3">
-            <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+            <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                 <div>
-                    <p class="text-sm font-bold text-slate-950">Identificación rápida con un clic (opcional)</p>
-                    <p class="text-xs text-slate-700">No creamos cuentas de usuario en la plataforma. Puedes usar tu Facebook o Google para rellenar tu nombre automáticamente o escribirlo debajo.</p>
+                    <p class="text-sm font-bold text-slate-950">{{ __('messages.social_required_title') }}</p>
+                    <p class="text-xs text-slate-700 mt-0.5">{{ __('messages.social_required_desc') }}</p>
                 </div>
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-2 shrink-0">
                     <a
                         href="{{ route('social.redirect', ['provider' => 'facebook']) }}"
                         class="inline-flex items-center gap-2 rounded-lg bg-[#145dbf] px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#0f4896]"

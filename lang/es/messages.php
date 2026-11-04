@@ -451,4 +451,13 @@ return [
     'authorship_box_text' => 'Este contenido e investigación documental es obra original y propiedad intelectual privada de Raúl Caro Pastorino. Se permite su difusión y compartición siempre que se cite expresamente al autor, las fuentes documentales y se enlace de forma visible a la página original en Desde Chipiona (Licencia CC BY-NC-SA 4.0).',
     'authorship_how_to_cite' => 'Cómo citar y compartir este artículo:',
     'footer_content_license' => 'Contenidos e investigación: propiedad privada de Raúl Caro Pastorino. Permitido compartir citando obligatoriamente autoría, fuentes y enlace a desdechipiona.es (CC BY-NC-SA 4.0).',
+    'social_verified_session_note' => 'Sin cuenta ni contraseña en la web · Identidad verificada en tu sesión actual',
+    'social_required_title' => '🔒 Identificación verificada en un clic (obligatoria contra el spam)',
+    'social_required_desc' => 'No creamos cuentas ni contraseñas en la web. Para proteger el archivo de Chipiona frente al spam, identifícate en un clic con tu cuenta de Facebook o Google para desbloquear el formulario.',
+    'verified_participation_badge' => '🔒 Participación verificada anti-spam',
+    'proverb_form_heading' => '🗣️ Sube tu refrán o dicho de Chipiona',
+    'proverb_form_subheading' => '¿Qué decían tus abuelos cuando saltaba el Levante, bajaba el aguaje en los corrales o llegaba la vendimia del moscatel?',
+    'proverb_form_locked_notice' => 'Para subir un refrán o dicho popular al archivo de Chipiona debes verificar tu identidad en un clic con Google o Facebook:',
+    'suggestion_form_locked_notice' => 'Para enviar una sugerencia o aportación documental al archivo de Chipiona debes verificar tu identidad en un clic con Google o Facebook:',
+    'correction_form_locked_notice' => 'Para proponer una corrección documental debes verificar tu identidad en un clic con Google o Facebook:',
 ];

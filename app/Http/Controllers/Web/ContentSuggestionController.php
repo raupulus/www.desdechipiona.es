@@ -45,6 +45,7 @@ class ContentSuggestionController extends Controller
 
         /** @var array<string, string|null>|null $social */
         $social = $request->session()->get('public_social_identity');
+        $user = auth()->user();
 
         ContentSuggestion::create([
             'content_group' => $validated['content_group'],
@@ -55,10 +56,10 @@ class ContentSuggestionController extends Controller
             'location_name' => $validated['location_name'] ?? null,
             'latitude' => $validated['latitude'] ?? null,
             'longitude' => $validated['longitude'] ?? null,
-            'author_name' => $social['name'] ?? ($validated['author_name'] ?? null) ?: 'Colaborador de Chipiona',
-            'author_email' => $social['email'] ?? ($validated['author_email'] ?? null),
-            'oauth_provider' => $social['provider'] ?? null,
-            'oauth_id' => $social['id'] ?? null,
+            'author_name' => $social['name'] ?? $user?->name ?? 'Colaborador Verificado',
+            'author_email' => $social['email'] ?? $user?->email ?? null,
+            'oauth_provider' => $social['provider'] ?? ($user ? 'local' : null),
+            'oauth_id' => $social['id'] ?? ($user ? (string) $user->id : null),
             'author_avatar' => $social['avatar'] ?? null,
             'status' => SuggestionStatus::Pending,
         ]);

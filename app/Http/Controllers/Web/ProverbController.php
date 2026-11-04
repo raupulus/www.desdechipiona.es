@@ -68,6 +68,7 @@ class ProverbController extends Controller
 
         /** @var array<string, string|null>|null $social */
         $social = $request->session()->get('public_social_identity');
+        $user = auth()->user();
 
         Proverb::create([
             'text' => $validated['text'],
@@ -75,10 +76,10 @@ class ProverbController extends Controller
             'category' => $validated['category'],
             'source_code' => $validated['source_code'] ?? 'Tradición oral vecinal',
             'related_page_id' => $validated['related_page_id'] ?? null,
-            'author_name' => $social['name'] ?? ($validated['author_name'] ?? null) ?: 'Vecino de Chipiona',
-            'author_email' => $social['email'] ?? ($validated['author_email'] ?? null),
-            'oauth_provider' => $social['provider'] ?? null,
-            'oauth_id' => $social['id'] ?? null,
+            'author_name' => $social['name'] ?? $user?->name ?? 'Vecino Verificado',
+            'author_email' => $social['email'] ?? $user?->email ?? null,
+            'oauth_provider' => $social['provider'] ?? ($user ? 'local' : null),
+            'oauth_id' => $social['id'] ?? ($user ? (string) $user->id : null),
             'status' => SuggestionStatus::Pending,
             'featured' => false,
         ]);

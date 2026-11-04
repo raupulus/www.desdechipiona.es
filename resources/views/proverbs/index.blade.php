@@ -110,99 +110,100 @@
         @endif
     </section>
 
-    {{-- Formulario para subir un refrán --}}
+    {{-- Formulario para subir un refrán (requiere verificación OAuth anti-spam) --}}
     <section id="subir-refran" class="max-w-3xl mx-auto rounded-2xl border-2 border-slate-900 bg-white p-6 sm:p-10 shadow-lg space-y-6">
         <div>
-            <span class="rounded-lg bg-orange-100 px-3 py-1 text-xs font-extrabold text-orange-950">Participación abierta</span>
+            <span class="rounded-lg bg-orange-100 px-3 py-1 text-xs font-extrabold text-orange-950">{{ __('messages.verified_participation_badge') }}</span>
             <h2 class="font-serif text-2xl sm:text-3xl font-extrabold text-slate-950 mt-2">
-                🗣️ Sube tu refrán o dicho de Chipiona
+                {{ __('messages.proverb_form_heading') }}
             </h2>
             <p class="text-sm text-slate-800 mt-1">
-                ¿Qué decían tus abuelos cuando saltaba el Levante, bajaba el aguaje en los corrales o llegaba la vendimia del moscatel?
+                {{ __('messages.proverb_form_subheading') }}
             </p>
         </div>
 
-        <x-social-identity-banner />
+        @error('auth')
+            <div class="rounded-xl border border-red-300 bg-red-50 p-3 text-xs font-bold text-red-800">
+                {{ $message }}
+            </div>
+        @enderror
 
-        <form action="{{ route('proverbs.store') }}" method="POST" class="space-y-5">
-            @csrf
+        @if(!session('public_social_identity') && !auth()->check())
+            <div class="rounded-xl border-2 border-slate-300 bg-stone-50 p-5 text-center space-y-3">
+                <p class="text-sm font-bold text-slate-900">
+                    🔒 {{ __('messages.proverb_form_locked_notice') }}
+                </p>
+                <x-social-identity-banner />
+            </div>
+        @else
+            <x-social-identity-banner />
 
-            @if(!session('public_social_identity'))
+            <form action="{{ route('proverbs.store') }}" method="POST" class="space-y-5">
+                @csrf
+
+                <div>
+                    <label for="prov-text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Refrán o dicho popular *</label>
+                    <textarea id="prov-text" name="text" rows="2" required minlength="5" placeholder="Escribe el refrán tal como se dice en Chipiona..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base font-bold text-slate-950">{{ old('text') }}</textarea>
+                    <x-input-error :messages="$errors->get('text')" class="mt-1" />
+                </div>
+
+                <div>
+                    <label for="prov-meaning" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">¿Qué significa o cuándo se usa?</label>
+                    <textarea id="prov-meaning" name="meaning" rows="3" placeholder="Explica brevemente su sentido marinero, del campo o del pueblo..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('meaning') }}</textarea>
+                    <x-input-error :messages="$errors->get('meaning')" class="mt-1" />
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="prov-author-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu nombre o familia</label>
-                        <input type="text" id="prov-author-name" name="author_name" value="{{ old('author_name') }}" autocomplete="name" placeholder="Ej. Familia Lorenzo / Carmen Naval" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
-                        <x-input-error :messages="$errors->get('author_name')" class="mt-1" />
+                        <label for="prov-category" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tema del refrán *</label>
+                        <x-searchable-select
+                            name="category"
+                            id="prov-category"
+                            :options="[
+                                'mar' => 'La Mar, Mareas y Corrales',
+                                'campo' => 'El Campo, Huerta y Moscatel',
+                                'vientos' => 'Vientos (Levante y Poniente)',
+                                'fiestas' => 'Fiestas y Tradiciones',
+                                'vida' => 'Vida Cotidiana del Pueblo',
+                            ]"
+                            value="mar"
+                            required
+                        />
                     </div>
+
                     <div>
-                        <label for="prov-author-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tu correo (opcional)</label>
-                        <input type="email" id="prov-author-email" name="author_email" value="{{ old('author_email') }}" autocomplete="email" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
-                        <x-input-error :messages="$errors->get('author_email')" class="mt-1" />
+                        <label for="prov-page" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Página relacionada (opcional)</label>
+                        @php
+                            $proverbPageOptions = ['' => '— Ninguna página en concreto —'];
+                            foreach($pages as $p) {
+                                $proverbPageOptions[(string) $p->id] = $p->getTranslation('title', app()->getLocale());
+                            }
+                        @endphp
+                        <x-searchable-select
+                            name="related_page_id"
+                            id="prov-page"
+                            :options="$proverbPageOptions"
+                            value=""
+                            placeholder="Escribe para buscar página..."
+                        />
                     </div>
                 </div>
-            @endif
 
-            <div>
-                <label for="prov-text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Refrán o dicho popular *</label>
-                <textarea id="prov-text" name="text" rows="2" required minlength="5" placeholder="Escribe el refrán tal como se dice en Chipiona..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base font-bold text-slate-950">{{ old('text') }}</textarea>
-                <x-input-error :messages="$errors->get('text')" class="mt-1" />
-            </div>
+                <x-turnstile-widget action="proverb_submit" />
 
-            <div>
-                <label for="prov-meaning" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">¿Qué significa o cuándo se usa?</label>
-                <textarea id="prov-meaning" name="meaning" rows="3" placeholder="Explica brevemente su sentido marinero, del campo o del pueblo..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('meaning') }}</textarea>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label for="prov-category" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Tema del refrán *</label>
-                    <x-searchable-select
-                        name="category"
-                        id="prov-category"
-                        :options="[
-                            'mar' => 'La Mar, Mareas y Corrales',
-                            'campo' => 'El Campo, Huerta y Moscatel',
-                            'vientos' => 'Vientos (Levante y Poniente)',
-                            'fiestas' => 'Fiestas y Tradiciones',
-                            'vida' => 'Vida Cotidiana del Pueblo',
-                        ]"
-                        value="mar"
-                        required
-                    />
+                <div class="flex items-start gap-2 pt-1">
+                    <input type="checkbox" id="prov-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
+                    <label for="prov-privacy" class="text-xs text-slate-700">
+                        {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
+                    </label>
                 </div>
+                @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
 
-                <div>
-                    <label for="prov-page" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">Página relacionada (opcional)</label>
-                    @php
-                        $proverbPageOptions = ['' => '— Ninguna página en concreto —'];
-                        foreach($pages as $p) {
-                            $proverbPageOptions[(string) $p->id] = $p->getTranslation('title', app()->getLocale());
-                        }
-                    @endphp
-                    <x-searchable-select
-                        name="related_page_id"
-                        id="prov-page"
-                        :options="$proverbPageOptions"
-                        value=""
-                        placeholder="Escribe para buscar página..."
-                    />
-                </div>
-            </div>
-
-            <x-turnstile-widget action="proverb_submit" />
-
-            <div class="flex items-start gap-2 pt-1">
-                <input type="checkbox" id="prov-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
-                <label for="prov-privacy" class="text-xs text-slate-700">
-                    {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
-                </label>
-            </div>
-            @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
-
-            <button type="submit" class="w-full rounded-xl bg-orange-700 px-6 py-3.5 text-base font-extrabold text-white shadow-md hover:bg-orange-800 transition cursor-pointer">
-                Enviar refrán al archivo de Chipiona
-            </button>
-        </form>
+                <button type="submit" class="w-full rounded-xl bg-orange-700 px-6 py-3.5 text-base font-extrabold text-white shadow-md hover:bg-orange-800 transition cursor-pointer">
+                    Enviar refrán al archivo de Chipiona
+                </button>
+            </form>
+        @endif
     </section>
 </div>
 @endsection

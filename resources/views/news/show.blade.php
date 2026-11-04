@@ -118,45 +118,47 @@
             </div>
         </section>
 
-        {{-- Proponer corrección sobre la noticia --}}
+        {{-- Proponer corrección sobre la noticia (requiere verificación OAuth anti-spam) --}}
         <section class="rounded-2xl border-2 border-amber-500/80 bg-amber-50/70 p-6 space-y-4">
             <h2 class="font-serif text-xl font-extrabold text-slate-950">✏️ {{ __('messages.propose_correction_title') }}</h2>
-            <x-social-identity-banner />
-            <form action="{{ route('corrections.store') }}" method="POST" class="space-y-4">
-                @csrf
-                <input type="hidden" name="correctable_type" value="news">
-                <input type="hidden" name="correctable_id" value="{{ $news->id }}">
-                @if(!session('public_social_identity'))
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label for="news-corr-name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.author_name_label') }}</label>
-                            <input type="text" id="news-corr-name" name="author_name" value="{{ old('author_name') }}" autocomplete="name" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">
-                            <x-input-error :messages="$errors->get('author_name')" class="mt-1" />
-                        </div>
-                        <div>
-                            <label for="news-corr-email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.author_email_optional_label') }}</label>
-                            <input type="email" id="news-corr-email" name="author_email" value="{{ old('author_email') }}" autocomplete="email" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">
-                            <x-input-error :messages="$errors->get('author_email')" class="mt-1" />
-                        </div>
+
+            @error('auth')
+                <div class="rounded-xl border border-red-300 bg-red-50 p-3 text-xs font-bold text-red-800">
+                    {{ $message }}
+                </div>
+            @enderror
+
+            @if(!session('public_social_identity') && !auth()->check())
+                <div class="rounded-xl border-2 border-slate-300 bg-white p-5 text-center space-y-3">
+                    <p class="text-sm font-bold text-slate-900">
+                        🔒 {{ __('messages.correction_form_locked_notice') }}
+                    </p>
+                    <x-social-identity-banner />
+                </div>
+            @else
+                <x-social-identity-banner />
+                <form action="{{ route('corrections.store') }}" method="POST" class="space-y-4">
+                    @csrf
+                    <input type="hidden" name="correctable_type" value="news">
+                    <input type="hidden" name="correctable_id" value="{{ $news->id }}">
+                    <div>
+                        <label for="news-proposed" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proposed_correction_label') }}</label>
+                        <textarea id="news-proposed" name="proposed_correction" rows="3" required minlength="10" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">{{ old('proposed_correction') }}</textarea>
+                        <x-input-error :messages="$errors->get('proposed_correction')" class="mt-1" />
                     </div>
-                @endif
-                <div>
-                    <label for="news-proposed" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proposed_correction_label') }}</label>
-                    <textarea id="news-proposed" name="proposed_correction" rows="3" required minlength="10" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">{{ old('proposed_correction') }}</textarea>
-                    <x-input-error :messages="$errors->get('proposed_correction')" class="mt-1" />
-                </div>
-                <x-turnstile-widget action="news_correction" />
-                <div class="flex items-start gap-2 pt-1">
-                    <input type="checkbox" id="news-corr-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
-                    <label for="news-corr-privacy" class="text-xs text-slate-700">
-                        {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
-                    </label>
-                </div>
-                @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
-                <button type="submit" class="rounded-xl bg-orange-700 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800">
-                    {{ __('messages.send_correction_btn') }}
-                </button>
-            </form>
+                    <x-turnstile-widget action="news_correction" />
+                    <div class="flex items-start gap-2 pt-1">
+                        <input type="checkbox" id="news-corr-privacy" name="privacy" value="1" required class="mt-1 rounded border-slate-300 text-orange-700 focus:ring-orange-600">
+                        <label for="news-corr-privacy" class="text-xs text-slate-700">
+                            {{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer" class="underline font-bold text-slate-900 hover:text-orange-700">{{ __('messages.contact_privacy_link') }}</a>.
+                        </label>
+                    </div>
+                    @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
+                    <button type="submit" class="rounded-xl bg-orange-700 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 cursor-pointer">
+                        {{ __('messages.send_correction_btn') }}
+                    </button>
+                </form>
+            @endif
         </section>
 
         {{-- Comentarios --}}

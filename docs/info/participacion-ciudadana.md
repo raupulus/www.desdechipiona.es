@@ -1,9 +1,9 @@
 # Módulo de Participación Ciudadana y Refranero (`correction_requests`, `content_suggestions`, `proverbs`, `comments`)
 
-*Última actualización: 2026-11-03*
+*Última actualización: 2026-11-04*
 
 ## 1. Resumen del Módulo
-Gestiona la participación abierta de los vecinos y lectores de **Desde Chipiona** sin cuentas de usuario locales: propuestas de corrección sobre páginas y noticias, sugerencias extensas de nuevos contenidos, refranero popular y comentarios públicos con identificación ligera opcional mediante Facebook/Google OAuth y protección Cloudflare Turnstile.
+Gestiona la participación de los vecinos y lectores de **Desde Chipiona** sin cuentas ni contraseñas locales: propuestas de corrección sobre páginas y noticias, sugerencias extensas de nuevos contenidos, refranero popular y comentarios públicos, exigiendo en todos los formularios **identificación previa obligatoria en un clic mediante Facebook o Google OAuth** (`session('public_social_identity')`), moderación previa y protección Cloudflare Turnstile contra el spam.
 
 ## 2. Archivos Principales Involucrados
 

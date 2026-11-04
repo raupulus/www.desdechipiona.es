@@ -6,9 +6,11 @@ use App\Enums\ContentGroup;
 use App\Rules\Turnstile;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Validator;
 
 /**
  * FormRequest para el formulario ciudadano de sugerencia de nuevos contenidos.
+ * Exige identificación OAuth verificada previa (Google / Facebook) o sesión de usuario.
  */
 class ContentSuggestionSubmissionRequest extends FormRequest
 {
@@ -43,6 +45,18 @@ class ContentSuggestionSubmissionRequest extends FormRequest
             'privacy' => ['required', 'accepted'],
             'cf-turnstile-response' => [new Turnstile],
         ];
+    }
+
+    /**
+     * Valida que el visitante esté autenticado mediante cuenta social o local.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($v): void {
+            if (! $this->session()->has('public_social_identity') && ! auth()->check()) {
+                $v->errors()->add('auth', 'Para enviar una sugerencia o aportación debes identificarte primero con tu cuenta de Google o Facebook.');
+            }
+        });
     }
 
     /**

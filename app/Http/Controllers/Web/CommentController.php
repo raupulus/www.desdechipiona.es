@@ -22,8 +22,8 @@ class CommentController extends Controller
         $validated = $request->validated();
         /** @var array<string, string|null>|null $social */
         $social = $request->session()->get('public_social_identity');
+        $user = auth()->user();
 
-        $targetClass = $validated['commentable_type'] === 'news' ? News::class : Page::class;
         $target = $validated['commentable_type'] === 'news'
             ? News::publishedAndActive()->findOrFail((int) $validated['commentable_id'])
             : Page::publishedAndActive()->findOrFail((int) $validated['commentable_id']);
@@ -32,10 +32,10 @@ class CommentController extends Controller
             'commentable_type' => $target->getMorphClass(),
             'commentable_id' => $target->getKey(),
             'body' => $validated['body'],
-            'author_name' => $social['name'] ?? ($validated['author_name'] ?? null) ?: 'Vecino de Chipiona',
-            'author_email' => $social['email'] ?? ($validated['author_email'] ?? null),
-            'oauth_provider' => $social['provider'] ?? null,
-            'oauth_id' => $social['id'] ?? null,
+            'author_name' => $social['name'] ?? $user?->name ?? 'Vecino Verificado',
+            'author_email' => $social['email'] ?? $user?->email ?? null,
+            'oauth_provider' => $social['provider'] ?? ($user ? 'local' : null),
+            'oauth_id' => $social['id'] ?? ($user ? (string) $user->id : null),
             'author_avatar' => $social['avatar'] ?? null,
             'is_approved' => false,
         ]);

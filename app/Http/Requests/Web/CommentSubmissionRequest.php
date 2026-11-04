@@ -53,8 +53,8 @@ class CommentSubmissionRequest extends FormRequest
      */
     public function withValidator(Validator $validator): void
     {
-        $validator->after(function ($v) {
-            if (! session()->has('public_social_identity') && ! auth()->check()) {
+        $validator->after(function ($v): void {
+            if (! $this->session()->has('public_social_identity') && ! auth()->check()) {
                 $v->errors()->add('auth', 'Para enviar un comentario debes identificarte primero con tu cuenta de Google o Facebook.');
             }
         });

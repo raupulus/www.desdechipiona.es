@@ -5,9 +5,11 @@ namespace App\Http\Requests\Web;
 use App\Rules\Turnstile;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 /**
  * FormRequest para enviar una solicitud de corrección sobre una página o noticia.
+ * Exige identificación OAuth verificada previa (Google / Facebook) o sesión de usuario.
  */
 class CorrectionSubmissionRequest extends FormRequest
 {
@@ -39,6 +41,18 @@ class CorrectionSubmissionRequest extends FormRequest
             'privacy' => ['required', 'accepted'],
             'cf-turnstile-response' => [new Turnstile],
         ];
+    }
+
+    /**
+     * Valida que el visitante esté autenticado mediante cuenta social o local.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($v): void {
+            if (! $this->session()->has('public_social_identity') && ! auth()->check()) {
+                $v->errors()->add('auth', 'Para proponer una corrección debes identificarte primero con tu cuenta de Google o Facebook.');
+            }
+        });
     }
 
     /**

@@ -165,6 +165,55 @@ class ChipionaFeaturesTest extends TestCase
             ->assertSee('Digitalizado el legajo de la Carta Puebla');
     }
 
+    public function test_unauthenticated_visitor_cannot_submit_proverb_suggestion_correction_or_comment(): void
+    {
+        $page = Page::factory()->published()->create(['slug' => 'corrales-de-pesca']);
+
+        // 1. Subir refrán sin OAuth debe fallar con error 'auth'
+        $this->post(route('proverbs.store'), [
+            'text' => 'Con Levante en la punta, el pescado se junta.',
+            'meaning' => 'Cuando sopla Levante templado entra pescado al corral.',
+            'category' => 'mar',
+            'privacy' => '1',
+            'cf-turnstile-response' => 'test-token',
+        ])->assertSessionHasErrors('auth');
+
+        $this->assertDatabaseCount('proverbs', 0);
+
+        // 2. Enviar sugerencia sin OAuth debe fallar con error 'auth'
+        $this->post(route('suggestions.store'), [
+            'content_group' => ContentGroup::Gastronomia->value,
+            'title' => 'Receta tradicional de la telera en sarmientos',
+            'body' => 'Se prepara con sarmientos de las viñas de moscatel y pescado fresco de roca.',
+            'privacy' => '1',
+            'cf-turnstile-response' => 'test-token',
+        ])->assertSessionHasErrors('auth');
+
+        $this->assertDatabaseCount('content_suggestions', 0);
+
+        // 3. Enviar corrección sin OAuth debe fallar con error 'auth'
+        $this->post(route('corrections.store'), [
+            'correctable_type' => 'page',
+            'correctable_id' => $page->id,
+            'proposed_correction' => 'El dato documental exacto figura en el pleito de 1536.',
+            'privacy' => '1',
+            'cf-turnstile-response' => 'test-token',
+        ])->assertSessionHasErrors('auth');
+
+        $this->assertDatabaseCount('correction_requests', 0);
+
+        // 4. Enviar comentario sin OAuth debe fallar con error 'auth'
+        $this->post(route('comments.store'), [
+            'commentable_type' => 'page',
+            'commentable_id' => $page->id,
+            'body' => 'Qué gran recuerdo de los corrales con mi abuelo.',
+            'privacy' => '1',
+            'cf-turnstile-response' => 'test-token',
+        ])->assertSessionHasErrors('auth');
+
+        $this->assertDatabaseCount('comments', 0);
+    }
+
     public function test_visitor_can_submit_correction_comment_content_suggestion_and_proverb(): void
     {
         $page = Page::factory()->published()->create(['slug' => 'corrales-de-pesca']);

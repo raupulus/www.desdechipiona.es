@@ -23,6 +23,7 @@ class CorrectionRequestController extends Controller
         $validated = $request->validated();
         /** @var array<string, string|null>|null $social */
         $social = $request->session()->get('public_social_identity');
+        $user = auth()->user();
 
         $target = $validated['correctable_type'] === 'news'
             ? News::publishedAndActive()->findOrFail((int) $validated['correctable_id'])
@@ -34,10 +35,10 @@ class CorrectionRequestController extends Controller
             'quoted_text' => $validated['quoted_text'] ?? null,
             'proposed_correction' => $validated['proposed_correction'],
             'sources_info' => $validated['sources_info'] ?? null,
-            'author_name' => $social['name'] ?? ($validated['author_name'] ?? null) ?: 'Lector de Desde Chipiona',
-            'author_email' => $social['email'] ?? ($validated['author_email'] ?? null),
-            'oauth_provider' => $social['provider'] ?? null,
-            'oauth_id' => $social['id'] ?? null,
+            'author_name' => $social['name'] ?? $user?->name ?? 'Lector Verificado',
+            'author_email' => $social['email'] ?? $user?->email ?? null,
+            'oauth_provider' => $social['provider'] ?? ($user ? 'local' : null),
+            'oauth_id' => $social['id'] ?? ($user ? (string) $user->id : null),
             'author_avatar' => $social['avatar'] ?? null,
             'status' => SuggestionStatus::Pending,
         ]);

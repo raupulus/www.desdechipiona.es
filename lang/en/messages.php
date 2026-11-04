@@ -451,4 +451,13 @@ return [
     'authorship_box_text' => 'This documentary research and content is original work and private intellectual property of Raúl Caro Pastorino. Sharing and redistribution are permitted provided that you explicitly credit the author, cite the documentary sources, and include a visible link to the original page on Desde Chipiona (CC BY-NC-SA 4.0 License).',
     'authorship_how_to_cite' => 'How to cite and share this article:',
     'footer_content_license' => 'Content & research: private intellectual property of Raúl Caro Pastorino. Sharing permitted with mandatory attribution of authorship, sources and link to desdechipiona.es (CC BY-NC-SA 4.0).',
+    'social_verified_session_note' => 'No local account or password · Identity verified in your current session',
+    'social_required_title' => '🔒 One-click verified identity (mandatory against spam)',
+    'social_required_desc' => 'We do not create local accounts or passwords. To protect the Chipiona archive from spam, verify your identity in one click with your Facebook or Google account to unlock the form.',
+    'verified_participation_badge' => '🔒 Verified anti-spam participation',
+    'proverb_form_heading' => '🗣️ Submit your Chipiona proverb or saying',
+    'proverb_form_subheading' => 'What did your grandparents say when the Levante wind rose, the spring tide dropped in the corrals, or the Moscatel harvest arrived?',
+    'proverb_form_locked_notice' => 'To submit a proverb or traditional saying to the Chipiona archive, please verify your identity in one click with Google or Facebook:',
+    'suggestion_form_locked_notice' => 'To submit a suggestion or documentary contribution to the Chipiona archive, please verify your identity in one click with Google or Facebook:',
+    'correction_form_locked_notice' => 'To propose a documentary correction, please verify your identity in one click with Google or Facebook:',
 ];
