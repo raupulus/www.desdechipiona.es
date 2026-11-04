@@ -176,6 +176,38 @@
                 </section>
             @endif
 
+            {{-- Fuentes Oficiales y Documentación Pública Consultada --}}
+            @if(!empty($page->source_references) && is_array($page->source_references))
+                <section aria-label="Fuentes oficiales y documentación consultada" class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🏛️</span>
+                        <h2 class="font-serif text-xl font-extrabold text-slate-950">Fuentes Oficiales y Documentación Pública</h2>
+                    </div>
+                    <p class="text-xs text-slate-700">
+                        En cumplimiento de nuestro compromiso de rigor, este artículo cita exclusivamente fuentes procedentes de archivos históricos, organismos gubernamentales e instituciones académicas oficiales.
+                    </p>
+                    <ul class="divide-y divide-slate-100 text-sm space-y-3">
+                        @foreach($page->source_references as $source)
+                            <li class="pt-3 first:pt-0">
+                                <div class="font-bold text-slate-950">
+                                    @if(!empty($source['url']))
+                                        <a href="{{ $source['url'] }}" target="_blank" rel="noopener noreferrer" class="text-blue-900 hover:text-orange-700 hover:underline">
+                                            {{ $source['title'] ?? 'Documento oficial' }} ↗
+                                        </a>
+                                    @else
+                                        <span>{{ $source['title'] ?? 'Documento oficial' }}</span>
+                                    @endif
+                                </div>
+                                <div class="text-xs text-slate-600 mt-0.5">
+                                    <span class="font-semibold text-slate-800">{{ $source['author'] ?? '' }}</span>
+                                    @if(!empty($source['year'])) · <span>{{ $source['year'] }}</span> @endif
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </section>
+            @endif
+
             {{-- Caja para proponer una corrección sobre esta página --}}
             <section id="proponer-correccion" class="rounded-2xl border-2 border-amber-500/80 bg-amber-50/70 p-6 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

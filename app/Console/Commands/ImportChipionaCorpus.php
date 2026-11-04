@@ -12,6 +12,7 @@ use App\Models\News;
 use App\Models\Page;
 use App\Models\Proverb;
 use App\Models\User;
+use App\Services\ContentAutoLinker;
 use Database\Seeders\ChipionaStructureSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -20,10 +21,9 @@ use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Comando Artisan para importar localmente el corpus privado de investigación
- * de Chipiona hacia la base de datos PostgreSQL (`desdechipiona`), categorizando
- * y relacionando automáticamente las fichas sin incluir nunca los textos privados
- * en el repositorio de código AGPLv3.
+ * Comando Artisan para importar localmente el corpus de investigación de Chipiona
+ * hacia la base de datos PostgreSQL (`desdechipiona`), categorizando, enlazando
+ * y relacionando automáticamente todas las fichas temáticas y panoramas históricos.
  */
 class ImportChipionaCorpus extends Command
 {
@@ -33,7 +33,7 @@ class ImportChipionaCorpus extends Command
      * @var string
      */
     protected $signature = 'chipiona:import-corpus
-                            {--path= : Ruta al directorio externo de investigación o archivo de datos local (excluido de git)}
+                            {--path= : Ruta al directorio externo de investigación o archivo de datos local}
                             {--clean : Limpia páginas previas importadas antes de sincronizar}';
 
     /**
@@ -41,12 +41,49 @@ class ImportChipionaCorpus extends Command
      *
      * @var string
      */
-    protected $description = 'Importa, categoriza y relaciona el corpus privado de investigación de Chipiona desde fuera del repositorio git';
+    protected $description = 'Importa, categoriza, limpia y enlaza el corpus completo de Chipiona desde el repositorio de investigación';
 
     /**
-     * Ejecuta la importación del corpus privado.
+     * Coordenadas GPS de referencia para lugares emblemáticos de Chipiona.
+     *
+     * @var array<string, array{float, float}>
      */
-    public function handle(): int
+    protected array $coordinatesMap = [
+        'faro-de-chipiona' => [36.7378, -6.4425],
+        'piedra-de-salmedina' => [36.7410, -6.4680],
+        'santuario-de-nuestra-senora-de-regla' => [36.7302, -6.4401],
+        'castillo-de-chipiona' => [36.7398, -6.4391],
+        'parroquia-de-nuestra-senora-de-la-o' => [36.7389, -6.4383],
+        'ermita-del-cristo-de-las-misericordias' => [36.7389, -6.4385],
+        'humilladero' => [36.7298, -6.4404],
+        'sanatorio-de-santa-clara' => [36.7295, -6.4398],
+        'corrales-de-pesca' => [36.7294, -6.4408],
+        'playa-de-regla' => [36.7278, -6.4392],
+        'playa-cruz-del-mar' => [36.7405, -6.4380],
+        'playa-las-canteras' => [36.7392, -6.4412],
+        'playa-de-camaron' => [36.7160, -6.4310],
+        'playa-de-la-laguna' => [36.7110, -6.4280],
+        'playa-las-tres-piedras' => [36.7020, -6.4180],
+        'playa-de-montijo' => [36.7510, -6.4180],
+        'playa-micaela' => [36.7440, -6.4310],
+        'playa-nino-de-oro' => [36.7470, -6.4250],
+        'playa-de-la-ballena' => [36.6950, -6.4090],
+        'pinar-de-la-villa' => [36.7350, -6.4020],
+        'pinar-de-peritanda' => [36.7310, -6.3980],
+        'centro-de-interpretacion-el-camaleon' => [36.7165, -6.4312],
+        'puerto-pesquero-y-deportivo' => [36.7429, -6.4334],
+        'museo-del-moscatel' => [36.7351, -6.4330],
+        'mausoleo-de-rocio-jurado' => [36.7324, -6.4278],
+        'via-verde-entre-rios' => [36.7310, -6.4250],
+        'turris-caepionis' => [36.7365, -6.4470],
+        'alfar-romano-de-el-olivar-y-salazones' => [36.7242, -6.4131],
+        'alqueria-bereber-y-origen-de-los-corrales' => [36.7405, -6.4402],
+    ];
+
+    /**
+     * Ejecuta la importación del corpus completo.
+     */
+    public function handle(ContentAutoLinker $autoLinker): int
     {
         $this->info('=== Importador del Corpus Privado de Desde Chipiona ===');
 
@@ -60,116 +97,447 @@ class ImportChipionaCorpus extends Command
         $categories = Category::all()->keyBy('slug');
 
         if ($this->option('clean')) {
-            if ($this->laravel->isProduction() && ! $this->confirm('⚠ Estás en producción. ¿Confirmas eliminar permanentemente las páginas previas antes de reimportar?', false)) {
-                $this->warn('→ Limpieza previa cancelada; se realizará actualización incremental (updateOrCreate).');
+            if ($this->laravel->isProduction() && ! $this->confirm('Estás en producción. ¿Confirmas limpiar páginas previas?', false)) {
+                $this->warn('→ Limpieza previa cancelada; se realizará actualización incremental.');
             } else {
                 $this->warn('→ Limpiando páginas enciclopédicas previas...');
                 Page::whereNotNull('content_group')->forceDelete();
             }
         }
 
-        // 2. Comprobar si existe un paquete local curado (gitignored) en database/seeders/data/
-        $localCuratedFile = database_path('seeders/data/chipiona_corpus_pages.php');
+        $corpusPath = $this->resolveCorpusPath();
+        if (! $corpusPath || ! File::isDirectory($corpusPath)) {
+            $this->error("No se encontró el directorio del corpus en: {$corpusPath}");
 
-        $pagesBySlug = DB::transaction(function () use ($localCuratedFile, $authorId, $categories): array {
-            $pages = [];
-
-            if (File::exists($localCuratedFile)) {
-                $this->line('→ Importando catálogo curado local (excluido de git)...');
-                /** @var array<int, array<string, mixed>> $curatedPages */
-                $curatedPages = require $localCuratedFile;
-                $pages = $this->importCuratedArray($curatedPages, $authorId, $categories->all());
-            }
-
-            // 3. Si se indica ruta a directorio Markdown externo (o variable services.chipiona.corpus_path), importar fichas .md
-            $externalPath = $this->option('path') ?: config('services.chipiona.corpus_path');
-            if (is_string($externalPath) && $externalPath !== '' && File::isDirectory($externalPath)) {
-                $this->line("→ Escaneando fichas Markdown en directorio externo: {$externalPath}");
-                $mdPages = $this->importMarkdownDirectory($externalPath, $authorId, $categories->all());
-                $pages = array_merge($pages, $mdPages);
-            }
-
-            return $pages;
-        });
-
-        if (empty($pagesBySlug)) {
-            $this->warn('⚠ No se encontró archivo local en database/seeders/data/ ni directorio externo en --path.');
-
-            return Command::SUCCESS;
+            return Command::FAILURE;
         }
 
-        $this->info(sprintf('✓ Corpus importado y relacionado con éxito (%d páginas activas).', count($pagesBySlug)));
+        $this->line("→ Escaneando corpus en: {$corpusPath}");
+
+        // 2. Cargar y filtrar fuentes oficiales gubernamentales y académicas públicas
+        $officialSources = $this->loadOfficialSources($corpusPath);
+        $this->line(sprintf('→ Fuentes oficiales / gubernamentales catalogadas: %d', count($officialSources)));
+
+        // 3. Importar todas las fichas Markdown (.md)
+        $rawPagesData = $this->parseMarkdownFiles($corpusPath, $officialSources, $authorId, $categories->all());
+        $this->line(sprintf('→ Fichas procesadas del corpus: %d', count($rawPagesData)));
+
+        // 4. Guardar páginas y registrar mapa de títulos para auto-enlazado
+        $termsMap = [];
+        $pagesBySlug = [];
+        $pendingRelations = [];
+
+        DB::transaction(function () use ($rawPagesData, &$termsMap, &$pagesBySlug, &$pendingRelations, $categories) {
+            foreach ($rawPagesData as $data) {
+                $slug = $data['slug'];
+                $pendingRelations[$slug] = $data['related_slugs'];
+                unset($data['related_slugs']);
+
+                $contentGroup = $data['content_group'];
+
+                /** @var Page $page */
+                $page = Page::updateOrCreate(['slug' => $slug], $data);
+                if (isset($categories[$contentGroup->value])) {
+                    $page->categories()->sync([$categories[$contentGroup->value]->id]);
+                }
+
+                $pagesBySlug[$slug] = $page;
+                $titleEs = $page->getTranslation('title', 'es');
+                if (! empty($titleEs) && mb_strlen($titleEs) >= 4) {
+                    $termsMap[$titleEs] = $slug;
+                }
+            }
+        });
+
+        // 5. Aplicar auto-enlazador enciclopédico sobre el contenido de cada página
+        $this->line('→ Aplicando auto-enlazado enciclopédico inteligente...');
+        DB::transaction(function () use ($pagesBySlug, $termsMap, $autoLinker) {
+            foreach ($pagesBySlug as $slug => $page) {
+                $contentEs = $page->getTranslation('content', 'es');
+                $linkedContentEs = $autoLinker->linkContent($contentEs, $slug, $termsMap);
+
+                $contentEn = $page->getTranslation('content', 'en');
+                $linkedContentEn = $autoLinker->linkContent($contentEn, $slug, $termsMap);
+
+                $page->update([
+                    'content' => ['es' => $linkedContentEs, 'en' => $linkedContentEn],
+                ]);
+            }
+        });
+
+        // 6. Sincronizar relaciones cruzadas entre páginas
+        $this->line('→ Sincronizando red de conocimiento (páginas relacionadas)...');
+        DB::transaction(function () use ($pagesBySlug, $pendingRelations) {
+            foreach ($pendingRelations as $slug => $relSlugs) {
+                if (! isset($pagesBySlug[$slug])) {
+                    continue;
+                }
+                $relIds = [];
+                foreach ($relSlugs as $tSlug) {
+                    if (isset($pagesBySlug[$tSlug])) {
+                        $relIds[] = $pagesBySlug[$tSlug]->id;
+                    }
+                }
+                if (! empty($relIds)) {
+                    $pagesBySlug[$slug]->relatedPages()->sync($relIds);
+                }
+            }
+        });
+
+        // 7. Cargar noticias y refranes extras si existen
+        $extraFile = database_path('seeders/data/chipiona_corpus_extras.php');
+        if (File::exists($extraFile)) {
+            $this->line('→ Sincronizando noticias y refranes del catálogo...');
+            $extras = require $extraFile;
+            $this->importExtras($extras, $authorId, $categories->all(), $pagesBySlug);
+        }
+
+        // 8. Asegurar que las noticias tampoco tengan vídeos ajenos
+        News::query()->update(['youtube_url' => null]);
+
+        $this->info(sprintf('✓ Corpus completo importado con éxito: %d entradas activas.', Page::where('is_active', true)->count()));
 
         return Command::SUCCESS;
     }
 
     /**
-     * Importa un array curado local de páginas, noticias y refranes (excluido de git).
-     *
-     * @param  array<int, array<string, mixed>>  $items
-     * @param  array<string, Category>  $categories
-     * @return array<string, Page>
+     * Resuelve la ruta al directorio del corpus de investigación.
      */
-    protected function importCuratedArray(array $items, int $userId, array $categories): array
+    protected function resolveCorpusPath(): ?string
     {
-        $pagesBySlug = [];
+        $explicit = $this->option('path') ?: config('services.chipiona.corpus_path');
+        if (is_string($explicit) && $explicit !== '' && File::isDirectory($explicit)) {
+            return $explicit;
+        }
 
-        foreach ($items as $item) {
-            $slug = (string) $item['slug'];
-            /** @var ContentGroup $contentGroup */
-            $contentGroup = $item['content_group'];
-            $groupKey = $contentGroup->value;
+        $candidates = [
+            base_path('../Historia Chipiona'),
+        ];
 
-            $page = Page::updateOrCreate(
-                ['slug' => $slug],
-                [
-                    'title' => ['es' => $item['title_es'], 'en' => $item['title_en'] ?? $item['title_es']],
-                    'excerpt' => ['es' => $item['excerpt_es'], 'en' => $item['excerpt_en'] ?? $item['excerpt_es']],
-                    'content' => ['es' => $item['content_es'], 'en' => $item['content_es']],
-                    'seo_title' => ['es' => $item['title_es'].' | Desde Chipiona', 'en' => ($item['title_en'] ?? $item['title_es']).' | Desde Chipiona'],
-                    'seo_description' => ['es' => $item['excerpt_es'], 'en' => $item['excerpt_en'] ?? $item['excerpt_es']],
-                    'seo_keywords' => ['es' => $item['keywords'] ?? 'Chipiona', 'en' => $item['keywords'] ?? 'Chipiona'],
-                    'content_group' => $contentGroup,
-                    'historical_era' => $item['historical_era'],
-                    'period_label' => $item['period_label'] ?? null,
-                    'year_start' => $item['year_start'] ?? null,
-                    'year_end' => $item['year_end'] ?? null,
-                    'evidence_level' => $item['evidence_level'] ?? EvidenceLevel::Documented,
-                    'evidence_note' => ['es' => $item['evidence_note_es'] ?? '', 'en' => $item['evidence_note_es'] ?? ''],
-                    'source_references' => $item['source_references'] ?? [],
-                    'image' => "images/pages/{$slug}-header.webp",
-                    'social_image' => "images/pages/{$slug}-social.webp",
-                    'youtube_url' => $item['youtube_url'] ?? null,
-                    'latitude' => $item['latitude'] ?? null,
-                    'longitude' => $item['longitude'] ?? null,
-                    'location_name' => $item['location_name'] ?? 'Chipiona (Cádiz)',
-                    'status' => ContentStatus::Published,
-                    'is_active' => true,
-                    'featured' => (bool) ($item['featured'] ?? false),
-                    'user_id' => $userId,
-                    'published_at' => now()->subDays(rand(1, 25)),
-                ]
-            );
-
-            if (isset($categories[$groupKey])) {
-                $page->categories()->sync([$categories[$groupKey]->id]);
+        foreach ($candidates as $cand) {
+            if (File::isDirectory($cand)) {
+                return $cand;
             }
-
-            $pagesBySlug[$slug] = $page;
         }
 
-        // Enlazar páginas relacionadas si existe archivo local de relaciones o metadatos
-        $extraFile = database_path('seeders/data/chipiona_corpus_extras.php');
-        if (File::exists($extraFile)) {
-            $extras = require $extraFile;
-            $this->importExtras($extras, $userId, $categories, $pagesBySlug);
-        }
-
-        return $pagesBySlug;
+        return null;
     }
 
     /**
-     * Importa relaciones cruzadas, noticias y refranes desde el archivo local excluido de git.
+     * Lee y filtra el registro maestro de fuentes para quedarse únicamente
+     * con fuentes oficiales, gubernamentales, archivos históricos y académicas públicas.
+     *
+     * @return array<string, array{id: string, title: string, author: string, year: string, url: string|null}>
+     */
+    protected function loadOfficialSources(string $corpusDir): array
+    {
+        $registryFile = rtrim($corpusDir, '/').'/01-fuentes/registro-fuentes.md';
+        if (! File::exists($registryFile)) {
+            return [];
+        }
+
+        $officialKeywords = [
+            'ayuntamiento', 'turismo de chipiona', 'iaph', 'junta de andalucía', 'junta de andalucia',
+            'universidad', 'instituto', 'ministerio', 'boe', 'boja', 'bop', 'real academia',
+            'catastro', 'archivo', 'pares', 'autoridad portuaria', 'csic', 'aemet', 'instituto hidrográfico',
+            'instituto hidrografico', 'iala', 'pueblos mágicos', 'pueblos magicos', 'diputación', 'diputacion',
+            'patronato', 'mancomunidad', 'consejería', 'consejeria', 'delegación', 'delegacion',
+            'anuario del veraneante', 'anuario', 'carta arqueológica', 'carta arqueologica',
+        ];
+
+        $sources = [];
+        $lines = file($registryFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (! str_starts_with($line, '| F-')) {
+                continue;
+            }
+
+            $cols = array_map('trim', explode('|', trim($line, '|')));
+            if (count($cols) < 10) {
+                continue;
+            }
+
+            [$id, $title, $author, $year, $type, , , $license, , $location] = $cols;
+            $fullText = mb_strtolower("{$author} {$title} {$location} {$license} {$type}");
+
+            $isOfficial = false;
+            foreach ($officialKeywords as $kw) {
+                if (str_contains($fullText, $kw)) {
+                    $isOfficial = true;
+                    break;
+                }
+            }
+
+            // Descartar blogs privados o redes no institucionales
+            if (str_contains($location, 'blogspot') || str_contains($location, 'wordpress') || str_contains($location, 'facebook')) {
+                if (! str_contains($fullText, 'iaph') && ! str_contains($fullText, 'ayto')) {
+                    $isOfficial = false;
+                }
+            }
+
+            if (! $isOfficial) {
+                continue;
+            }
+
+            $url = str_starts_with($location, 'http') ? $location : null;
+
+            $sources[$id] = [
+                'id' => $id,
+                'title' => $title,
+                'author' => $author,
+                'year' => $year,
+                'url' => $url,
+            ];
+        }
+
+        return $sources;
+    }
+
+    /**
+     * Escanea y parsea todos los archivos Markdown de 02-historia y 03-actualidad.
+     *
+     * @param  array<string, array{id: string, title: string, author: string, year: string, url: string|null}>  $officialSources
+     * @param  array<string, Category>  $categories
+     * @return array<int, array<string, mixed>>
+     */
+    protected function parseMarkdownFiles(string $corpusDir, array $officialSources, int $userId, array $categories): array
+    {
+        $items = [];
+        $subdirs = ['02-historia', '03-actualidad'];
+
+        foreach ($subdirs as $sub) {
+            $targetDir = rtrim($corpusDir, '/').'/'.$sub;
+            if (! File::isDirectory($targetDir)) {
+                continue;
+            }
+
+            foreach (File::allFiles($targetDir) as $file) {
+                if ($file->getExtension() !== 'md' || strtolower($file->getFilename()) === 'readme.md') {
+                    continue;
+                }
+
+                $raw = File::get($file->getPathname());
+                if (! preg_match('/^---\s*\n(.*?)\n---\s*\n(.*)$/s', $raw, $matches)) {
+                    continue;
+                }
+
+                try {
+                    $meta = Yaml::parse($matches[1]);
+                } catch (\Throwable) {
+                    continue;
+                }
+
+                if (! is_array($meta) || empty($meta['titulo'])) {
+                    continue;
+                }
+
+                $isPanorama = strtolower($file->getFilename()) === 'panorama.md';
+                $slug = (string) ($meta['slug'] ?? ($isPanorama
+                    ? 'panorama-'.Str::slug((string) $meta['titulo'])
+                    : Str::slug((string) $meta['titulo'])));
+
+                $body = trim($matches[2]);
+                $cleanBody = $this->cleanMarkdownBody($body);
+
+                $group = $this->resolveGroupFromMeta($meta, $file->getPathname());
+                $era = $this->resolveEraFromMeta($meta, $file->getPathname());
+                $evidence = $this->resolveEvidenceFromMeta($meta);
+
+                $years = array_filter((array) ($meta['anios_clave'] ?? []), 'is_numeric');
+                $yearStart = ! empty($years) ? (int) min($years) : null;
+                $yearEnd = ! empty($years) ? (int) max($years) : null;
+
+                $excerpt = Str::limit(strip_tags(Str::markdown($cleanBody)), 220);
+
+                // Resolver únicamente fuentes oficiales
+                $sourceIds = (array) ($meta['fuentes'] ?? []);
+                $resolvedSources = [];
+                foreach ($sourceIds as $sId) {
+                    $sId = trim((string) $sId);
+                    if (isset($officialSources[$sId])) {
+                        $resolvedSources[] = $officialSources[$sId];
+                    }
+                }
+
+                // Coordenadas GPS
+                $latitude = null;
+                $longitude = null;
+                if (isset($this->coordinatesMap[$slug])) {
+                    [$latitude, $longitude] = $this->coordinatesMap[$slug];
+                } elseif (isset($meta['latitud'], $meta['longitud']) && is_numeric($meta['latitud']) && is_numeric($meta['longitud'])) {
+                    $latitude = (float) $meta['latitud'];
+                    $longitude = (float) $meta['longitud'];
+                }
+
+                // Asegurar existencia de imagen WebP de cabecera y social
+                $this->ensureWebpImageExists($slug, $group);
+
+                $items[] = [
+                    'slug' => $slug,
+                    'title' => ['es' => (string) $meta['titulo'], 'en' => (string) $meta['titulo']],
+                    'excerpt' => ['es' => $excerpt, 'en' => $excerpt],
+                    'content' => ['es' => $cleanBody, 'en' => $cleanBody],
+                    'seo_title' => ['es' => $meta['titulo'].' | Desde Chipiona', 'en' => $meta['titulo'].' | Desde Chipiona'],
+                    'seo_description' => ['es' => $excerpt, 'en' => $excerpt],
+                    'seo_keywords' => ['es' => 'Chipiona, '.$meta['titulo'], 'en' => 'Chipiona, '.$meta['titulo']],
+                    'content_group' => $group,
+                    'historical_era' => $era,
+                    'period_label' => isset($meta['siglos']) && is_array($meta['siglos']) ? 'Siglos '.implode(', ', $meta['siglos']) : ($meta['periodo'] ?? null),
+                    'year_start' => $yearStart,
+                    'year_end' => $yearEnd,
+                    'evidence_level' => $evidence,
+                    'evidence_note' => ['es' => (string) ($meta['nota_evidencia'] ?? ''), 'en' => (string) ($meta['nota_evidencia'] ?? '')],
+                    'source_references' => $resolvedSources,
+                    'image' => "images/pages/{$slug}-header.webp",
+                    'social_image' => "images/pages/{$slug}-social.webp",
+                    'youtube_url' => null, // Vídeos desactivados hasta que el autor publique los propios
+                    'latitude' => $latitude,
+                    'longitude' => $longitude,
+                    'location_name' => (string) ($meta['lugar'] ?? 'Chipiona (Cádiz)'),
+                    'status' => ContentStatus::Published,
+                    'is_active' => true,
+                    'featured' => (bool) ($meta['destacado'] ?? false),
+                    'user_id' => $userId,
+                    'published_at' => now(),
+                    'related_slugs' => (array) ($meta['relacionados'] ?? []),
+                ];
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Limpia el cuerpo Markdown: elimina marcas [F-XXXX], títulos numerados
+     * y secciones internas de trabajo, preservando Cuestiones abiertas.
+     */
+    protected function cleanMarkdownBody(string $text): string
+    {
+        // 1. Eliminar secciones de trabajo interno
+        $text = (string) preg_replace('/(?ms)\n##\s+Notas de investigación\b.*?(?=\n##\s+|\Z)/u', '', $text);
+        $text = (string) preg_replace('/(?ms)\n##\s+Cómo citar esta ficha\b.*?(?=\n##\s+|\Z)/u', '', $text);
+        $text = (string) preg_replace('/(?ms)\n##\s+Fuentes\b.*?(?=\n##\s+|\Z)/u', '', $text);
+
+        // 2. Eliminar marcas inline de fuentes: [F-XXXX...], `[F-XXXX...]`
+        $text = (string) preg_replace('/[\s`]*\[F-\d{4}(?:;\s*F-\d{4})*(?:,\s*p\.\s*\d+)?\][`\s]*/u', ' ', $text);
+
+        // 3. Eliminar numeraciones forzadas en encabezados (ej: ## 1. Resumen -> ## Resumen)
+        $text = (string) preg_replace('/(?m)^(#{2,4})\s+\d+(?:\.\d+)*\.?\s+/u', '$1 ', $text);
+
+        // 4. Limpieza de puntuación y espacios duplicados
+        $text = (string) preg_replace('/\s+([.,;:!?])/u', '$1', $text);
+        $text = (string) preg_replace('/[ \t]+/u', ' ', $text);
+        $text = (string) preg_replace('/\n{3,}/u', "\n\n", $text);
+
+        return trim($text);
+    }
+
+    /**
+     * Asegura que exista un archivo de cabecera y social WebP para cada slug.
+     */
+    protected function ensureWebpImageExists(string $slug, ContentGroup $group): void
+    {
+        $pagesDir = public_path('images/pages');
+        if (! File::isDirectory($pagesDir)) {
+            File::makeDirectory($pagesDir, 0755, true, true);
+        }
+
+        $headerPath = "{$pagesDir}/{$slug}-header.webp";
+        $socialPath = "{$pagesDir}/{$slug}-social.webp";
+
+        if (File::exists($headerPath) && File::exists($socialPath)) {
+            return;
+        }
+
+        // Buscar una imagen base existente del mismo grupo o usar el banner general
+        $fallback = match ($group) {
+            ContentGroup::Playas => 'playa-de-regla-header.webp',
+            ContentGroup::Monumentos => 'faro-de-chipiona-header.webp',
+            ContentGroup::Fauna => 'camaleon-comun-header.webp',
+            ContentGroup::Flora => 'pinar-de-la-villa-header.webp',
+            ContentGroup::Gastronomia => 'moscatel-de-chipiona-header.webp',
+            default => 'turris-caepionis-header.webp',
+        };
+
+        $baseSource = "{$pagesDir}/{$fallback}";
+        if (! File::exists($baseSource)) {
+            $baseSource = public_path('images/banner.webp');
+        }
+
+        if (File::exists($baseSource)) {
+            if (! File::exists($headerPath)) {
+                File::copy($baseSource, $headerPath);
+            }
+            if (! File::exists($socialPath)) {
+                File::copy($baseSource, $socialPath);
+            }
+        }
+    }
+
+    /**
+     * Determina el ContentGroup a partir del frontmatter y la ruta.
+     *
+     * @param  array<string, mixed>  $meta
+     */
+    protected function resolveGroupFromMeta(array $meta, string $path): ContentGroup
+    {
+        $tipo = (string) ($meta['tipo'] ?? '');
+        $cat = (string) ($meta['categoria'] ?? '');
+        $sub = (string) ($meta['subcategoria'] ?? '');
+
+        return match (true) {
+            $tipo === 'playa' || str_contains($path, '/playas/') => ContentGroup::Playas,
+            $tipo === 'monumento' || str_contains($path, '/monumentos/') => ContentGroup::Monumentos,
+            $tipo === 'fiesta' || str_contains($path, '/fiestas/') => ContentGroup::Fiestas,
+            $tipo === 'personaje' || str_contains($path, '/personajes/') => ContentGroup::Personajes,
+            $tipo === 'gastronomia' || str_contains($path, '/gastronomia/') => ContentGroup::Gastronomia,
+            $sub === 'fauna' || str_contains($path, '/naturaleza/camaleon') || str_contains($path, '/naturaleza/chorlitejo') || str_contains($path, '/naturaleza/conejo') || str_contains($path, '/naturaleza/lagarto') || str_contains($path, '/naturaleza/vencejo') || str_contains($path, '/naturaleza/aves') => ContentGroup::Fauna,
+            $tipo === 'naturaleza' || str_contains($path, '/naturaleza/') => ContentGroup::Flora,
+            $cat === 'historia' || str_contains($path, '02-historia') => ContentGroup::Historia,
+            default => ContentGroup::Historia,
+        };
+    }
+
+    /**
+     * Determina la época histórica a partir del frontmatter y la ruta.
+     *
+     * @param  array<string, mixed>  $meta
+     */
+    protected function resolveEraFromMeta(array $meta, string $path): HistoricalEra
+    {
+        $periodo = (string) ($meta['periodo'] ?? '');
+
+        return match (true) {
+            str_contains($periodo, 'prehistoria') || str_contains($periodo, 'roma') || str_contains($periodo, 'tartessos') || str_contains($path, '01-prehistoria') || str_contains($path, '02-tartessos') || str_contains($path, '03-griegos') || str_contains($path, '04-epoca-romana') => HistoricalEra::PrehistoryAntiquity,
+            str_contains($periodo, 'andalus') || str_contains($periodo, 'edad-media') || str_contains($periodo, 'visigodo') || str_contains($path, '05-antiguedad') || str_contains($path, '06-al-andalus') || str_contains($path, '07-baja-edad-media') => HistoricalEra::MiddleAges,
+            str_contains($periodo, 'moderna') || str_contains($periodo, 'xviii') || str_contains($path, '08-edad-moderna') || str_contains($path, '09-siglo-xviii') => HistoricalEra::EarlyModern,
+            str_contains($periodo, 'xix') || str_contains($periodo, 'xx') || str_contains($path, '10-siglo-xix') || str_contains($path, '11-siglo-xx') => HistoricalEra::Contemporary,
+            default => HistoricalEra::PresentNature,
+        };
+    }
+
+    /**
+     * Determina el nivel de evidencia a partir del frontmatter.
+     *
+     * @param  array<string, mixed>  $meta
+     */
+    protected function resolveEvidenceFromMeta(array $meta): EvidenceLevel
+    {
+        $nivel = (string) ($meta['nivel_evidencia'] ?? '');
+
+        return match ($nivel) {
+            'consolidado' => EvidenceLevel::Consolidated,
+            'documentado' => EvidenceLevel::Documented,
+            'indicios' => EvidenceLevel::Tradition,
+            'discutido' => EvidenceLevel::Disputed,
+            default => EvidenceLevel::Documented,
+        };
+    }
+
+    /**
+     * Importa relaciones cruzadas, noticias y refranes adicionales.
      *
      * @param  array<string, mixed>  $extras
      * @param  array<string, Category>  $categories
@@ -177,19 +545,6 @@ class ImportChipionaCorpus extends Command
      */
     protected function importExtras(array $extras, int $userId, array $categories, array $pagesBySlug): void
     {
-        foreach ($extras['relations'] ?? [] as $slug => $targetSlugs) {
-            if (! isset($pagesBySlug[$slug])) {
-                continue;
-            }
-            $ids = [];
-            foreach ($targetSlugs as $tSlug) {
-                if (isset($pagesBySlug[$tSlug])) {
-                    $ids[] = $pagesBySlug[$tSlug]->id;
-                }
-            }
-            $pagesBySlug[$slug]->relatedPages()->sync($ids);
-        }
-
         foreach ($extras['news'] ?? [] as $nItem) {
             $slug = (string) $nItem['slug'];
             $news = News::updateOrCreate(
@@ -244,155 +599,5 @@ class ImportChipionaCorpus extends Command
                 ]
             );
         }
-    }
-
-    /**
-     * Escanea e importa archivos Markdown con frontmatter YAML desde un directorio externo.
-     *
-     * @param  array<string, Category>  $categories
-     * @return array<string, Page>
-     */
-    protected function importMarkdownDirectory(string $directory, int $userId, array $categories): array
-    {
-        $imported = [];
-        $subdirs = ['02-historia', '03-actualidad'];
-
-        foreach ($subdirs as $sub) {
-            $targetDir = rtrim($directory, '/').'/'.$sub;
-            if (! File::isDirectory($targetDir)) {
-                continue;
-            }
-
-            foreach (File::allFiles($targetDir) as $file) {
-                if ($file->getExtension() !== 'md' || strtolower($file->getFilename()) === 'readme.md' || strtolower($file->getFilename()) === 'panorama.md') {
-                    continue;
-                }
-
-                $raw = File::get($file->getPathname());
-                if (! preg_match('/^---\s*\n(.*?)\n---\s*\n(.*)$/s', $raw, $matches)) {
-                    continue;
-                }
-
-                try {
-                    $meta = Yaml::parse($matches[1]);
-                } catch (\Throwable) {
-                    continue;
-                }
-
-                if (! is_array($meta) || empty($meta['titulo'])) {
-                    continue;
-                }
-
-                $slug = (string) ($meta['slug'] ?? Str::slug((string) $meta['titulo']));
-                if (Page::where('slug', $slug)->exists()) {
-                    $imported[$slug] = Page::where('slug', $slug)->first();
-
-                    continue;
-                }
-
-                $body = trim($matches[2]);
-                $group = $this->resolveGroupFromMeta($meta, $file->getPathname());
-                $era = $this->resolveEraFromMeta($meta);
-                $evidence = $this->resolveEvidenceFromMeta($meta);
-
-                $years = array_filter((array) ($meta['anios_clave'] ?? []), 'is_numeric');
-                $yearStart = ! empty($years) ? (int) min($years) : null;
-                $yearEnd = ! empty($years) ? (int) max($years) : null;
-
-                $excerpt = Str::limit(strip_tags(Str::markdown($body)), 210);
-
-                $page = Page::updateOrCreate(
-                    ['slug' => $slug],
-                    [
-                        'title' => ['es' => (string) $meta['titulo'], 'en' => (string) $meta['titulo']],
-                        'excerpt' => ['es' => $excerpt, 'en' => $excerpt],
-                        'content' => ['es' => $body, 'en' => $body],
-                        'seo_title' => ['es' => $meta['titulo'].' | Desde Chipiona', 'en' => $meta['titulo'].' | Desde Chipiona'],
-                        'seo_description' => ['es' => $excerpt, 'en' => $excerpt],
-                        'content_group' => $group,
-                        'historical_era' => $era,
-                        'period_label' => isset($meta['siglos']) && is_array($meta['siglos']) ? 'Siglos '.implode(', ', $meta['siglos']) : null,
-                        'year_start' => $yearStart,
-                        'year_end' => $yearEnd,
-                        'evidence_level' => $evidence,
-                        'source_references' => array_values((array) ($meta['fuentes'] ?? [])),
-                        'location_name' => (string) ($meta['lugar'] ?? 'Chipiona (Cádiz)'),
-                        'status' => ContentStatus::Published,
-                        'is_active' => true,
-                        'featured' => false,
-                        'user_id' => $userId,
-                        'published_at' => now(),
-                    ]
-                );
-
-                if (isset($categories[$group->value])) {
-                    $page->categories()->sync([$categories[$group->value]->id]);
-                }
-
-                $imported[$slug] = $page;
-            }
-        }
-
-        return $imported;
-    }
-
-    /**
-     * Determina el ContentGroup a partir del frontmatter de una ficha.
-     *
-     * @param  array<string, mixed>  $meta
-     */
-    protected function resolveGroupFromMeta(array $meta, string $path): ContentGroup
-    {
-        $tipo = (string) ($meta['tipo'] ?? '');
-        $cat = (string) ($meta['categoria'] ?? '');
-        $sub = (string) ($meta['subcategoria'] ?? '');
-
-        return match (true) {
-            $tipo === 'playa' || str_contains($path, '/playas/') => ContentGroup::Playas,
-            $tipo === 'monumento' || str_contains($path, '/monumentos/') => ContentGroup::Monumentos,
-            $tipo === 'fiesta' || str_contains($path, '/fiestas/') => ContentGroup::Fiestas,
-            $tipo === 'personaje' || str_contains($path, '/personajes/') => ContentGroup::Personajes,
-            $tipo === 'gastronomia' || str_contains($path, '/gastronomia/') => ContentGroup::Gastronomia,
-            $sub === 'fauna' => ContentGroup::Fauna,
-            $tipo === 'naturaleza' || str_contains($path, '/naturaleza/') => ContentGroup::Flora,
-            $cat === 'historia' || str_contains($path, '02-historia') => ContentGroup::Historia,
-            default => ContentGroup::Historia,
-        };
-    }
-
-    /**
-     * Determina la época histórica a partir del frontmatter.
-     *
-     * @param  array<string, mixed>  $meta
-     */
-    protected function resolveEraFromMeta(array $meta): HistoricalEra
-    {
-        $periodo = (string) ($meta['periodo'] ?? '');
-
-        return match (true) {
-            str_contains($periodo, 'prehistoria'), str_contains($periodo, 'roma'), str_contains($periodo, 'tartessos') => HistoricalEra::PrehistoryAntiquity,
-            str_contains($periodo, 'andalus'), str_contains($periodo, 'edad-media'), str_contains($periodo, 'visigodo') => HistoricalEra::MiddleAges,
-            str_contains($periodo, 'moderna'), str_contains($periodo, 'xviii') => HistoricalEra::EarlyModern,
-            str_contains($periodo, 'xix'), str_contains($periodo, 'xx') => HistoricalEra::Contemporary,
-            default => HistoricalEra::PresentNature,
-        };
-    }
-
-    /**
-     * Determina el nivel de evidencia a partir del frontmatter.
-     *
-     * @param  array<string, mixed>  $meta
-     */
-    protected function resolveEvidenceFromMeta(array $meta): EvidenceLevel
-    {
-        $nivel = (string) ($meta['nivel_evidencia'] ?? '');
-
-        return match ($nivel) {
-            'consolidado' => EvidenceLevel::Consolidated,
-            'documentado' => EvidenceLevel::Documented,
-            'indicios' => EvidenceLevel::Tradition,
-            'discutido' => EvidenceLevel::Disputed,
-            default => EvidenceLevel::Documented,
-        };
     }
 }
