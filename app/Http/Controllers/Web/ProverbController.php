@@ -46,6 +46,9 @@ class ProverbController extends Controller
         }
 
         $proverbs = $query->paginate(12)->withQueryString();
+        if ($proverbs->currentPage() > 1 && $proverbs->isEmpty()) {
+            abort(404);
+        }
         $pages = Page::publishedAndActive()->orderBy('slug')->get(['id', 'slug', 'title']);
 
         $currentPage = $proverbs->currentPage();

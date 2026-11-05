@@ -267,7 +267,7 @@ return [
     'font_size_xlarge_title' => 'Extra large font size',
     'brand_subtitle' => 'History, Sea, Land and Living Memory',
     'cookie_notice_text' => 'We only use essential technical session cookies, anti-spam security (Cloudflare Turnstile), and local reading size preferences. No advertising or tracking cookies are used.',
-    'cookie_notice_more' => 'Learn more',
+    'cookie_notice_more' => 'Read cookie policy',
     'cookie_notice_accept' => 'Got it',
     'footer_explore_heading' => 'Explore Chipiona',
     'footer_services_heading' => 'Services & Community',

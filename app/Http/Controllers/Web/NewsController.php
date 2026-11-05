@@ -50,6 +50,9 @@ class NewsController extends Controller
         }
 
         $newsItems = $query->paginate(9)->withQueryString();
+        if ($newsItems->currentPage() > 1 && $newsItems->isEmpty()) {
+            abort(404);
+        }
         $categories = Category::active()->ordered()->get();
 
         $currentPage = $newsItems->currentPage();

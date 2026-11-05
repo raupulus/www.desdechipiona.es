@@ -37,6 +37,9 @@ class HomeController extends Controller
         ]);
 
         $pages = $searchService->searchPages($filters, 12);
+        if ($pages->currentPage() > 1 && $pages->isEmpty()) {
+            abort(404);
+        }
         $groupCounts = $searchService->getGroupCounts();
 
         $sectionIds = Cache::remember('sections_home_ids', 3600, fn () => Section::forZone('home')->pluck('id')->all());

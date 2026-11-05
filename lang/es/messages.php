@@ -267,7 +267,7 @@ return [
     'font_size_xlarge_title' => 'Tamaño de letra muy grande',
     'brand_subtitle' => 'Historia, Mar, Tierra y Memoria Viva',
     'cookie_notice_text' => 'Utilizamos únicamente cookies técnicas esenciales de sesión, seguridad anti-spam (Cloudflare Turnstile) y preferencia local de tamaño de lectura. No usamos cookies publicitarias ni de rastreo.',
-    'cookie_notice_more' => 'Más información',
+    'cookie_notice_more' => 'Consultar política de cookies',
     'cookie_notice_accept' => 'Entendido',
     'footer_explore_heading' => 'Explorar Chipiona',
     'footer_services_heading' => 'Servicios y Comunidad',

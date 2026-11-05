@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\News;
+use App\Models\OfficialPhone;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\Proverb;
 use Illuminate\Support\Carbon;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
@@ -81,18 +83,26 @@ class SitemapService
     }
 
     /**
-     * Añade las URLs estáticas del sitio al sitemap con lastmod real.
+     * Añade las URLs estáticas del sitio al sitemap con lastmod real por módulo.
      */
     private function addStaticUrls(Sitemap $sitemap): void
     {
-        $latestPostDate = Post::publishedAndActive()->max('updated_at');
-        $lastMod = $latestPostDate ? Carbon::parse($latestPostDate) : now();
+        $latestPageDate = Page::publishedAndActive()->max('updated_at');
+        $latestNewsDate = News::publishedAndActive()->max('updated_at');
+        $latestProverbDate = Proverb::approved()->max('updated_at');
+        $latestPhoneDate = OfficialPhone::active()->max('updated_at');
+
+        $pageMod = $latestPageDate ? Carbon::parse($latestPageDate) : now();
+        $newsMod = $latestNewsDate ? Carbon::parse($latestNewsDate) : $pageMod;
+        $proverbMod = $latestProverbDate ? Carbon::parse($latestProverbDate) : $pageMod;
+        $phoneMod = $latestPhoneDate ? Carbon::parse($latestPhoneDate) : $pageMod;
+        $homeMod = collect([$pageMod, $newsMod, $proverbMod])->max() ?? now();
 
         $homeUrl = url('/');
         $sitemap->add(
             $this->addHreflangAlternates(
                 Url::create($homeUrl)
-                    ->setLastModificationDate($lastMod)
+                    ->setLastModificationDate($homeMod)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
                     ->setPriority(1.0),
                 $homeUrl
@@ -103,7 +113,7 @@ class SitemapService
         $sitemap->add(
             $this->addHreflangAlternates(
                 Url::create($aboutUrl)
-                    ->setLastModificationDate($lastMod)
+                    ->setLastModificationDate($pageMod)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                     ->setPriority(0.5),
                 $aboutUrl
@@ -114,7 +124,7 @@ class SitemapService
         $sitemap->add(
             $this->addHreflangAlternates(
                 Url::create($newsUrl)
-                    ->setLastModificationDate($lastMod)
+                    ->setLastModificationDate($newsMod)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
                     ->setPriority(0.8),
                 $newsUrl
@@ -125,7 +135,7 @@ class SitemapService
         $sitemap->add(
             $this->addHreflangAlternates(
                 Url::create($proverbsUrl)
-                    ->setLastModificationDate($lastMod)
+                    ->setLastModificationDate($proverbMod)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
                     ->setPriority(0.7),
                 $proverbsUrl
@@ -147,7 +157,7 @@ class SitemapService
         $sitemap->add(
             $this->addHreflangAlternates(
                 Url::create($phonesUrl)
-                    ->setLastModificationDate($lastMod)
+                    ->setLastModificationDate($phoneMod)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                     ->setPriority(0.8),
                 $phonesUrl
@@ -158,7 +168,7 @@ class SitemapService
         $sitemap->add(
             $this->addHreflangAlternates(
                 Url::create($suggestionsUrl)
-                    ->setLastModificationDate($lastMod)
+                    ->setLastModificationDate($pageMod)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                     ->setPriority(0.6),
                 $suggestionsUrl
@@ -169,7 +179,7 @@ class SitemapService
         $sitemap->add(
             $this->addHreflangAlternates(
                 Url::create($legalUrl)
-                    ->setLastModificationDate($lastMod)
+                    ->setLastModificationDate($pageMod)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY)
                     ->setPriority(0.4),
                 $legalUrl
@@ -180,7 +190,7 @@ class SitemapService
         $sitemap->add(
             $this->addHreflangAlternates(
                 Url::create($contactUrl)
-                    ->setLastModificationDate($lastMod)
+                    ->setLastModificationDate($pageMod)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                     ->setPriority(0.4),
                 $contactUrl

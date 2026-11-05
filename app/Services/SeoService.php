@@ -285,8 +285,11 @@ class SeoService
             }
         }
 
+        $isDefaultImage = empty($this->image) || str_ends_with($this->image, 'og-image.webp');
         $rawImage = $this->image ?: asset('images/redes-sociales/og-image.webp');
         $imageUrl = str_starts_with($rawImage, 'http') ? $rawImage : url($rawImage);
+        $imageWidth = $isDefaultImage ? 1200 : 800;
+        $imageHeight = $isDefaultImage ? 630 : 450;
 
         $defaultDescription = app()->getLocale() === 'en'
             ? __('messages.about_seo_description')
@@ -303,6 +306,8 @@ class SeoService
             'type' => $this->type,
             'schemaType' => $this->schemaType,
             'image' => $imageUrl,
+            'imageWidth' => $imageWidth,
+            'imageHeight' => $imageHeight,
             'robots' => $robots,
             'author' => $this->author ?: 'Raúl Caro Pastorino',
             'publishedAt' => $this->publishedAt,
@@ -445,12 +450,18 @@ class SeoService
 
         if (! empty($this->breadcrumbs)) {
             $items = [];
+            $defaultLocale = (string) config('locales.default', 'es');
+            $activeLocale = app()->getLocale();
             foreach ($this->breadcrumbs as $index => $crumb) {
+                $itemUrl = $crumb['url'];
+                if ($activeLocale !== $defaultLocale && ! str_contains($itemUrl, 'lang=')) {
+                    $itemUrl .= (str_contains($itemUrl, '?') ? '&' : '?').'lang='.$activeLocale;
+                }
                 $items[] = [
                     '@type' => 'ListItem',
                     'position' => $index + 1,
                     'name' => $crumb['name'],
-                    'item' => $crumb['url'],
+                    'item' => $itemUrl,
                 ];
             }
 

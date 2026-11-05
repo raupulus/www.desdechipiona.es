@@ -4,6 +4,8 @@
     $pageTitle = $seoData['title'] ?? setting('site_title', config('app.name'));
     $pageDescription = $seoData['description'] ?? setting('site_description', '');
     $pageImage = $seoData['image'] ?? asset('images/redes-sociales/og-image.webp');
+    $pageImageWidth = $seoData['imageWidth'] ?? 1200;
+    $pageImageHeight = $seoData['imageHeight'] ?? 630;
     $baseUrl = $seoData['baseUrl'] ?? url()->current();
     $pageUrl = $seoData['url'] ?? url()->current();
     $pageType = $seoData['type'] ?? 'website';
@@ -45,8 +47,8 @@
 <meta property="og:description" content="{{ $pageDescription }}" />
 <meta property="og:image" content="{{ $pageImage }}" />
 <meta property="og:image:type" content="image/webp" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
+<meta property="og:image:width" content="{{ $pageImageWidth }}" />
+<meta property="og:image:height" content="{{ $pageImageHeight }}" />
 <meta property="og:image:alt" content="{{ $pageTitle }}" />
 <meta property="og:url" content="{{ $pageUrl }}" />
 <meta name="twitter:card" content="summary_large_image" />

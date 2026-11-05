@@ -28,7 +28,7 @@ trait HasSeo
 
         // Si el seo_title está vacío, usar el título del modelo
         if (! empty($seoTitle)) {
-            return $seoTitle;
+            return Str::limit(trim((string) $seoTitle), 64, '…');
         }
 
         $title = $this->title;
@@ -40,12 +40,12 @@ trait HasSeo
         $siteTitle = (string) setting('site_title', config('app.name'));
         if ($rawTitle !== '' && $siteTitle !== '' && ! str_contains($rawTitle, $siteTitle)) {
             $withBrand = $rawTitle.' — '.$siteTitle;
-            if (mb_strlen($withBrand) <= 68) {
+            if (mb_strlen($withBrand) <= 65) {
                 return $withBrand;
             }
         }
 
-        return Str::limit($rawTitle, 65, '…');
+        return Str::limit($rawTitle, 64, '…');
     }
 
     /**
@@ -99,8 +99,11 @@ trait HasSeo
     private function cleanSeoText(string $text, int $limit = 160): string
     {
         $normalized = preg_replace('/\s+/u', ' ', trim(strip_tags($text))) ?? '';
+        if (mb_strlen($normalized) <= $limit) {
+            return $normalized;
+        }
 
-        return Str::limit($normalized, $limit);
+        return Str::limit($normalized, max(1, $limit - 1), '…');
     }
 
     /**
