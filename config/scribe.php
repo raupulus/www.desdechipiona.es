@@ -11,7 +11,7 @@ use function Knuckles\Scribe\Config\removeStrategies;
 
 return [
     // The HTML <title> for the generated documentation.
-    'title' => env('APP_NAME', 'Skeleton Laravel Project').' API Documentation',
+    'title' => env('APP_NAME', 'Desde Chipiona').' API Documentation',
 
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
     'description' => '',

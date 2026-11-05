@@ -1,6 +1,8 @@
 # Manual del Usuario — Blog
 
-*Última actualización: 2026-08-26*
+*Última actualización: 2026-11-05*
+
+> **Nota de estado actual:** El módulo de Blog (`/blog`) se mantiene creado y disponible en código para su posible activación futura, pero se encuentra temporalmente desactivado en el menú público. Actualmente todas las novedades editoriales y hallazgos documentales del portal se publican en la sección de **Noticias** (`/news`).
 
 ## Descripción
 

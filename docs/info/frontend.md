@@ -48,17 +48,17 @@ El frontend público incluye el layout HTML5 con Tailwind CSS v4, la barra de na
 
 | Página | Vista | Ruta | Controlador |
 |--------|-------|------|-------------|
-| Home y Explorador Multicriterio | `home.blade.php` | `/` | `HomeController@index` |
+| Home y Explorador Multicriterio | `home.blade.php` | `/` (`/explore`) | `HomeController@index` |
 | Ficha / Página documental | `pages/show.blade.php` | `/pages/{slug}` | `PageController@show` |
-| Noticias (listado) | `news/index.blade.php` | `/noticias` | `NewsController@index` |
-| Noticia (detalle) | `news/show.blade.php` | `/noticias/{slug}` | `NewsController@show` |
-| Refranero Popular | `proverbs/index.blade.php` | `/refranero` | `ProverbController@index/store` |
-| El Tiempo y Mareas (AEMET 11016) | `weather/index.blade.php` | `/el-tiempo-y-mareas` | `WeatherController@index` |
-| Teléfonos Oficiales | `phones/index.blade.php` | `/telefonos-oficiales` | `OfficialPhoneController@index` |
-| Sugerir y Aportar Contenido | `suggestions/create.blade.php` | `/aportar-contenido` | `ContentSuggestionController@create/store` |
-| Autoría y Aviso Legal | `static/legal.blade.php` | `/autoria-y-legal` | `StaticPageController@legal` |
-| Blog (listado) | `posts/index.blade.php` | `/blog` | `PostController@index` |
-| Blog (detalle) | `posts/show.blade.php` | `/blog/{slug}` | `PostController@show` |
+| Noticias (listado) | `news/index.blade.php` | `/news` | `NewsController@index` |
+| Noticia (detalle) | `news/show.blade.php` | `/news/{slug}` | `NewsController@show` |
+| Refranero Popular | `proverbs/index.blade.php` | `/proverbs` | `ProverbController@index/store` |
+| El Tiempo y Mareas (AEMET 11016) | `weather/index.blade.php` | `/weather` | `WeatherController@index` |
+| Teléfonos Oficiales | `phones/index.blade.php` | `/phones` | `OfficialPhoneController@index` |
+| Sugerir y Aportar Contenido | `suggestions/create.blade.php` | `/suggestions` | `ContentSuggestionController@create/store` |
+| Autoría y Aviso Legal | `static/legal.blade.php` | `/legal` | `StaticPageController@legal` |
+| Blog (listado, *desactivado temporalmente*) | `posts/index.blade.php` | `/blog` *(comentada)* | `PostController@index` |
+| Blog (detalle, *desactivado temporalmente*) | `posts/show.blade.php` | `/blog/{slug}` *(comentada)* | `PostController@show` |
 | Sobre nosotros | `static/about.blade.php` | `/about` | `StaticPageController@about` |
 | Contacto | `contact.blade.php` | `/contact` | `ContactController@show/send` |
 | Privacidad | `static/privacy.blade.php` | `/privacy` | `StaticPageController@privacy` |

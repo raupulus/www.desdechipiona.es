@@ -42,7 +42,7 @@ El comando cachea 30 min porque AEMET actualiza este producto dos veces al día
 
 | API | Directorio | Estado | Descripción |
 |---|---|---|---|
-| **AEMET OpenData** | [aemet/](aemet/README.md) | 🟢 Documentada · **los 64 endpoints verificados (100 %)** · 2026-08-26 | Datos meteorológicos y climatológicos oficiales de España. 64 endpoints REST. |
+| **API Meteorológica y AEMET OpenData** | [../info/apis/README.md](../info/apis/README.md) | 🟢 Integrada vía API V2 (`ChipionaWeatherService`) · 2026-11-05 | Datos meteorológicos, horarios solares y tabla de mareas para el municipio de Chipiona (11016). |
 
 ---
 

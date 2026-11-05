@@ -12,13 +12,13 @@
     <link rel="stylesheet" href="{{ asset("/vendor/scribe/css/theme-default.style.css") }}" media="screen">
     <link rel="stylesheet" href="{{ asset("/vendor/scribe/css/theme-default.print.css") }}" media="print">
 
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js" defer></script>
 
     <link rel="stylesheet"
           href="https://unpkg.com/@highlightjs/cdn-assets@11.6.0/styles/obsidian.min.css">
-    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.6.0/highlight.min.js"></script>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.6.0/highlight.min.js" defer></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jets/0.14.1/jets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jets/0.14.1/jets.min.js" defer></script>
 
     <style id="language-style">
         /* starts out as display none and is replaced with js later  */
@@ -31,9 +31,9 @@
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
-    <script src="{{ asset("/vendor/scribe/js/tryitout-5.9.0.js") }}"></script>
+    <script src="{{ asset("/vendor/scribe/js/tryitout-5.9.0.js") }}" defer></script>
 
-    <script src="{{ asset("/vendor/scribe/js/theme-default-5.9.0.js") }}"></script>
+    <script src="{{ asset("/vendor/scribe/js/theme-default-5.9.0.js") }}" defer></script>
 
 </head>
 
@@ -42,7 +42,7 @@
 <a href="#" id="nav-button">
     <span>
         MENU
-        <img src="{{ asset("/vendor/scribe/images/navbar.png") }}" alt="navbar-image"/>
+        <img src="{{ asset("/vendor/scribe/images/navbar.png") }}" alt="navbar-image" width="16" height="16"/>
     </span>
 </a>
 <div class="tocify-wrapper">
@@ -53,7 +53,7 @@
                     </div>
     
     <div class="search">
-        <input type="text" class="search" id="input-search" placeholder="Search">
+        <input type="text" class="search" id="input-search" placeholder="Search" aria-label="Search API documentation">
     </div>
 
     <div id="toc">
@@ -70,8 +70,7 @@
                     <ul id="tocify-header-autenticacion" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="autenticacion">
                     <a href="#autenticacion">Autenticación</a>
-                </li>
-                                    <ul id="tocify-subheader-autenticacion" class="tocify-subheader">
+<ul id="tocify-subheader-autenticacion" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="autenticacion-POSTapi-v1-auth-register">
                                 <a href="#autenticacion-POSTapi-v1-auth-register">Registra un nuevo usuario en la plataforma y devuelve su token de acceso.</a>
                             </li>
@@ -91,12 +90,12 @@
                                 <a href="#autenticacion-GETapi-v1-auth-user">Devuelve los datos del usuario autenticado actualmente.</a>
                             </li>
                                                                         </ul>
+                </li>
                             </ul>
                     <ul id="tocify-header-categorias" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="categorias">
                     <a href="#categorias">Categorías</a>
-                </li>
-                                    <ul id="tocify-subheader-categorias" class="tocify-subheader">
+<ul id="tocify-subheader-categorias" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="categorias-GETapi-v1-categories">
                                 <a href="#categorias-GETapi-v1-categories">Devuelve el listado completo de categorías activas ordenadas por orden.</a>
                             </li>
@@ -104,12 +103,12 @@
                                 <a href="#categorias-GETapi-v1-categories--slug-">Devuelve el detalle de una categoría específica identificada por su slug.</a>
                             </li>
                                                                         </ul>
+                </li>
                             </ul>
                     <ul id="tocify-header-posts" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="posts">
                     <a href="#posts">Posts</a>
-                </li>
-                                    <ul id="tocify-subheader-posts" class="tocify-subheader">
+<ul id="tocify-subheader-posts" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="posts-GETapi-v1-posts">
                                 <a href="#posts-GETapi-v1-posts">Devuelve un listado paginado de posts publicados y activos.</a>
                             </li>
@@ -117,12 +116,12 @@
                                 <a href="#posts-GETapi-v1-posts--slug-">Devuelve el detalle de un post específico identificado por su slug.</a>
                             </li>
                                                                         </ul>
+                </li>
                             </ul>
                     <ul id="tocify-header-paginas" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="paginas">
                     <a href="#paginas">Páginas</a>
-                </li>
-                                    <ul id="tocify-subheader-paginas" class="tocify-subheader">
+<ul id="tocify-subheader-paginas" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="paginas-GETapi-v1-pages">
                                 <a href="#paginas-GETapi-v1-pages">Devuelve un listado paginado de páginas publicadas y activas.</a>
                             </li>
@@ -130,12 +129,12 @@
                                 <a href="#paginas-GETapi-v1-pages--slug-">Devuelve el detalle de una página específica identificada por su slug.</a>
                             </li>
                                                                         </ul>
+                </li>
                             </ul>
                     <ul id="tocify-header-tokens-de-api" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="tokens-de-api">
                     <a href="#tokens-de-api">Tokens de API</a>
-                </li>
-                                    <ul id="tocify-subheader-tokens-de-api" class="tocify-subheader">
+<ul id="tocify-subheader-tokens-de-api" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="tokens-de-api-GETapi-v1-user-tokens">
                                 <a href="#tokens-de-api-GETapi-v1-user-tokens">Lista todos los tokens de API del usuario autenticado.</a>
                             </li>
@@ -146,6 +145,7 @@
                                 <a href="#tokens-de-api-DELETEapi-v1-user-tokens--tokenId-">Elimina un token de API específico del usuario autenticado.</a>
                             </li>
                                                                         </ul>
+                </li>
                             </ul>
             </div>
 
@@ -165,7 +165,7 @@
 <aside>
     <strong>Base URL</strong>: <code>http://localhost:8000</code>
 </aside>
-<pre><code>This documentation aims to provide all the information you need to work with our API.
+<pre tabindex="0"><code>This documentation aims to provide all the information you need to work with our API.
 
 &lt;aside&gt;As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
 You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).&lt;/aside&gt;</code></pre>
@@ -184,12 +184,12 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 <p>Envía un email de bienvenida tras el registro exitoso.</p>
 
-<span id="example-requests-POSTapi-v1-auth-register">
+<div id="example-requests-POSTapi-v1-auth-register">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
+    <pre tabindex="0"><code class="language-bash">curl --request POST \
     "http://localhost:8000/api/v1/auth/register" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -202,7 +202,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/auth/register"
 );
 
@@ -223,25 +223,25 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-POSTapi-v1-auth-register">
-</span>
-<span id="execution-results-POSTapi-v1-auth-register" hidden>
+<div id="example-responses-POSTapi-v1-auth-register">
+</div>
+<div id="execution-results-POSTapi-v1-auth-register" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-auth-register"></span>:
+                id="execution-response-status-POSTapi-v1-auth-register"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-POSTapi-v1-auth-register"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-POSTapi-v1-auth-register" hidden>
+<div id="execution-error-POSTapi-v1-auth-register" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-auth-register">
+    <pre tabindex="0"><code id="execution-error-message-POSTapi-v1-auth-register">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-POSTapi-v1-auth-register" data-method="POST"
       data-path="api/v1/auth/register"
       data-authed="0"
@@ -344,12 +344,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <p>Verifica también que el usuario esté activo en la plataforma.</p>
 
-<span id="example-requests-POSTapi-v1-auth-login">
+<div id="example-requests-POSTapi-v1-auth-login">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
+    <pre tabindex="0"><code class="language-bash">curl --request POST \
     "http://localhost:8000/api/v1/auth/login" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -361,7 +361,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/auth/login"
 );
 
@@ -381,25 +381,25 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-POSTapi-v1-auth-login">
-</span>
-<span id="execution-results-POSTapi-v1-auth-login" hidden>
+<div id="example-responses-POSTapi-v1-auth-login">
+</div>
+<div id="execution-results-POSTapi-v1-auth-login" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-auth-login"></span>:
+                id="execution-response-status-POSTapi-v1-auth-login"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-POSTapi-v1-auth-login"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-POSTapi-v1-auth-login" hidden>
+<div id="execution-error-POSTapi-v1-auth-login" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-auth-login">
+    <pre tabindex="0"><code id="execution-error-message-POSTapi-v1-auth-login">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-POSTapi-v1-auth-login" data-method="POST"
       data-path="api/v1/auth/login"
       data-authed="0"
@@ -490,12 +490,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 
 
-<span id="example-requests-POSTapi-v1-auth-forgot-password">
+<div id="example-requests-POSTapi-v1-auth-forgot-password">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
+    <pre tabindex="0"><code class="language-bash">curl --request POST \
     "http://localhost:8000/api/v1/auth/forgot-password" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -506,7 +506,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/auth/forgot-password"
 );
 
@@ -525,25 +525,25 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-POSTapi-v1-auth-forgot-password">
-</span>
-<span id="execution-results-POSTapi-v1-auth-forgot-password" hidden>
+<div id="example-responses-POSTapi-v1-auth-forgot-password">
+</div>
+<div id="execution-results-POSTapi-v1-auth-forgot-password" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-auth-forgot-password"></span>:
+                id="execution-response-status-POSTapi-v1-auth-forgot-password"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-POSTapi-v1-auth-forgot-password"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-POSTapi-v1-auth-forgot-password" hidden>
+<div id="execution-error-POSTapi-v1-auth-forgot-password" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-auth-forgot-password">
+    <pre tabindex="0"><code id="execution-error-message-POSTapi-v1-auth-forgot-password">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-POSTapi-v1-auth-forgot-password" data-method="POST"
       data-path="api/v1/auth/forgot-password"
       data-authed="0"
@@ -622,12 +622,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 
 
-<span id="example-requests-POSTapi-v1-auth-reset-password">
+<div id="example-requests-POSTapi-v1-auth-reset-password">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
+    <pre tabindex="0"><code class="language-bash">curl --request POST \
     "http://localhost:8000/api/v1/auth/reset-password" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -640,7 +640,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/auth/reset-password"
 );
 
@@ -661,25 +661,25 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-POSTapi-v1-auth-reset-password">
-</span>
-<span id="execution-results-POSTapi-v1-auth-reset-password" hidden>
+<div id="example-responses-POSTapi-v1-auth-reset-password">
+</div>
+<div id="execution-results-POSTapi-v1-auth-reset-password" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-auth-reset-password"></span>:
+                id="execution-response-status-POSTapi-v1-auth-reset-password"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-POSTapi-v1-auth-reset-password"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-POSTapi-v1-auth-reset-password" hidden>
+<div id="execution-error-POSTapi-v1-auth-reset-password" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-auth-reset-password">
+    <pre tabindex="0"><code id="execution-error-message-POSTapi-v1-auth-reset-password">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-POSTapi-v1-auth-reset-password" data-method="POST"
       data-path="api/v1/auth/reset-password"
       data-authed="0"
@@ -783,19 +783,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 
 
-<span id="example-requests-POSTapi-v1-auth-logout">
+<div id="example-requests-POSTapi-v1-auth-logout">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
+    <pre tabindex="0"><code class="language-bash">curl --request POST \
     "http://localhost:8000/api/v1/auth/logout" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/auth/logout"
 );
 
@@ -810,25 +810,25 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-POSTapi-v1-auth-logout">
-</span>
-<span id="execution-results-POSTapi-v1-auth-logout" hidden>
+<div id="example-responses-POSTapi-v1-auth-logout">
+</div>
+<div id="execution-results-POSTapi-v1-auth-logout" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-auth-logout"></span>:
+                id="execution-response-status-POSTapi-v1-auth-logout"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-POSTapi-v1-auth-logout"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-POSTapi-v1-auth-logout" hidden>
+<div id="execution-error-POSTapi-v1-auth-logout" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-auth-logout">
+    <pre tabindex="0"><code id="execution-error-message-POSTapi-v1-auth-logout">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-POSTapi-v1-auth-logout" data-method="POST"
       data-path="api/v1/auth/logout"
       data-authed="1"
@@ -895,19 +895,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 
 
-<span id="example-requests-GETapi-v1-auth-user">
+<div id="example-requests-GETapi-v1-auth-user">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
+    <pre tabindex="0"><code class="language-bash">curl --request GET \
     --get "http://localhost:8000/api/v1/auth/user" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/auth/user"
 );
 
@@ -922,9 +922,9 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-GETapi-v1-auth-user">
+<div id="example-responses-GETapi-v1-auth-user">
             <blockquote>
             <p>Example response (401):</p>
         </blockquote>
@@ -932,7 +932,7 @@ fetch(url, {
             <summary style="cursor: pointer;">
                 <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
             </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
+            <pre tabindex="0"><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-frame-options: SAMEORIGIN
 x-content-type-options: nosniff
@@ -946,22 +946,22 @@ access-control-allow-origin: *
     &quot;message&quot;: &quot;Unauthenticated.&quot;
 }</code>
  </pre>
-    </span>
-<span id="execution-results-GETapi-v1-auth-user" hidden>
+    </div>
+<div id="execution-results-GETapi-v1-auth-user" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-auth-user"></span>:
+                id="execution-response-status-GETapi-v1-auth-user"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-GETapi-v1-auth-user"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-auth-user" hidden>
+<div id="execution-error-GETapi-v1-auth-user" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-auth-user">
+    <pre tabindex="0"><code id="execution-error-message-GETapi-v1-auth-user">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-GETapi-v1-auth-user" data-method="GET"
       data-path="api/v1/auth/user"
       data-authed="1"
@@ -1031,19 +1031,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <p>Las categorías no se paginan ya que su número suele ser reducido.</p>
 
-<span id="example-requests-GETapi-v1-categories">
+<div id="example-requests-GETapi-v1-categories">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
+    <pre tabindex="0"><code class="language-bash">curl --request GET \
     --get "http://localhost:8000/api/v1/categories" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/categories"
 );
 
@@ -1058,9 +1058,9 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-GETapi-v1-categories">
+<div id="example-responses-GETapi-v1-categories">
             <blockquote>
             <p>Example response (200):</p>
         </blockquote>
@@ -1068,7 +1068,7 @@ fetch(url, {
             <summary style="cursor: pointer;">
                 <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
             </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
+            <pre tabindex="0"><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 49
@@ -1189,22 +1189,22 @@ access-control-allow-origin: *
     }
 ]</code>
  </pre>
-    </span>
-<span id="execution-results-GETapi-v1-categories" hidden>
+    </div>
+<div id="execution-results-GETapi-v1-categories" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-categories"></span>:
+                id="execution-response-status-GETapi-v1-categories"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-GETapi-v1-categories"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-categories" hidden>
+<div id="execution-error-GETapi-v1-categories" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-categories">
+    <pre tabindex="0"><code id="execution-error-message-GETapi-v1-categories">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-GETapi-v1-categories" data-method="GET"
       data-path="api/v1/categories"
       data-authed="0"
@@ -1270,19 +1270,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <p>Devuelve 404 si la categoría no existe o no está activa.</p>
 
-<span id="example-requests-GETapi-v1-categories--slug-">
+<div id="example-requests-GETapi-v1-categories--slug-">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
+    <pre tabindex="0"><code class="language-bash">curl --request GET \
     --get "http://localhost:8000/api/v1/categories/2" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/categories/2"
 );
 
@@ -1297,9 +1297,9 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-GETapi-v1-categories--slug-">
+<div id="example-responses-GETapi-v1-categories--slug-">
             <blockquote>
             <p>Example response (404):</p>
         </blockquote>
@@ -1307,7 +1307,7 @@ fetch(url, {
             <summary style="cursor: pointer;">
                 <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
             </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
+            <pre tabindex="0"><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 48
@@ -1323,22 +1323,22 @@ access-control-allow-origin: *
     &quot;message&quot;: &quot;No query results for model [App\\Models\\Category].&quot;
 }</code>
  </pre>
-    </span>
-<span id="execution-results-GETapi-v1-categories--slug-" hidden>
+    </div>
+<div id="execution-results-GETapi-v1-categories--slug-" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-categories--slug-"></span>:
+                id="execution-response-status-GETapi-v1-categories--slug-"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-GETapi-v1-categories--slug-"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-categories--slug-" hidden>
+<div id="execution-error-GETapi-v1-categories--slug-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-categories--slug-">
+    <pre tabindex="0"><code id="execution-error-message-GETapi-v1-categories--slug-">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-GETapi-v1-categories--slug-" data-method="GET"
       data-path="api/v1/categories/{slug}"
       data-authed="0"
@@ -1421,19 +1421,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <p>Soporta paginación con parámetro per_page (máximo 50 por página).</p>
 
-<span id="example-requests-GETapi-v1-posts">
+<div id="example-requests-GETapi-v1-posts">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
+    <pre tabindex="0"><code class="language-bash">curl --request GET \
     --get "http://localhost:8000/api/v1/posts" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/posts"
 );
 
@@ -1448,9 +1448,9 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-GETapi-v1-posts">
+<div id="example-responses-GETapi-v1-posts">
             <blockquote>
             <p>Example response (200):</p>
         </blockquote>
@@ -1458,7 +1458,7 @@ fetch(url, {
             <summary style="cursor: pointer;">
                 <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
             </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
+            <pre tabindex="0"><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 53
@@ -2036,22 +2036,22 @@ access-control-allow-origin: *
     &quot;total&quot;: 10
 }</code>
  </pre>
-    </span>
-<span id="execution-results-GETapi-v1-posts" hidden>
+    </div>
+<div id="execution-results-GETapi-v1-posts" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-posts"></span>:
+                id="execution-response-status-GETapi-v1-posts"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-GETapi-v1-posts"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-posts" hidden>
+<div id="execution-error-GETapi-v1-posts" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-posts">
+    <pre tabindex="0"><code id="execution-error-message-GETapi-v1-posts">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-GETapi-v1-posts" data-method="GET"
       data-path="api/v1/posts"
       data-authed="0"
@@ -2117,19 +2117,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <p>Devuelve 404 si el post no existe, no está publicado o no está activo.</p>
 
-<span id="example-requests-GETapi-v1-posts--slug-">
+<div id="example-requests-GETapi-v1-posts--slug-">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
+    <pre tabindex="0"><code class="language-bash">curl --request GET \
     --get "http://localhost:8000/api/v1/posts/2" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/posts/2"
 );
 
@@ -2144,9 +2144,9 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-GETapi-v1-posts--slug-">
+<div id="example-responses-GETapi-v1-posts--slug-">
             <blockquote>
             <p>Example response (404):</p>
         </blockquote>
@@ -2154,7 +2154,7 @@ fetch(url, {
             <summary style="cursor: pointer;">
                 <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
             </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
+            <pre tabindex="0"><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 52
@@ -2170,22 +2170,22 @@ access-control-allow-origin: *
     &quot;message&quot;: &quot;No query results for model [App\\Models\\Post].&quot;
 }</code>
  </pre>
-    </span>
-<span id="execution-results-GETapi-v1-posts--slug-" hidden>
+    </div>
+<div id="execution-results-GETapi-v1-posts--slug-" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-posts--slug-"></span>:
+                id="execution-response-status-GETapi-v1-posts--slug-"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-GETapi-v1-posts--slug-"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-posts--slug-" hidden>
+<div id="execution-error-GETapi-v1-posts--slug-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-posts--slug-">
+    <pre tabindex="0"><code id="execution-error-message-GETapi-v1-posts--slug-">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-GETapi-v1-posts--slug-" data-method="GET"
       data-path="api/v1/posts/{slug}"
       data-authed="0"
@@ -2268,19 +2268,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 
 
-<span id="example-requests-GETapi-v1-pages">
+<div id="example-requests-GETapi-v1-pages">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
+    <pre tabindex="0"><code class="language-bash">curl --request GET \
     --get "http://localhost:8000/api/v1/pages" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/pages"
 );
 
@@ -2295,9 +2295,9 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-GETapi-v1-pages">
+<div id="example-responses-GETapi-v1-pages">
             <blockquote>
             <p>Example response (200):</p>
         </blockquote>
@@ -2305,7 +2305,7 @@ fetch(url, {
             <summary style="cursor: pointer;">
                 <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
             </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
+            <pre tabindex="0"><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 51
@@ -2640,22 +2640,22 @@ access-control-allow-origin: *
     &quot;total&quot;: 10
 }</code>
  </pre>
-    </span>
-<span id="execution-results-GETapi-v1-pages" hidden>
+    </div>
+<div id="execution-results-GETapi-v1-pages" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-pages"></span>:
+                id="execution-response-status-GETapi-v1-pages"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-GETapi-v1-pages"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-pages" hidden>
+<div id="execution-error-GETapi-v1-pages" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-pages">
+    <pre tabindex="0"><code id="execution-error-message-GETapi-v1-pages">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-GETapi-v1-pages" data-method="GET"
       data-path="api/v1/pages"
       data-authed="0"
@@ -2721,19 +2721,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <p>Devuelve 404 si la página no existe, no está publicada o no está activa.</p>
 
-<span id="example-requests-GETapi-v1-pages--slug-">
+<div id="example-requests-GETapi-v1-pages--slug-">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
+    <pre tabindex="0"><code class="language-bash">curl --request GET \
     --get "http://localhost:8000/api/v1/pages/2" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/pages/2"
 );
 
@@ -2748,9 +2748,9 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-GETapi-v1-pages--slug-">
+<div id="example-responses-GETapi-v1-pages--slug-">
             <blockquote>
             <p>Example response (404):</p>
         </blockquote>
@@ -2758,7 +2758,7 @@ fetch(url, {
             <summary style="cursor: pointer;">
                 <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
             </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
+            <pre tabindex="0"><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 50
@@ -2774,22 +2774,22 @@ access-control-allow-origin: *
     &quot;message&quot;: &quot;No query results for model [App\\Models\\Page].&quot;
 }</code>
  </pre>
-    </span>
-<span id="execution-results-GETapi-v1-pages--slug-" hidden>
+    </div>
+<div id="execution-results-GETapi-v1-pages--slug-" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-pages--slug-"></span>:
+                id="execution-response-status-GETapi-v1-pages--slug-"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-GETapi-v1-pages--slug-"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-pages--slug-" hidden>
+<div id="execution-error-GETapi-v1-pages--slug-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-pages--slug-">
+    <pre tabindex="0"><code id="execution-error-message-GETapi-v1-pages--slug-">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-GETapi-v1-pages--slug-" data-method="GET"
       data-path="api/v1/pages/{slug}"
       data-authed="0"
@@ -2873,19 +2873,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <p>Los tokens se ordenan del más reciente al más antiguo.</p>
 
-<span id="example-requests-GETapi-v1-user-tokens">
+<div id="example-requests-GETapi-v1-user-tokens">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
+    <pre tabindex="0"><code class="language-bash">curl --request GET \
     --get "http://localhost:8000/api/v1/user/tokens" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/user/tokens"
 );
 
@@ -2900,9 +2900,9 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-GETapi-v1-user-tokens">
+<div id="example-responses-GETapi-v1-user-tokens">
             <blockquote>
             <p>Example response (401):</p>
         </blockquote>
@@ -2910,7 +2910,7 @@ fetch(url, {
             <summary style="cursor: pointer;">
                 <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
             </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
+            <pre tabindex="0"><code class="language-http">cache-control: no-cache, private
 content-type: application/json
 x-frame-options: SAMEORIGIN
 x-content-type-options: nosniff
@@ -2924,22 +2924,22 @@ access-control-allow-origin: *
     &quot;message&quot;: &quot;Unauthenticated.&quot;
 }</code>
  </pre>
-    </span>
-<span id="execution-results-GETapi-v1-user-tokens" hidden>
+    </div>
+<div id="execution-results-GETapi-v1-user-tokens" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-user-tokens"></span>:
+                id="execution-response-status-GETapi-v1-user-tokens"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-GETapi-v1-user-tokens"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-v1-user-tokens" hidden>
+<div id="execution-error-GETapi-v1-user-tokens" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-user-tokens">
+    <pre tabindex="0"><code id="execution-error-message-GETapi-v1-user-tokens">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-GETapi-v1-user-tokens" data-method="GET"
       data-path="api/v1/user/tokens"
       data-authed="1"
@@ -3006,12 +3006,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <p>El token en texto plano solo se devuelve en esta respuesta, no se puede recuperar después.</p>
 
-<span id="example-requests-POSTapi-v1-user-tokens">
+<div id="example-requests-POSTapi-v1-user-tokens">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
+    <pre tabindex="0"><code class="language-bash">curl --request POST \
     "http://localhost:8000/api/v1/user/tokens" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3022,7 +3022,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/user/tokens"
 );
 
@@ -3041,25 +3041,25 @@ fetch(url, {
     body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-POSTapi-v1-user-tokens">
-</span>
-<span id="execution-results-POSTapi-v1-user-tokens" hidden>
+<div id="example-responses-POSTapi-v1-user-tokens">
+</div>
+<div id="execution-results-POSTapi-v1-user-tokens" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-user-tokens"></span>:
+                id="execution-response-status-POSTapi-v1-user-tokens"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-POSTapi-v1-user-tokens"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-POSTapi-v1-user-tokens" hidden>
+<div id="execution-error-POSTapi-v1-user-tokens" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-tokens">
+    <pre tabindex="0"><code id="execution-error-message-POSTapi-v1-user-tokens">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-POSTapi-v1-user-tokens" data-method="POST"
       data-path="api/v1/user/tokens"
       data-authed="1"
@@ -3139,19 +3139,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <p>Solo se puede eliminar un token propio, no de otros usuarios.</p>
 
-<span id="example-requests-DELETEapi-v1-user-tokens--tokenId-">
+<div id="example-requests-DELETEapi-v1-user-tokens--tokenId-">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request DELETE \
+    <pre tabindex="0"><code class="language-bash">curl --request DELETE \
     "http://localhost:8000/api/v1/user/tokens/architecto" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
+    <pre tabindex="0"><code class="language-javascript">const url = new URL(
     "http://localhost:8000/api/v1/user/tokens/architecto"
 );
 
@@ -3166,25 +3166,25 @@ fetch(url, {
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
-</span>
+</div>
 
-<span id="example-responses-DELETEapi-v1-user-tokens--tokenId-">
-</span>
-<span id="execution-results-DELETEapi-v1-user-tokens--tokenId-" hidden>
+<div id="example-responses-DELETEapi-v1-user-tokens--tokenId-">
+</div>
+<div id="execution-results-DELETEapi-v1-user-tokens--tokenId-" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-DELETEapi-v1-user-tokens--tokenId-"></span>:
+                id="execution-response-status-DELETEapi-v1-user-tokens--tokenId-"></div>:
     </blockquote>
     <pre class="json"><code id="execution-response-content-DELETEapi-v1-user-tokens--tokenId-"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-DELETEapi-v1-user-tokens--tokenId-" hidden>
+<div id="execution-error-DELETEapi-v1-user-tokens--tokenId-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-DELETEapi-v1-user-tokens--tokenId-">
+    <pre tabindex="0"><code id="execution-error-message-DELETEapi-v1-user-tokens--tokenId-">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
-</span>
+</div>
 <form id="form-DELETEapi-v1-user-tokens--tokenId-" data-method="DELETE"
       data-path="api/v1/user/tokens/{tokenId}"
       data-authed="1"
