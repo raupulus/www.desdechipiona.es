@@ -46,4 +46,34 @@ class TokenApiTest extends TestCase
         $tokenId = $user->tokens()->first()->id;
         $this->withHeader('Authorization', "Bearer {$token}")->deleteJson("/api/v1/user/tokens/{$tokenId}")->assertOk();
     }
+
+    public function test_token_creation_validates_name_constraints(): void
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('test')->plainTextToken;
+
+        $this->withHeader('Authorization', "Bearer {$token}")
+            ->postJson('/api/v1/user/tokens', ['name' => ''])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['name']);
+
+        $this->withHeader('Authorization', "Bearer {$token}")
+            ->postJson('/api/v1/user/tokens', ['name' => str_repeat('a', 256)])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['name']);
+    }
+
+    public function test_user_cannot_delete_another_users_token(): void
+    {
+        $owner = User::factory()->create();
+        $owner->createToken('owner-token');
+        $ownerTokenId = $owner->tokens()->first()->id;
+
+        $intruder = User::factory()->create();
+        $intruderToken = $intruder->createToken('intruder-token')->plainTextToken;
+
+        $this->withHeader('Authorization', "Bearer {$intruderToken}")
+            ->deleteJson("/api/v1/user/tokens/{$ownerTokenId}")
+            ->assertStatus(404);
+    }
 }

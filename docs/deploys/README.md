@@ -33,7 +33,7 @@ El portal no utiliza cuentas de usuario locales para los visitantes; emplea veri
 ### 1.4. Servidor de Correo SMTP
 - Configurar las credenciales del servidor SMTP de producción:
   - `MAIL_MAILER=smtp`
-  - `MAIL_HOST`, `MAIL_PORT`, `MAIL_ENCRYPTION=tls`
+  - `MAIL_HOST`, `MAIL_PORT`, `MAIL_SCHEME=tls`
   - `MAIL_USERNAME` y `MAIL_PASSWORD`
   - `MAIL_FROM_ADDRESS`: Dirección de envíos automáticos sin respuesta.
   - `MAIL_CONTACT_ADDRESS`: Buzón de recepción de los mensajes del formulario de contacto.

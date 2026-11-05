@@ -33,7 +33,8 @@ return new class extends Migration
             $table->text('admin_notes')->nullable()->comment('Notas internas del administrador tras revisar la propuesta');
             $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete()->comment('Usuario administrador que revisó la solicitud');
             $table->timestamp('reviewed_at')->nullable()->comment('Fecha y hora de revisión');
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable()->comment('Fecha de creación del registro');
+            $table->timestamp('updated_at')->nullable()->comment('Fecha de última actualización');
 
             $table->index(['correctable_type', 'correctable_id'], 'idx_correction_requests_morph');
             $table->index('status', 'idx_correction_requests_status');
@@ -58,7 +59,8 @@ return new class extends Migration
             $table->string('status', 20)->default('pending')->comment('Estado en intranet: pending, approved, rejected');
             $table->text('admin_notes')->nullable()->comment('Notas de edición interna');
             $table->timestamp('reviewed_at')->nullable()->comment('Fecha y hora de revisión');
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable()->comment('Fecha de creación del registro');
+            $table->timestamp('updated_at')->nullable()->comment('Fecha de última actualización');
 
             $table->index('content_group', 'idx_content_suggestions_group');
             $table->index('status', 'idx_content_suggestions_status');
@@ -78,7 +80,8 @@ return new class extends Migration
             $table->string('oauth_id', 191)->nullable()->comment('ID OAuth del autor');
             $table->string('status', 20)->default('pending')->comment('Estado de moderación: pending, approved, rejected');
             $table->boolean('featured')->default(false)->comment('Indica si se destaca como refrán del día en portada');
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable()->comment('Fecha de creación del registro');
+            $table->timestamp('updated_at')->nullable()->comment('Fecha de última actualización');
 
             $table->index(['status', 'category'], 'idx_proverbs_status_cat');
         });
@@ -95,7 +98,8 @@ return new class extends Migration
             $table->string('author_avatar', 512)->nullable()->comment('URL de avatar público si está disponible');
             $table->text('body')->comment('Texto del comentario o recuerdo vecinal');
             $table->boolean('is_approved')->default(true)->comment('Indica si el comentario es visible públicamente');
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable()->comment('Fecha de creación del registro');
+            $table->timestamp('updated_at')->nullable()->comment('Fecha de última actualización');
 
             $table->index(['commentable_type', 'commentable_id', 'is_approved'], 'idx_comments_morph_approved');
         });
@@ -115,7 +119,8 @@ return new class extends Migration
             $table->boolean('is_emergency')->default(false)->comment('Indica si es un teléfono prioritario de emergencias 24h');
             $table->integer('sort_order')->default(0)->comment('Orden de aparición en el directorio');
             $table->boolean('is_active')->default(true)->comment('Indica si el teléfono está activo');
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable()->comment('Fecha de creación del registro');
+            $table->timestamp('updated_at')->nullable()->comment('Fecha de última actualización');
 
             $table->index(['is_active', 'category', 'sort_order'], 'idx_official_phones_active_cat');
         });

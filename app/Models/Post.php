@@ -42,10 +42,12 @@ use Spatie\Translatable\HasTranslations;
  * @property Carbon $updated_at Fecha de modificación
  * @property Carbon|null $deleted_at Fecha de eliminación lógica
  * @property-read string|null $image_url URL pública dinámica de la imagen
+ * @property-read string $rendered_content Contenido renderizado en HTML sanitizado
  * @property-read User|null $user Autor del post
  * @property-read Collection<int, Category> $categories Categorías asignadas
  *
- * @method static \Illuminate\Database\Eloquent\Builder<Post> published() Filtra posts publicados y activos
+ * @method static \Illuminate\Database\Eloquent\Builder<Post> published() Filtra posts con estado publicado
+ * @method static \Illuminate\Database\Eloquent\Builder<Post> publishedAndActive() Filtra posts publicados, activos y con fecha de publicación válida
  * @method static \Illuminate\Database\Eloquent\Builder<Post> draft() Filtra posts en borrador
  */
 class Post extends Model

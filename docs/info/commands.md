@@ -1,6 +1,6 @@
 # Módulo: Comandos Artisan
 
-*Última actualización: 2026-11-03*
+*Última actualización: 2026-11-05*
 
 > Catálogo y especificación técnica exhaustiva de los comandos Artisan personalizados de la plataforma.
 
@@ -13,7 +13,7 @@ La plataforma incluye 6 comandos Artisan personalizados en `app/Console/Commands
 | Comando | Firma | Archivo | Propósito |
 |---------|-------|---------|-----------|
 | **project:install** | `project:install {--force}` | `app/Console/Commands/ProjectInstall.php` | Instalación inicial guiada o desatendida del entorno, dependencias (`composer` + `pnpm`), migraciones, seeders y compilación de assets |
-| **project:clear** | `project:clear {--force}` | `app/Console/Commands/ProjectClear.php` | Limpieza integral de cachés y colas, rotación segura opcional de `APP_KEY` (preservando `APP_PREVIOUS_KEYS`) y `composer dump-autoload` |
+| **project:clear** | `project:clear {--force} {--rotate-key}` | `app/Console/Commands/ProjectClear.php` | Limpieza integral de cachés y colas, rotación segura opcional de `APP_KEY` (preservando `APP_PREVIOUS_KEYS`) y `composer dump-autoload` |
 | **project:dummy** | `project:dummy {--fresh}` | `app/Console/Commands/ProjectDummy.php` | Población de datos corporativos de muestra en todos los módulos (bloqueado en producción) |
 | **chipiona:import-corpus** | `chipiona:import-corpus {--path=} {--clean}` | `app/Console/Commands/ImportChipionaCorpus.php` | Importa, categoriza y relaciona el corpus privado de investigación desde fuera del repositorio git |
 | **sitemap:generate** | `sitemap:generate` | `app/Console/Commands/GenerateSitemap.php` | Generación de `public/sitemap.xml` con alternates `hreflang` para todas las rutas públicas |
@@ -52,14 +52,17 @@ php artisan project:install --force
 
 **Archivo**: `app/Console/Commands/ProjectClear.php`
 
-Realiza una limpieza profunda de la aplicación y recompone el mapa de clases de Composer. La rotación de `APP_KEY` **solo se ejecuta si el usuario lo confirma interactivamente o pasa `--force`**, evitando invalidar sesiones o datos cifrados por accidente.
+Realiza una limpieza profunda de la aplicación y recompone el mapa de clases de Composer. La rotación de `APP_KEY` **solo se ejecuta si el usuario lo confirma interactivamente o pasa `--rotate-key`** (requiriendo confirmación o `--force` adicional en entorno de producción), evitando invalidar sesiones o datos cifrados por accidente.
 
 ```bash
 # Limpieza de cachés, colas y autoload (pregunta si deseas rotar APP_KEY):
 php artisan project:clear
 
-# Limpieza completa incluyendo rotación automática de APP_KEY sin confirmación:
+# Limpieza no interactiva sin rotar APP_KEY:
 php artisan project:clear --force
+
+# Limpieza completa incluyendo rotación explícita de APP_KEY:
+php artisan project:clear --rotate-key --force
 ```
 
 ### Flujo de ejecución:

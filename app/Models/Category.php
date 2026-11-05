@@ -31,6 +31,7 @@ use Spatie\Translatable\HasTranslations;
  * @property-read string|null $image_url URL pública dinámica de la imagen
  * @property-read Collection<int, Post> $posts Posts asignados
  * @property-read Collection<int, Page> $pages Páginas asignadas
+ * @property-read Collection<int, News> $news Noticias asignadas
  *
  * @method static Builder<Category> active() Filtra categorías activas
  * @method static Builder<Category> ordered() Ordena por campo order ascendente

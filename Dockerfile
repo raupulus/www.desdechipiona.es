@@ -30,7 +30,7 @@ RUN apk add --no-cache \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && apk del .build-deps \
-    && npm install -g pnpm
+    && npm install -g pnpm@10.6.5
 
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

@@ -63,6 +63,10 @@ class ProjectClear extends Command
     protected function shouldRotateKey(): bool
     {
         if ($this->option('rotate-key')) {
+            if ($this->laravel->isProduction() && ! $this->option('force')) {
+                return $this->confirm('⚠ Estás en producción. ¿Confirmas rotar APP_KEY?', false);
+            }
+
             return true;
         }
 

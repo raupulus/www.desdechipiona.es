@@ -328,4 +328,49 @@ class ChipionaFeaturesTest extends TestCase
             ->assertSee('raupulus.dev')
             ->assertSee('AGPLv3');
     }
+
+    public function test_language_switch_and_social_disconnect_reject_external_open_redirects(): void
+    {
+        $this->from('https://evil.example.com/phishing')
+            ->get(route('language.switch', 'en'))
+            ->assertRedirect(route('home'));
+
+        $this->withSession(['public_social_identity' => ['name' => 'Test', 'provider' => 'google']])
+            ->from('https://evil.example.com/phishing')
+            ->post(route('social.disconnect'))
+            ->assertRedirect(route('home'));
+    }
+
+    public function test_html_and_source_references_strip_svg_and_javascript_urls(): void
+    {
+        $page = Page::factory()->published()->create([
+            'slug' => 'test-sanitizacion-svg',
+            'title' => ['es' => 'Sanitización', 'en' => 'Sanitization'],
+            'content' => [
+                'es' => '<p>Texto seguro</p><svg onload="alert(1)"><animate onbegin="alert(1)"/></svg>',
+                'en' => '<p>Safe text</p>',
+            ],
+            'source_references' => [
+                ['id' => 'F-0001', 'title' => 'Fuente maligna', 'url' => 'javascript:alert(1)'],
+                ['id' => 'F-0002', 'title' => 'Fuente segura', 'url' => 'https://desdechipiona.es/fuente'],
+            ],
+        ]);
+
+        $page->refresh();
+        $this->assertStringNotContainsString('<svg', $page->getTranslation('content', 'es'));
+        $this->assertStringNotContainsString('<animate', $page->getTranslation('content', 'es'));
+        $this->assertSame('#', $page->source_references[0]['url']);
+        $this->assertSame('https://desdechipiona.es/fuente', $page->source_references[1]['url']);
+    }
+
+    public function test_out_of_range_pagination_returns_404(): void
+    {
+        Page::factory()->published()->create();
+        News::factory()->published()->create();
+        Proverb::factory()->approved()->create();
+
+        $this->get(route('home', ['page' => 999]))->assertNotFound();
+        $this->get(route('news.index', ['page' => 999]))->assertNotFound();
+        $this->get(route('proverbs.index', ['page' => 999]))->assertNotFound();
+    }
 }

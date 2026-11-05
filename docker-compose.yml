@@ -1,4 +1,4 @@
-# Docker Compose para desarrollo local del Skeleton Laravel Project
+# Docker Compose para desarrollo local de Desde Chipiona
 # Uso: docker compose up -d
 # Variables configurables en el archivo .env
 
@@ -8,7 +8,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: skeleton_app
+    container_name: desdechipiona_app
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
@@ -21,7 +21,7 @@ services:
       DB_CONNECTION: pgsql
       DB_HOST: db
       DB_PORT: 5432
-      DB_DATABASE: ${DB_DATABASE:-skeleton_laravel}
+      DB_DATABASE: ${DB_DATABASE:-desdechipiona}
       DB_USERNAME: ${DB_USERNAME:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-secret}
       CACHE_STORE: redis
@@ -33,12 +33,12 @@ services:
       redis:
         condition: service_started
     networks:
-      - skeleton_network
+      - desdechipiona_network
 
   # Servidor Nginx
   nginx:
     image: nginx:alpine
-    container_name: skeleton_nginx
+    container_name: desdechipiona_nginx
     restart: unless-stopped
     ports:
       - "${APP_PORT:-8000}:80"
@@ -48,15 +48,15 @@ services:
     depends_on:
       - app
     networks:
-      - skeleton_network
+      - desdechipiona_network
 
   # Base de datos PostgreSQL
   db:
     image: postgres:16-alpine
-    container_name: skeleton_db
+    container_name: desdechipiona_db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${DB_DATABASE:-skeleton_laravel}
+      POSTGRES_DB: ${DB_DATABASE:-desdechipiona}
       POSTGRES_USER: ${DB_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
     volumes:
@@ -70,12 +70,12 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - skeleton_network
+      - desdechipiona_network
 
   # Redis para caché y colas
   redis:
     image: redis:7-alpine
-    container_name: skeleton_redis
+    container_name: desdechipiona_redis
     restart: unless-stopped
     command: redis-server --appendonly yes
     volumes:
@@ -83,12 +83,12 @@ services:
     ports:
       - "${REDIS_EXTERNAL_PORT:-6379}:6379"
     networks:
-      - skeleton_network
+      - desdechipiona_network
 
 volumes:
   postgres_data:
   redis_data:
 
 networks:
-  skeleton_network:
+  desdechipiona_network:
     driver: bridge

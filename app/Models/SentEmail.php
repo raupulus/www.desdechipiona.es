@@ -24,9 +24,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property array<string, mixed>|null $metadata Datos adicionales en formato JSON
  * @property Carbon $created_at Fecha de registro/envío
  * @property Carbon $updated_at Fecha de actualización
- *
- * @method static Builder<SentEmail> sent() Filtra solo emails enviados con éxito
- * @method static Builder<SentEmail> failed() Filtra solo emails que fallaron
  */
 class SentEmail extends Model
 {

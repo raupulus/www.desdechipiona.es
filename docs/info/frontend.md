@@ -1,6 +1,6 @@
 # Módulo: Frontend público
 
-*Última actualización: 2026-11-04*
+*Última actualización: 2026-11-05*
 
 > Layout principal, barra de navegación, pie de página, componentes Blade reutilizables y páginas públicas del sitio web con Tailwind CSS y Alpine.js.
 
@@ -39,6 +39,8 @@ El frontend público incluye el layout HTML5 con Tailwind CSS v4, la barra de na
 | `<x-recaptcha-script action="..." />` | `components/recaptcha-script.blade.php` | Inyección invisible de Google reCAPTCHA v3 al enviar formularios públicos |
 | `<x-turnstile-widget action="..." />` | `components/turnstile-widget.blade.php` | Widget anti-spam de Cloudflare Turnstile para formularios de participación y login |
 | `<x-social-identity-banner />` | `components/social-identity-banner.blade.php` | Identificación social ligera en sesión (Facebook / Google) sin cuenta local |
+| `<x-searchable-select />` | `components/searchable-select.blade.php` | Selector desplegable accesible (ARIA APG combobox) con búsqueda en vivo |
+| `<x-content-builder :blocks="$blocks" />` | `components/content-builder.blade.php` | Renderizador público de bloques modulares de contenido |
 
 ---
 
@@ -76,8 +78,16 @@ El frontend público incluye el layout HTML5 con Tailwind CSS v4, la barra de na
 | Controlador | Ruta |
 |-------------|------|
 | `HomeController` | `app/Http/Controllers/Web/HomeController.php` |
-| `PostController` | `app/Http/Controllers/Web/PostController.php` |
 | `PageController` | `app/Http/Controllers/Web/PageController.php` |
+| `NewsController` | `app/Http/Controllers/Web/NewsController.php` |
+| `ProverbController` | `app/Http/Controllers/Web/ProverbController.php` |
+| `WeatherController` | `app/Http/Controllers/Web/WeatherController.php` |
+| `OfficialPhoneController` | `app/Http/Controllers/Web/OfficialPhoneController.php` |
+| `ContentSuggestionController` | `app/Http/Controllers/Web/ContentSuggestionController.php` |
+| `CorrectionRequestController` | `app/Http/Controllers/Web/CorrectionRequestController.php` |
+| `CommentController` | `app/Http/Controllers/Web/CommentController.php` |
+| `SocialIdentityController` | `app/Http/Controllers/Web/SocialIdentityController.php` |
+| `PostController` | `app/Http/Controllers/Web/PostController.php` |
 | `ContactController` | `app/Http/Controllers/Web/ContactController.php` |
 | `StaticPageController` | `app/Http/Controllers/Web/StaticPageController.php` |
 | `LanguageController` | `app/Http/Controllers/Web/LanguageController.php` |

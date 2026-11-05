@@ -346,7 +346,7 @@ html {
 .hljs-keyword,
 .hljs-name,
 .hljs-selector-tag {
-    color: #f92672
+    color: #ff6b9d
 }
 
 .hljs-attribute,
@@ -1070,7 +1070,8 @@ html {
 
 @media screen and (max-width: 700px) {
     .fancy-heading-panel {
-        width: 95%;
+        width: calc(100% - 35px);
+        box-sizing: border-box;
     }
 
 }

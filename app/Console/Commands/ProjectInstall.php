@@ -44,33 +44,59 @@ class ProjectInstall extends Command
         }
 
         if ($this->option('force') || $this->confirm('¿Ejecutar composer install?', true)) {
-            passthru('composer install');
+            $exitCode = 0;
+            passthru('composer install', $exitCode);
+            if ($exitCode !== 0) {
+                $this->error('Error al ejecutar composer install.');
+
+                return Command::FAILURE;
+            }
         }
 
         if ($this->option('force') || $this->confirm('¿Ejecutar pnpm install?', true)) {
-            passthru('pnpm install');
+            $exitCode = 0;
+            passthru('pnpm install', $exitCode);
+            if ($exitCode !== 0) {
+                $this->error('Error al ejecutar pnpm install.');
+
+                return Command::FAILURE;
+            }
         }
 
         if (empty(config('app.key')) && ($this->option('force') || $this->confirm('¿Generar key?', true))) {
-            $this->call('key:generate', ['--force' => $this->option('force')]);
+            if ($this->call('key:generate', ['--force' => $this->option('force')]) !== Command::SUCCESS) {
+                return Command::FAILURE;
+            }
         }
 
         if (! file_exists(public_path('storage'))) {
-            $this->call('storage:link');
+            if ($this->call('storage:link') !== Command::SUCCESS) {
+                return Command::FAILURE;
+            }
         }
 
         if ($this->option('force') || $this->confirm('¿Ejecutar migraciones?', true)) {
-            $this->call('migrate', ['--force' => $this->option('force')]);
+            if ($this->call('migrate', ['--force' => $this->option('force')]) !== Command::SUCCESS) {
+                return Command::FAILURE;
+            }
         }
 
         $this->copySeedImages();
 
         if ($this->option('force') || $this->confirm('¿Ejecutar seeders?', true)) {
-            $this->call('db:seed', ['--force' => $this->option('force')]);
+            if ($this->call('db:seed', ['--force' => $this->option('force')]) !== Command::SUCCESS) {
+                return Command::FAILURE;
+            }
         }
 
         if ($this->option('force') || $this->confirm('¿Compilar assets frontend (pnpm run build)?', true)) {
-            passthru('pnpm run build');
+            $exitCode = 0;
+            passthru('pnpm run build', $exitCode);
+            if ($exitCode !== 0) {
+                $this->error('Error al compilar los assets con pnpm run build.');
+
+                return Command::FAILURE;
+            }
         }
 
         $this->info('=== Instalación completada ===');

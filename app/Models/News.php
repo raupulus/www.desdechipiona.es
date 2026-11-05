@@ -39,6 +39,7 @@ use Spatie\Translatable\HasTranslations;
  * @property float|null $longitude Longitud GPS en grados decimales
  * @property string|null $location_name Nombre descriptivo de la ubicación
  * @property EvidenceLevel $evidence_level Nivel de evidencia documental
+ * @property array<int, array<string, mixed>>|null $source_references Referencias documentales estructuradas
  * @property ContentStatus $status Estado de publicación (draft, published)
  * @property bool $is_active Si la noticia está activa
  * @property bool $featured Si la noticia está destacada
@@ -60,7 +61,8 @@ use Spatie\Translatable\HasTranslations;
  * @property-read Collection<int, CorrectionRequest> $correctionRequests Solicitudes de corrección recibidas
  * @property-read Collection<int, Comment> $comments Comentarios asociados a la noticia
  *
- * @method static \Illuminate\Database\Eloquent\Builder<News> published() Filtra noticias publicadas y activas
+ * @method static \Illuminate\Database\Eloquent\Builder<News> published() Filtra noticias con estado publicado
+ * @method static \Illuminate\Database\Eloquent\Builder<News> publishedAndActive() Filtra noticias publicadas, activas y con fecha de publicación válida
  * @method static \Illuminate\Database\Eloquent\Builder<News> draft() Filtra noticias en borrador
  */
 class News extends Model

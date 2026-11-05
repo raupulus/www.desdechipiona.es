@@ -17,6 +17,15 @@ template/
 !.env.example
 !.env.example.production
 /auth.json
+*.sql
+*.sql.gz
+*.dump
+*.sqlite
+*.sqlite3
+*.pem
+*.key
+*.crt
+*.p12
 
 # Logs
 /storage/logs/*.log

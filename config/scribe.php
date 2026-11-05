@@ -143,7 +143,7 @@ return [
     // For 'laravel' docs, it will be generated to storage/app/scribe/collection.json.
     // Setting `laravel.add_routes` to true (above) will also add a route for the collection.
     'postman' => [
-        'enabled' => true,
+        'enabled' => false,
 
         'overrides' => [
             // 'info.version' => '2.0.0',
@@ -155,7 +155,7 @@ return [
     // For 'laravel' docs, it will be generated to storage/app/scribe/openapi.yaml.
     // Setting `laravel.add_routes` to true (above) will also add a route for the spec.
     'openapi' => [
-        'enabled' => true,
+        'enabled' => false,
 
         // The OpenAPI spec version to generate. Supported versions: '3.0.3', '3.1.0'.
         // OpenAPI 3.1 is more compatible with JSON Schema and is becoming the dominant version.

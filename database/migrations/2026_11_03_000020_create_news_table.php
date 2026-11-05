@@ -36,7 +36,8 @@ return new class extends Migration
             $table->jsonb('seo_description')->nullable()->comment('Descripción SEO traducible (es, en)');
             $table->jsonb('seo_keywords')->nullable()->comment('Palabras clave SEO traducibles (es, en)');
             $table->timestamp('published_at')->nullable()->comment('Fecha y hora de publicación');
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable()->comment('Fecha de creación del registro');
+            $table->timestamp('updated_at')->nullable()->comment('Fecha de última actualización');
             $table->softDeletes()->comment('Fecha de eliminación lógica');
 
             $table->index(['status', 'is_active'], 'idx_news_status_active');
