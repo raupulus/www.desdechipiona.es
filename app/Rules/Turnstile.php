@@ -50,7 +50,7 @@ class Turnstile implements ValidationRule
         }
 
         try {
-            $response = Http::asForm()->timeout(5)->post(
+            $response = Http::asForm()->connectTimeout(2)->timeout(5)->post(
                 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
                 [
                     'secret' => $secretKey,
@@ -67,14 +67,13 @@ class Turnstile implements ValidationRule
 
             if ($this->expectedAction !== null) {
                 $returnedAction = $response->json('action');
-                if ($returnedAction !== null && $returnedAction !== $this->expectedAction) {
+                if ($returnedAction !== $this->expectedAction) {
                     $fail(__('messages.turnstile_failed'));
                 }
             }
         } catch (Throwable $e) {
             Log::warning('Error comunicando con el validador de Cloudflare Turnstile', [
                 'error' => $e->getMessage(),
-                'ip' => request()->ip(),
             ]);
 
             if (app()->isProduction()) {

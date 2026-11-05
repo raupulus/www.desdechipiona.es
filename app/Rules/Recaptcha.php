@@ -5,6 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Regla de validación para Google reCAPTCHA v3.
@@ -58,7 +59,7 @@ class Recaptcha implements ValidationRule
         }
 
         try {
-            $response = Http::asForm()->timeout(5)->post('https://www.google.com/recaptcha/api/siteverify', [
+            $response = Http::asForm()->connectTimeout(2)->timeout(5)->post('https://www.google.com/recaptcha/api/siteverify', [
                 'secret' => $secretKey,
                 'response' => $value,
                 'remoteip' => request()->ip(),
@@ -73,13 +74,16 @@ class Recaptcha implements ValidationRule
             $data = $response->json();
             $minScore = (float) config('services.recaptcha.min_score', 0.5);
             $actionMismatch = $this->action !== null
-                && isset($data['action'])
-                && $data['action'] !== $this->action;
+                && ($data['action'] ?? null) !== $this->action;
 
             if (! ($data['success'] ?? false) || (($data['score'] ?? 0.0) < $minScore) || $actionMismatch) {
                 $fail(__('messages.validation_recaptcha_failed'));
             }
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            Log::warning('Error comunicando con el validador de Google reCAPTCHA', [
+                'error' => $e->getMessage(),
+            ]);
+
             // En caso de fallo de conexión con la API de Google, no bloquear la acción del usuario
             // salvo en producción
             if (app()->isProduction()) {

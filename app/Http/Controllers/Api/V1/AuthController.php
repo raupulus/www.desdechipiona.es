@@ -165,6 +165,7 @@ class AuthController extends Controller
             function (User $user, string $password): void {
                 // El cast 'hashed' en el modelo se encarga de hashear la contraseña
                 $user->forceFill(['password' => $password])->save();
+                $user->tokens()->delete();
             }
         );
 

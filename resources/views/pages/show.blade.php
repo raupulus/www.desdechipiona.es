@@ -188,18 +188,22 @@
                         @foreach($page->source_references as $source)
                             <li class="pt-3 first:pt-0">
                                 <div class="font-bold text-slate-950">
-                                    @if(!empty($source['url']))
-                                        <a href="{{ $source['url'] }}" target="_blank" rel="noopener noreferrer" class="text-blue-900 hover:text-orange-700 hover:underline">
+                                    @if(is_array($source) && !empty($source['url']))
+                                        <a href="{{ \App\Models\Page::sanitizeUrlString((string) $source['url']) }}" target="_blank" rel="noopener noreferrer" class="text-blue-900 hover:text-orange-700 hover:underline">
                                             {{ $source['title'] ?? __('messages.official_document_fallback') }} ↗
                                         </a>
-                                    @else
+                                    @elseif(is_array($source))
                                         <span>{{ $source['title'] ?? __('messages.official_document_fallback') }}</span>
+                                    @else
+                                        <span>{{ $source }}</span>
                                     @endif
                                 </div>
-                                <div class="text-xs text-slate-600 mt-0.5">
-                                    <span class="font-semibold text-slate-800">{{ $source['author'] ?? '' }}</span>
-                                    @if(!empty($source['year'])) · <span>{{ $source['year'] }}</span> @endif
-                                </div>
+                                @if(is_array($source))
+                                    <div class="text-xs text-slate-600 mt-0.5">
+                                        <span class="font-semibold text-slate-800">{{ $source['author'] ?? '' }}</span>
+                                        @if(!empty($source['year'])) · <span>{{ $source['year'] }}</span> @endif
+                                    </div>
+                                @endif
                             </li>
                         @endforeach
                     </ul>

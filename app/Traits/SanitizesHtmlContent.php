@@ -14,6 +14,16 @@ trait SanitizesHtmlContent
     public static function bootSanitizesHtmlContent(): void
     {
         static::saving(function ($model): void {
+            if (is_array($model->source_references ?? null)) {
+                $refs = $model->source_references;
+                foreach ($refs as $idx => $ref) {
+                    if (is_array($ref) && isset($ref['url']) && is_string($ref['url'])) {
+                        $refs[$idx]['url'] = static::sanitizeUrlString($ref['url']);
+                    }
+                }
+                $model->source_references = $refs;
+            }
+
             if (! method_exists($model, 'getTranslations')) {
                 return;
             }
@@ -67,14 +77,14 @@ trait SanitizesHtmlContent
     {
         // Eliminar bloques completos de etiquetas peligrosas
         $clean = preg_replace(
-            '#<(script|iframe|object|embed|applet|meta|link|style|form)\b[^>]*>.*?</\1>#is',
+            '#<(script|iframe|object|embed|applet|meta|link|style|form|svg|math|animate|set|animateTransform|animateMotion|foreignObject|base)\b[^>]*>.*?</\1>#is',
             '',
             $html
         ) ?? $html;
 
         // Eliminar etiquetas peligrosas huérfanas o auto-cerradas
         $clean = preg_replace(
-            '#</?(script|iframe|object|embed|applet|meta|link|style|form|input|button)\b[^>]*>#is',
+            '#</?(script|iframe|object|embed|applet|meta|link|style|form|input|button|svg|math|animate|set|animateTransform|animateMotion|foreignObject|base)\b[^>]*>#is',
             '',
             $clean
         ) ?? $clean;

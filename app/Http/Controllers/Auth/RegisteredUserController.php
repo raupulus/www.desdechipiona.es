@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Rules\Recaptcha;
+use App\Rules\Turnstile;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,6 +42,7 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class, 'email')->whereNull('deleted_at')],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'g-recaptcha-response' => [new Recaptcha('register')],
+            'cf-turnstile-response' => [new Turnstile('register')],
         ]);
 
         $user = User::create([

@@ -80,7 +80,7 @@
                         <li class="pt-3 first:pt-0">
                             <div class="font-bold text-slate-950">
                                 @if(is_array($source) && !empty($source['url']))
-                                    <a href="{{ $source['url'] }}" target="_blank" rel="noopener noreferrer" class="text-blue-900 hover:text-orange-700 hover:underline">
+                                    <a href="{{ \App\Models\Page::sanitizeUrlString((string) $source['url']) }}" target="_blank" rel="noopener noreferrer" class="text-blue-900 hover:text-orange-700 hover:underline">
                                         {{ $source['title'] ?? __('messages.official_document_fallback') }} ↗
                                     </a>
                                 @elseif(is_array($source))

@@ -70,7 +70,11 @@ class UserResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ]);
+            ])
+            ->when(
+                ! auth()->user()?->isSuperAdmin(),
+                fn (Builder $query) => $query->where('role', '!=', Role::SuperAdmin->value)
+            );
     }
 
     public static function form(Schema $form): Schema
@@ -132,25 +136,26 @@ class UserResource extends Resource
                 ->dateTime('d/m/Y')
                 ->sortable()
                 ->toggleable(),
-        ])->filters([
-            Tables\Filters\SelectFilter::make('role')
-                ->label(__('filament.role'))
-                ->options(Role::class),
-            Tables\Filters\TernaryFilter::make('is_active')
-                ->label(__('filament.is_active')),
-            Tables\Filters\TrashedFilter::make(),
-        ])->actions([
-            ActionGroup::make([
-                EditAction::make(),
-                DeleteAction::make(),
-                RestoreAction::make(),
-                ForceDeleteAction::make(),
-            ]),
-        ])->bulkActions([
-            DeleteBulkAction::make(),
-            RestoreBulkAction::make(),
-            ForceDeleteBulkAction::make(),
-        ]);
+        ])->defaultSort('created_at', 'desc')
+            ->filters([
+                Tables\Filters\SelectFilter::make('role')
+                    ->label(__('filament.role'))
+                    ->options(Role::class),
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label(__('filament.is_active')),
+                Tables\Filters\TrashedFilter::make(),
+            ])->actions([
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                    RestoreAction::make(),
+                    ForceDeleteAction::make(),
+                ]),
+            ])->bulkActions([
+                DeleteBulkAction::make()->authorizeIndividualRecords('delete'),
+                RestoreBulkAction::make()->authorizeIndividualRecords('restore'),
+                ForceDeleteBulkAction::make()->authorizeIndividualRecords('forceDelete'),
+            ]);
     }
 
     /**

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\CategoryApiController;
 use App\Http\Controllers\Api\V1\PageApiController;
 use App\Http\Controllers\Api\V1\PostApiController;
 use App\Http\Controllers\Api\V1\TokenController;
+use App\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -22,7 +23,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/reset-password', [AuthController::class, 'resetPassword'])
             ->middleware('throttle:5,1')
             ->name('api.v1.auth.reset-password');
-        Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
+        Route::middleware(['auth:sanctum', EnsureUserIsActive::class, 'throttle:60,1'])->group(function () {
             Route::post('/logout', [AuthController::class, 'logout'])->name('api.v1.auth.logout');
             Route::get('/user', [AuthController::class, 'user'])->name('api.v1.auth.user');
         });
@@ -43,7 +44,7 @@ Route::prefix('v1')->group(function () {
     });
 
     // --- Tokens de API (autenticado, con rate limiting) ---
-    Route::middleware(['auth:sanctum', 'throttle:20,1'])->prefix('user/tokens')->group(function () {
+    Route::middleware(['auth:sanctum', EnsureUserIsActive::class, 'throttle:20,1'])->prefix('user/tokens')->group(function () {
         Route::get('/', [TokenController::class, 'index'])->name('api.v1.tokens.index');
         Route::post('/', [TokenController::class, 'store'])->name('api.v1.tokens.store');
         Route::delete('/{tokenId}', [TokenController::class, 'destroy'])->name('api.v1.tokens.destroy');

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Throwable;
 
@@ -70,17 +71,20 @@ class SocialIdentityController extends Controller
         try {
             $socialUser = Socialite::driver($provider)->user();
 
+            $rawName = (string) ($socialUser->getName() ?: $socialUser->getNickname() ?: 'Vecino de Chipiona');
+            $rawEmail = $socialUser->getEmail();
+            $rawAvatar = $socialUser->getAvatar();
+
             $request->session()->put('public_social_identity', [
                 'provider' => $provider,
-                'id' => (string) $socialUser->getId(),
-                'name' => $socialUser->getName() ?: $socialUser->getNickname() ?: 'Vecino de Chipiona',
-                'email' => $socialUser->getEmail(),
-                'avatar' => $socialUser->getAvatar(),
+                'id' => Str::limit((string) $socialUser->getId(), 191, ''),
+                'name' => Str::limit($rawName, 150, ''),
+                'email' => is_string($rawEmail) && $rawEmail !== '' ? Str::limit($rawEmail, 191, '') : null,
+                'avatar' => is_string($rawAvatar) && $rawAvatar !== '' ? Str::limit($rawAvatar, 512, '') : null,
             ]);
         } catch (Throwable $e) {
             Log::warning('Fallo en autenticación social con proveedor: '.$provider, [
                 'error' => $e->getMessage(),
-                'ip' => $request->ip(),
             ]);
 
             return redirect()
@@ -98,7 +102,20 @@ class SocialIdentityController extends Controller
     {
         $request->session()->forget('public_social_identity');
 
-        return redirect()->back(fallback: route('home'));
+        $previousUrl = url()->previous(route('home'));
+        $appHost = parse_url(config('app.url'), PHP_URL_HOST);
+        $prevHost = parse_url($previousUrl, PHP_URL_HOST);
+        $prevScheme = strtolower((string) parse_url($previousUrl, PHP_URL_SCHEME));
+
+        if (
+            str_starts_with($previousUrl, '//')
+            || ($prevScheme !== '' && ! in_array($prevScheme, ['http', 'https'], true))
+            || (! empty($prevHost) && $prevHost !== $appHost && $prevHost !== $request->getHost())
+        ) {
+            $previousUrl = route('home');
+        }
+
+        return redirect()->to($previousUrl);
     }
 
     /**
@@ -109,8 +126,13 @@ class SocialIdentityController extends Controller
         $url = (string) $request->session()->pull('social_intended_url', route('home'));
         $appHost = parse_url(config('app.url'), PHP_URL_HOST);
         $urlHost = parse_url($url, PHP_URL_HOST);
+        $urlScheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
 
-        if (! empty($urlHost) && $urlHost !== $appHost && $urlHost !== $request->getHost()) {
+        if (
+            str_starts_with($url, '//')
+            || ($urlScheme !== '' && ! in_array($urlScheme, ['http', 'https'], true))
+            || (! empty($urlHost) && $urlHost !== $appHost && $urlHost !== $request->getHost())
+        ) {
             return route('home');
         }
 
