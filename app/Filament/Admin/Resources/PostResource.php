@@ -139,6 +139,7 @@ class PostResource extends Resource
                 )
                 ->getOptionLabelFromRecordUsing(fn ($record) => $record->getTranslation('name', app()->getLocale()))
                 ->multiple()
+                ->searchable()
                 ->preload()
                 ->createOptionForm([
                     Tabs::make(__('filament.translations'))->tabs([
@@ -244,7 +245,7 @@ class PostResource extends Resource
             DeleteBulkAction::make(),
             RestoreBulkAction::make(),
             ForceDeleteBulkAction::make(),
-        ]);
+        ])->defaultSort('published_at', 'desc');
     }
 
     /**

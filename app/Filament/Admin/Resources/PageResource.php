@@ -198,9 +198,36 @@ class PageResource extends Resource
                         ->options(EvidenceLevel::class)
                         ->default(EvidenceLevel::Consolidated->value)
                         ->required(),
-                    Forms\Components\TagsInput::make('source_references')
+                    Forms\Components\Repeater::make('source_references')
                         ->label(__('filament.source_references'))
-                        ->placeholder('Archivo Histórico / IAPH / BOE')
+                        ->formatStateUsing(fn ($state) => is_array($state) ? array_values(array_map(
+                            fn ($item) => is_array($item) ? $item : ['id' => '', 'title' => (string) $item, 'author' => '', 'year' => '', 'url' => ''],
+                            $state
+                        )) : [])
+                        ->schema([
+                            Forms\Components\TextInput::make('id')
+                                ->label('ID')
+                                ->placeholder('F-0001')
+                                ->maxLength(20),
+                            Forms\Components\TextInput::make('title')
+                                ->label(__('filament.title'))
+                                ->required()
+                                ->maxLength(500)
+                                ->columnSpan(2),
+                            Forms\Components\TextInput::make('author')
+                                ->label(__('filament.author_name'))
+                                ->maxLength(500),
+                            Forms\Components\TextInput::make('year')
+                                ->label(__('filament.year_start'))
+                                ->maxLength(30),
+                            Forms\Components\TextInput::make('url')
+                                ->label(__('filament.url'))
+                                ->url()
+                                ->maxLength(2048),
+                        ])
+                        ->columns(3)
+                        ->defaultItems(0)
+                        ->collapsible()
                         ->columnSpanFull(),
                 ])
                 ->columnSpanFull(),
@@ -260,6 +287,7 @@ class PageResource extends Resource
                 ->getOptionLabelFromRecordUsing(fn ($record) => $record->getTranslation('name', app()->getLocale()))
                 ->multiple()
                 ->preload()
+                ->searchable()
                 ->createOptionForm([
                     Tabs::make(__('filament.translations'))->tabs([
                         Tab::make(__('filament.tab_spanish'))->schema([
@@ -331,7 +359,7 @@ class PageResource extends Resource
                 ->searchable()
                 ->sortable()
                 ->limit(35)
-                ->toggleable(),
+                ->toggleable(isToggledHiddenByDefault: true),
             Tables\Columns\TextColumn::make('title')
                 ->label(__('filament.title'))
                 ->searchable()
@@ -343,42 +371,43 @@ class PageResource extends Resource
             Tables\Columns\TextColumn::make('evidence_level')
                 ->label(__('filament.evidence_level'))
                 ->badge()
-                ->toggleable(),
+                ->toggleable(isToggledHiddenByDefault: true),
             Tables\Columns\TextColumn::make('status')
                 ->label(__('filament.status'))
                 ->badge(),
             Tables\Columns\IconColumn::make('featured')
                 ->label(__('filament.featured'))
                 ->boolean()
-                ->toggleable(),
+                ->toggleable(isToggledHiddenByDefault: true),
             Tables\Columns\TextColumn::make('published_at')
                 ->label(__('filament.published_at'))
                 ->dateTime('d/m/Y')
                 ->sortable()
                 ->toggleable(),
-        ])->filters([
-            Tables\Filters\SelectFilter::make('content_group')
-                ->label(__('filament.content_group'))
-                ->options(ContentGroup::class),
-            Tables\Filters\SelectFilter::make('evidence_level')
-                ->label(__('filament.evidence_level'))
-                ->options(EvidenceLevel::class),
-            Tables\Filters\SelectFilter::make('status')
-                ->label(__('filament.status'))
-                ->options(ContentStatus::class),
-            Tables\Filters\TrashedFilter::make(),
-        ])->actions([
-            ActionGroup::make([
-                EditAction::make(),
-                DeleteAction::make(),
-                RestoreAction::make(),
-                ForceDeleteAction::make(),
-            ]),
-        ])->bulkActions([
-            DeleteBulkAction::make(),
-            RestoreBulkAction::make(),
-            ForceDeleteBulkAction::make(),
-        ]);
+        ])->defaultSort('published_at', 'desc')
+            ->filters([
+                Tables\Filters\SelectFilter::make('content_group')
+                    ->label(__('filament.content_group'))
+                    ->options(ContentGroup::class),
+                Tables\Filters\SelectFilter::make('evidence_level')
+                    ->label(__('filament.evidence_level'))
+                    ->options(EvidenceLevel::class),
+                Tables\Filters\SelectFilter::make('status')
+                    ->label(__('filament.status'))
+                    ->options(ContentStatus::class),
+                Tables\Filters\TrashedFilter::make(),
+            ])->actions([
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                    RestoreAction::make(),
+                    ForceDeleteAction::make(),
+                ]),
+            ])->bulkActions([
+                DeleteBulkAction::make(),
+                RestoreBulkAction::make(),
+                ForceDeleteBulkAction::make(),
+            ]);
     }
 
     /**

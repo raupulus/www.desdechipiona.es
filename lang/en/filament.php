@@ -252,4 +252,5 @@ return [
     'address' => 'Address in Chipiona',
     'schedule' => 'Opening hours',
     'is_emergency' => 'Priority 24h emergency',
+    'published_news_desc' => 'News in published status',
 ];

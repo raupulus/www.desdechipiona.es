@@ -91,27 +91,27 @@
                 <div style="overflow-x: auto; margin: -1rem -1.5rem;">
                     <table style="width: 100%; min-width: 560px; text-align: left; border-collapse: collapse;">
                         <thead>
-                            <tr class="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
-                                <th class="text-gray-500 dark:text-gray-400" style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                            <tr style="border-bottom: 1px solid rgba(156, 163, 175, 0.25); background: rgba(156, 163, 175, 0.06);">
+                                <th style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
                                     {{ __('messages.api_tokens_col_name') }}
                                 </th>
-                                <th class="text-gray-500 dark:text-gray-400" style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                                <th style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
                                     {{ __('messages.api_tokens_col_created') }}
                                 </th>
-                                <th class="text-gray-500 dark:text-gray-400" style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                                <th style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
                                     {{ __('messages.api_tokens_col_last_used') }}
                                 </th>
-                                <th class="text-gray-500 dark:text-gray-400" style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                                <th style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
                                     {{ __('messages.api_tokens_col_expires') }}
                                 </th>
-                                <th class="text-gray-500 dark:text-gray-400" style="padding: 0.875rem 1.25rem; text-align: right; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                                <th style="padding: 0.875rem 1.25rem; text-align: right; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
                                     {{ __('messages.api_tokens_col_actions') }}
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+                        <tbody>
                             @foreach($this->tokens as $token)
-                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                <tr style="border-bottom: 1px solid rgba(156, 163, 175, 0.15);">
                                     {{-- Nombre --}}
                                     <td style="padding: 1rem 1.25rem;">
                                         <div style="display: flex; align-items: center; gap: 0.75rem;">

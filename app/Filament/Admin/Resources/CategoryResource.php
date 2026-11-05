@@ -108,6 +108,9 @@ class CategoryResource extends Resource
             Forms\Components\TextInput::make('order')
                 ->label(__('filament.order'))
                 ->numeric()
+                ->integer()
+                ->minValue(0)
+                ->maxValue(2147483647)
                 ->required()
                 ->default(0),
 
@@ -157,7 +160,8 @@ class CategoryResource extends Resource
                 DeleteBulkAction::make(),
                 RestoreBulkAction::make(),
                 ForceDeleteBulkAction::make(),
-            ]);
+            ])
+            ->defaultSort('order');
     }
 
     /** @return array<string, PageRegistration> */

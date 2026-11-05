@@ -35,6 +35,8 @@ class SectionResource extends Resource
 
     protected static ?int $navigationSort = 6;
 
+    protected static ?string $recordTitleAttribute = 'title';
+
     /**
      * Devuelve el label del modelo traducido.
      */
@@ -112,6 +114,9 @@ class SectionResource extends Resource
             Forms\Components\TextInput::make('order')
                 ->label(__('filament.order'))
                 ->numeric()
+                ->integer()
+                ->minValue(0)
+                ->maxValue(2147483647)
                 ->required()
                 ->default(0),
         ]);

@@ -15,16 +15,16 @@
             <div style="overflow-x: auto; width: 100%;">
                 <table style="width: 100%; min-width: 600px; text-align: left; border-collapse: collapse;">
                     <thead>
-                        <tr class="border-b border-gray-200 dark:border-white/10">
-                            <th class="text-gray-500 dark:text-gray-400" style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('filament.view_logs_col_file') }}</th>
-                            <th class="text-gray-500 dark:text-gray-400" style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('filament.view_logs_col_size') }}</th>
-                            <th class="text-gray-500 dark:text-gray-400" style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('filament.view_logs_col_modified') }}</th>
-                            <th class="text-gray-500 dark:text-gray-400" style="padding: 0.875rem 1.25rem; text-align: right; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('filament.view_logs_col_actions') }}</th>
+                        <tr style="border-bottom: 1px solid rgba(156, 163, 175, 0.25);">
+                            <th style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('filament.view_logs_col_file') }}</th>
+                            <th style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('filament.view_logs_col_size') }}</th>
+                            <th style="padding: 0.875rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('filament.view_logs_col_modified') }}</th>
+                            <th style="padding: 0.875rem 1.25rem; text-align: right; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('filament.view_logs_col_actions') }}</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+                    <tbody>
                         @forelse($this->logFiles as $log)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                            <tr style="border-bottom: 1px solid rgba(156, 163, 175, 0.15);">
                                 <td style="padding: 1rem 1.25rem;">
                                     <span class="text-gray-900 dark:text-white" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.875rem; font-weight: 500; word-break: break-all;">{{ $log['name'] }}</span>
                                 </td>
@@ -68,9 +68,9 @@
             wire:click.self="closeLogModal"
             x-on:keydown.escape.window="$wire.closeLogModal()"
         >
-            <div class="bg-white dark:bg-gray-900 ring-1 ring-gray-950/5 dark:ring-white/10" style="border-radius: 0.75rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); width: 100%; max-width: 64rem; max-height: 85vh; display: flex; flex-direction: column;">
-                <div class="border-b border-gray-200 dark:border-white/10" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 1rem 1.5rem;">
-                    <h3 id="log-modal-title" class="text-gray-950 dark:text-white" style="margin: 0; font-size: 1rem; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; word-break: break-all;">{{ $selectedLog }}</h3>
+            <div class="fi-section" style="border-radius: 0.75rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.45); width: 100%; max-width: 64rem; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 1rem 1.5rem; border-bottom: 1px solid rgba(156, 163, 175, 0.25);">
+                    <h3 id="log-modal-title" style="margin: 0; font-size: 1rem; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; word-break: break-all;">{{ $selectedLog }}</h3>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <x-filament::button size="sm" color="primary" icon="heroicon-m-arrow-down-tray" wire:click="downloadLog('{{ $selectedLog }}')">
                             {{ __('filament.view_logs_download') }}

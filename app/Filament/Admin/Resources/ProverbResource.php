@@ -130,15 +130,26 @@ class ProverbResource extends Resource
                     ->badge(),
                 Tables\Columns\TextColumn::make('author_name')
                     ->label(__('filament.author_name'))
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('featured')
                     ->label(__('filament.featured'))
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->label(__('filament.status'))
                     ->options(SuggestionStatus::class),
+                Tables\Filters\SelectFilter::make('category')
+                    ->label(__('filament.category'))
+                    ->options([
+                        'mar' => 'La Mar, Mareas y Corrales',
+                        'campo' => 'El Campo, Huerta y Moscatel',
+                        'vientos' => 'Vientos, Levante y Poniente',
+                        'fiestas' => 'Tradiciones y Fiestas',
+                        'vida' => 'Vida Cotidiana en el Pueblo',
+                    ]),
             ])
             ->actions([
                 ActionGroup::make([

@@ -11,8 +11,8 @@
                 <h2 class="fi-account-widget-heading" style="font-size: 0.9375rem; font-weight: 600; line-height: 1.5;">
                     {{ __('messages.welcome_greeting', ['name' => $userName]) }}
                 </h2>
-                <div style="display: flex; align-items: center; gap: 0.375rem; margin-top: 0.25rem; font-size: 0.8125rem; color: var(--gray-500);">
-                    <x-filament::icon icon="heroicon-m-key" style="width: 0.875rem; height: 0.875rem; color: var(--gray-400);" />
+                <div class="fi-section-header-description" style="display: flex; align-items: center; gap: 0.375rem; margin-top: 0.25rem; font-size: 0.8125rem;">
+                    <x-filament::icon icon="heroicon-m-key" style="width: 0.875rem; height: 0.875rem;" />
                     <span>{{ __('messages.active_tokens_count', ['count' => $tokenCount]) }}</span>
                 </div>
             </div>

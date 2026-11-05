@@ -32,6 +32,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(Login::class)
+            ->sidebarWidth('min(18rem, calc(100vw - 3rem))')
+            ->sidebarCollapsibleOnDesktop()
             ->colors([
                 'primary' => Color::Indigo,
             ])
@@ -74,12 +76,12 @@ class AdminPanelProvider extends PanelProvider
                 Action::make('go_website')
                     ->label(fn () => __('filament.go_to_website'))
                     ->icon('heroicon-o-globe-alt')
-                    ->url(fn () => url('/'))
+                    ->url(fn () => route('home'))
                     ->sort(PHP_INT_MAX - 5),
                 Action::make('go_user_panel')
                     ->label(fn () => __('filament.user_panel'))
                     ->icon('heroicon-o-user-circle')
-                    ->url(fn () => url('/panel'))
+                    ->url(fn () => route('filament.panel.pages.dashboard'))
                     ->sort(PHP_INT_MAX - 4),
                 Action::make('lang_es')
                     ->label('Español')

@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $author_avatar Avatar del colaborador
  * @property SuggestionStatus $status Estado de revisión (pending, approved, rejected)
  * @property string|null $admin_notes Notas internas del equipo editorial
+ * @property Carbon|null $reviewed_at Fecha y hora de revisión
  * @property Carbon $created_at Fecha de envío
  * @property Carbon $updated_at Fecha de modificación
  * @property-read Page|null $relatedPage Página publicada con la que se relaciona la sugerencia
@@ -59,6 +60,7 @@ class ContentSuggestion extends Model
         'author_avatar',
         'status',
         'admin_notes',
+        'reviewed_at',
     ];
 
     /** @var array<string> Campos ocultos en la serialización JSON por privacidad (RGPD) */
@@ -66,6 +68,18 @@ class ContentSuggestion extends Model
         'author_email',
         'oauth_id',
     ];
+
+    /**
+     * Registra automáticamente la fecha de revisión cuando cambia el estado.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (self $suggestion): void {
+            if ($suggestion->exists && $suggestion->isDirty('status')) {
+                $suggestion->reviewed_at = $suggestion->reviewed_at ?? now();
+            }
+        });
+    }
 
     /**
      * Definición de casts de atributos.
@@ -79,6 +93,7 @@ class ContentSuggestion extends Model
             'status' => SuggestionStatus::class,
             'latitude' => 'float',
             'longitude' => 'float',
+            'reviewed_at' => 'datetime',
         ];
     }
 

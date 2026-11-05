@@ -30,6 +30,8 @@ class PanelUserProvider extends PanelProvider
             ->id('panel')
             ->path('panel')
             ->login(Login::class)
+            ->sidebarWidth('min(18rem, calc(100vw - 3rem))')
+            ->sidebarCollapsibleOnDesktop()
             ->unsavedChangesAlerts()
             ->colors(['primary' => Color::Blue])
             ->discoverPages(in: app_path('Filament/Panel/Pages'), for: 'App\\Filament\\Panel\\Pages')
@@ -47,12 +49,12 @@ class PanelUserProvider extends PanelProvider
                 Action::make('go_website')
                     ->label(fn () => __('filament.go_to_website'))
                     ->icon('heroicon-o-globe-alt')
-                    ->url(fn () => url('/'))
+                    ->url(fn () => route('home'))
                     ->sort(PHP_INT_MAX - 5),
                 Action::make('go_admin_panel')
                     ->label(fn () => __('filament.admin_panel'))
                     ->icon('heroicon-o-shield-check')
-                    ->url(fn () => url('/admin'))
+                    ->url(fn () => route('filament.admin.pages.dashboard'))
                     ->visible(fn () => auth()->user()?->isAdmin() ?? false)
                     ->sort(PHP_INT_MAX - 4),
                 Action::make('lang_es')

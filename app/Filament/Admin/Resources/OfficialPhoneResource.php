@@ -88,6 +88,7 @@ class OfficialPhoneResource extends Resource
             Forms\Components\TextInput::make('sort_order')
                 ->label(__('filament.order'))
                 ->numeric()
+                ->integer()
                 ->minValue(0)
                 ->maxValue(99999)
                 ->default(0),
@@ -121,10 +122,26 @@ class OfficialPhoneResource extends Resource
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_emergency')
                     ->label(__('filament.is_emergency'))
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label(__('filament.is_active'))
                     ->boolean(),
+            ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('category')
+                    ->label(__('filament.category'))
+                    ->options([
+                        'emergencias' => 'Emergencias y Seguridad 24h',
+                        'salud' => 'Salud y Farmacias',
+                        'ayuntamiento' => 'Ayuntamiento y Servicios Municipales',
+                        'transporte' => 'Transporte, Taxi y Puerto',
+                        'cultura' => 'Turismo, Cultura y Patrimonio',
+                    ]),
+                Tables\Filters\TernaryFilter::make('is_emergency')
+                    ->label(__('filament.is_emergency')),
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label(__('filament.is_active')),
             ])
             ->actions([
                 ActionGroup::make([

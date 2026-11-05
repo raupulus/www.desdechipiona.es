@@ -34,6 +34,8 @@ class SlideResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
+    protected static ?string $recordTitleAttribute = 'title';
+
     /**
      * Devuelve el label del modelo traducido.
      */
@@ -107,6 +109,9 @@ class SlideResource extends Resource
             Forms\Components\TextInput::make('order')
                 ->label(__('filament.order'))
                 ->numeric()
+                ->integer()
+                ->minValue(0)
+                ->maxValue(2147483647)
                 ->required()
                 ->default(0),
             Forms\Components\Toggle::make('is_active')

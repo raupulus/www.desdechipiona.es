@@ -78,6 +78,7 @@ class CommentResource extends Resource
             Forms\Components\Textarea::make('body')
                 ->label(__('filament.body'))
                 ->required()
+                ->maxLength(2500)
                 ->rows(4)
                 ->columnSpanFull(),
         ]);
@@ -92,6 +93,10 @@ class CommentResource extends Resource
                     ->label(__('filament.is_approved'))
                     ->boolean()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('commentable.slug')
+                    ->label(__('filament.target_content'))
+                    ->limit(35)
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('author_name')
                     ->label(__('filament.author_name'))
                     ->searchable(),
@@ -101,11 +106,17 @@ class CommentResource extends Resource
                     ->limit(60),
                 Tables\Columns\TextColumn::make('oauth_provider')
                     ->label(__('filament.oauth_provider'))
-                    ->badge(),
+                    ->badge()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('filament.created_at'))
                     ->dateTime('d/m/Y H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
+            ])
+            ->filters([
+                Tables\Filters\TernaryFilter::make('is_approved')
+                    ->label(__('filament.is_approved')),
             ])
             ->actions([
                 ActionGroup::make([

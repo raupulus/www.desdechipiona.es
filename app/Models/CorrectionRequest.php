@@ -67,6 +67,19 @@ class CorrectionRequest extends Model
     ];
 
     /**
+     * Registra automáticamente el revisor y la fecha de revisión cuando cambia el estado.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (self $correction): void {
+            if ($correction->exists && $correction->isDirty('status')) {
+                $correction->reviewed_by = $correction->reviewed_by ?? auth()->id();
+                $correction->reviewed_at = $correction->reviewed_at ?? now();
+            }
+        });
+    }
+
+    /**
      * Definición de casts de atributos.
      *
      * @return array<string, string>

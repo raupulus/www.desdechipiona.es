@@ -119,7 +119,7 @@ return [
 
     // Panel de usuario — Widget de bienvenida
     'welcome_greeting' => '¡Hola, :name!',
-    'active_tokens_count' => 'Tienes :count token(s) API activos.',
+    'active_tokens_count' => 'Tokens API activos: :count',
 
     // Páginas legales — Textos por defecto
     'privacy_default_text' => 'El contenido de la política de privacidad se gestiona desde el panel de administración (Secciones → zona "privacy").',

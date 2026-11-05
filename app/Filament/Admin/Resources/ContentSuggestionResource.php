@@ -87,10 +87,12 @@ class ContentSuggestionResource extends Resource
             Forms\Components\Textarea::make('body')
                 ->label(__('filament.content'))
                 ->required()
+                ->maxLength(15000)
                 ->rows(6)
                 ->columnSpanFull(),
             Forms\Components\Textarea::make('sources_info')
                 ->label(__('filament.sources_info'))
+                ->maxLength(3000)
                 ->rows(3)
                 ->columnSpanFull(),
             Forms\Components\TextInput::make('location_name')
@@ -168,7 +170,10 @@ class ContentSuggestionResource extends Resource
                         ->color('success')
                         ->visible(fn (ContentSuggestion $record): bool => $record->status !== SuggestionStatus::Approved)
                         ->action(function (ContentSuggestion $record): void {
-                            $record->update(['status' => SuggestionStatus::Approved]);
+                            $record->update([
+                                'status' => SuggestionStatus::Approved,
+                                'reviewed_at' => now(),
+                            ]);
                             Notification::make()->title(__('filament.status_updated'))->success()->send();
                         }),
                     Action::make('reject')
@@ -177,7 +182,10 @@ class ContentSuggestionResource extends Resource
                         ->color('danger')
                         ->visible(fn (ContentSuggestion $record): bool => $record->status !== SuggestionStatus::Rejected)
                         ->action(function (ContentSuggestion $record): void {
-                            $record->update(['status' => SuggestionStatus::Rejected]);
+                            $record->update([
+                                'status' => SuggestionStatus::Rejected,
+                                'reviewed_at' => now(),
+                            ]);
                             Notification::make()->title(__('filament.status_updated'))->warning()->send();
                         }),
                     EditAction::make(),

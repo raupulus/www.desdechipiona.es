@@ -19,7 +19,7 @@ class OfficialPhoneController extends Controller
     public function index(Request $request, SeoService $seo): View
     {
         $category = (string) $request->query('category', '');
-        $search = trim((string) $request->query('q', ''));
+        $search = mb_substr(trim((string) $request->query('q', '')), 0, 120);
 
         $query = OfficialPhone::active()->ordered();
 

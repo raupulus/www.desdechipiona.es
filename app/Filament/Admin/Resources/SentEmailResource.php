@@ -23,6 +23,8 @@ class SentEmailResource extends Resource
 
     protected static ?int $navigationSort = 8;
 
+    protected static ?string $recordTitleAttribute = 'subject';
+
     /**
      * Devuelve el label del modelo traducido.
      */

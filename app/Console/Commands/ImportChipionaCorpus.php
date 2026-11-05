@@ -80,12 +80,23 @@ class ImportChipionaCorpus extends Command
         'alqueria-bereber-y-origen-de-los-corrales' => [36.7405, -6.4402],
     ];
 
+    /** @var bool Indica si hubo algún error de sintaxis YAML al parsear fichas */
+    protected bool $hasParseErrors = false;
+
     /**
      * Ejecuta la importación del corpus completo.
      */
     public function handle(ContentAutoLinker $autoLinker): int
     {
+        $this->hasParseErrors = false;
         $this->info('=== Importador del Corpus Privado de Desde Chipiona ===');
+
+        $corpusPath = $this->resolveCorpusPath();
+        if (! $corpusPath || ! File::isDirectory($corpusPath)) {
+            $this->error("No se encontró el directorio del corpus en: {$corpusPath}");
+
+            return Command::FAILURE;
+        }
 
         // 1. Asegurar categorías, estructura base y teléfonos oficiales
         $this->call(ChipionaStructureSeeder::class);
@@ -96,22 +107,6 @@ class ImportChipionaCorpus extends Command
         $authorId = $author?->id ?? 1;
         $categories = Category::all()->keyBy('slug');
 
-        if ($this->option('clean')) {
-            if ($this->laravel->isProduction() && ! $this->confirm('Estás en producción. ¿Confirmas limpiar páginas previas?', false)) {
-                $this->warn('→ Limpieza previa cancelada; se realizará actualización incremental.');
-            } else {
-                $this->warn('→ Limpiando páginas enciclopédicas previas...');
-                Page::whereNotNull('content_group')->forceDelete();
-            }
-        }
-
-        $corpusPath = $this->resolveCorpusPath();
-        if (! $corpusPath || ! File::isDirectory($corpusPath)) {
-            $this->error("No se encontró el directorio del corpus en: {$corpusPath}");
-
-            return Command::FAILURE;
-        }
-
         $this->line("→ Escaneando corpus en: {$corpusPath}");
 
         // 2. Cargar y filtrar fuentes oficiales gubernamentales y académicas públicas
@@ -121,6 +116,17 @@ class ImportChipionaCorpus extends Command
         // 3. Importar todas las fichas Markdown (.md)
         $rawPagesData = $this->parseMarkdownFiles($corpusPath, $officialSources, $authorId, $categories->all());
         $this->line(sprintf('→ Fichas procesadas del corpus: %d', count($rawPagesData)));
+
+        if ($this->option('clean')) {
+            if ($this->hasParseErrors) {
+                $this->warn('→ Se detectaron errores de sintaxis en fichas; se omite la limpieza destructiva previa.');
+            } elseif ($this->laravel->isProduction() && ! $this->confirm('Estás en producción. ¿Confirmas limpiar páginas previas?', false)) {
+                $this->warn('→ Limpieza previa cancelada; se realizará actualización incremental.');
+            } else {
+                $this->warn('→ Limpiando páginas enciclopédicas previas...');
+                Page::whereNotNull('content_group')->forceDelete();
+            }
+        }
 
         // 4. Guardar páginas y registrar mapa de títulos para auto-enlazado
         $termsMap = [];
@@ -148,8 +154,8 @@ class ImportChipionaCorpus extends Command
                 }
             }
 
-            // Eliminar páginas antiguas que ya no forman parte del corpus real
-            if (! empty($pagesBySlug)) {
+            // Eliminar páginas antiguas que ya no forman parte del corpus real (solo si no hubo errores de parseo)
+            if (! $this->hasParseErrors && ! empty($pagesBySlug)) {
                 Page::whereNotNull('content_group')
                     ->whereNotIn('slug', array_keys($pagesBySlug))
                     ->forceDelete();
@@ -346,7 +352,10 @@ class ImportChipionaCorpus extends Command
 
                 try {
                     $meta = Yaml::parse($matches[1]);
-                } catch (\Throwable) {
+                } catch (\Throwable $e) {
+                    $this->hasParseErrors = true;
+                    $this->warn("Error parseando YAML en {$file->getFilename()}: {$e->getMessage()}");
+
                     continue;
                 }
 
@@ -589,70 +598,72 @@ class ImportChipionaCorpus extends Command
      */
     protected function importExtras(array $extras, int $userId, array $categories, array $pagesBySlug, array $officialSources = []): void
     {
-        foreach ($extras['news'] ?? [] as $nItem) {
-            $slug = (string) $nItem['slug'];
-            $resolvedNewsSources = [];
-            foreach ((array) ($nItem['source_references'] ?? []) as $sRef) {
-                if (is_array($sRef)) {
-                    $resolvedNewsSources[] = $sRef;
-                } elseif (is_string($sRef) && isset($officialSources[trim($sRef)])) {
-                    $resolvedNewsSources[] = $officialSources[trim($sRef)];
+        DB::transaction(function () use ($extras, $userId, $categories, $pagesBySlug, $officialSources): void {
+            foreach ($extras['news'] ?? [] as $nItem) {
+                $slug = (string) $nItem['slug'];
+                $resolvedNewsSources = [];
+                foreach ((array) ($nItem['source_references'] ?? []) as $sRef) {
+                    if (is_array($sRef)) {
+                        $resolvedNewsSources[] = $sRef;
+                    } elseif (is_string($sRef) && isset($officialSources[trim($sRef)])) {
+                        $resolvedNewsSources[] = $officialSources[trim($sRef)];
+                    }
                 }
-            }
 
-            $newsImg = (string) ($nItem['image'] ?? 'images/themes/faro.webp');
+                $newsImg = (string) ($nItem['image'] ?? 'images/themes/faro.webp');
 
-            $news = News::updateOrCreate(
-                ['slug' => $slug],
-                [
-                    'title' => ['es' => $nItem['title_es'], 'en' => $nItem['title_en'] ?? $nItem['title_es']],
-                    'excerpt' => ['es' => $nItem['excerpt_es'], 'en' => $nItem['excerpt_en'] ?? $nItem['excerpt_es']],
-                    'content' => ['es' => $nItem['content_es'], 'en' => $nItem['content_en'] ?? $nItem['content_es']],
-                    'seo_title' => ['es' => $nItem['title_es'].' | Desde Chipiona', 'en' => ($nItem['title_en'] ?? $nItem['title_es']).' | Desde Chipiona'],
-                    'seo_description' => ['es' => $nItem['excerpt_es'], 'en' => $nItem['excerpt_en'] ?? $nItem['excerpt_es']],
-                    'image' => $newsImg,
-                    'social_image' => (string) ($nItem['social_image'] ?? $newsImg),
-                    'latitude' => $nItem['latitude'] ?? null,
-                    'longitude' => $nItem['longitude'] ?? null,
-                    'location_name' => $nItem['location_name'] ?? 'Chipiona',
-                    'evidence_level' => $nItem['evidence_level'] ?? EvidenceLevel::Consolidated,
-                    'source_references' => $resolvedNewsSources,
-                    'status' => ContentStatus::Published,
-                    'is_active' => true,
-                    'featured' => (bool) ($nItem['featured'] ?? false),
-                    'user_id' => $userId,
-                    'published_at' => now()->subDays(rand(1, 10)),
-                ]
-            );
+                $news = News::updateOrCreate(
+                    ['slug' => $slug],
+                    [
+                        'title' => ['es' => $nItem['title_es'], 'en' => $nItem['title_en'] ?? $nItem['title_es']],
+                        'excerpt' => ['es' => $nItem['excerpt_es'], 'en' => $nItem['excerpt_en'] ?? $nItem['excerpt_es']],
+                        'content' => ['es' => $nItem['content_es'], 'en' => $nItem['content_en'] ?? $nItem['content_es']],
+                        'seo_title' => ['es' => $nItem['title_es'].' | Desde Chipiona', 'en' => ($nItem['title_en'] ?? $nItem['title_es']).' | Desde Chipiona'],
+                        'seo_description' => ['es' => $nItem['excerpt_es'], 'en' => $nItem['excerpt_en'] ?? $nItem['excerpt_es']],
+                        'image' => $newsImg,
+                        'social_image' => (string) ($nItem['social_image'] ?? $newsImg),
+                        'latitude' => $nItem['latitude'] ?? null,
+                        'longitude' => $nItem['longitude'] ?? null,
+                        'location_name' => $nItem['location_name'] ?? 'Chipiona',
+                        'evidence_level' => $nItem['evidence_level'] ?? EvidenceLevel::Consolidated,
+                        'source_references' => $resolvedNewsSources,
+                        'status' => ContentStatus::Published,
+                        'is_active' => true,
+                        'featured' => (bool) ($nItem['featured'] ?? false),
+                        'user_id' => $userId,
+                        'published_at' => now()->subDays(rand(1, 10)),
+                    ]
+                );
 
-            if (isset($nItem['category'], $categories[$nItem['category']])) {
-                $news->categories()->sync([$categories[$nItem['category']]->id]);
-            }
-
-            $relIds = [];
-            foreach ($nItem['related_pages'] ?? [] as $pSlug) {
-                if (isset($pagesBySlug[$pSlug])) {
-                    $relIds[] = $pagesBySlug[$pSlug]->id;
+                if (isset($nItem['category'], $categories[$nItem['category']])) {
+                    $news->categories()->sync([$categories[$nItem['category']]->id]);
                 }
-            }
-            $news->relatedPages()->sync($relIds);
-        }
 
-        foreach ($extras['proverbs'] ?? [] as $pItem) {
-            Proverb::updateOrCreate(
-                ['text' => $pItem['text']],
-                [
-                    'meaning' => $pItem['meaning'] ?? null,
-                    'category' => $pItem['category'] ?? 'mar',
-                    'source_code' => $pItem['source_code'] ?? null,
-                    'author_name' => $pItem['author_name'] ?? 'Tradición oral de Chipiona',
-                    'status' => SuggestionStatus::Approved,
-                    'featured' => (bool) ($pItem['featured'] ?? false),
-                    'related_page_id' => isset($pItem['related_slug'], $pagesBySlug[$pItem['related_slug']])
-                        ? $pagesBySlug[$pItem['related_slug']]->id
-                        : null,
-                ]
-            );
-        }
+                $relIds = [];
+                foreach ($nItem['related_pages'] ?? [] as $pSlug) {
+                    if (isset($pagesBySlug[$pSlug])) {
+                        $relIds[] = $pagesBySlug[$pSlug]->id;
+                    }
+                }
+                $news->relatedPages()->sync($relIds);
+            }
+
+            foreach ($extras['proverbs'] ?? [] as $pItem) {
+                Proverb::updateOrCreate(
+                    ['text' => $pItem['text']],
+                    [
+                        'meaning' => $pItem['meaning'] ?? null,
+                        'category' => $pItem['category'] ?? 'mar',
+                        'source_code' => $pItem['source_code'] ?? null,
+                        'author_name' => $pItem['author_name'] ?? 'Tradición oral de Chipiona',
+                        'status' => SuggestionStatus::Approved,
+                        'featured' => (bool) ($pItem['featured'] ?? false),
+                        'related_page_id' => isset($pItem['related_slug'], $pagesBySlug[$pItem['related_slug']])
+                            ? $pagesBySlug[$pItem['related_slug']]->id
+                            : null,
+                    ]
+                );
+            }
+        });
     }
 }

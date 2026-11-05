@@ -252,4 +252,5 @@ return [
     'address' => 'Dirección en Chipiona',
     'schedule' => 'Horario de atención',
     'is_emergency' => 'Urgencia 24h prioritaria',
+    'published_news_desc' => 'Noticias en estado publicado',
 ];

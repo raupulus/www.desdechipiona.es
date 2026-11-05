@@ -54,7 +54,7 @@ class StatsOverviewWidget extends BaseWidget
                 ->icon('heroicon-o-users')
                 ->color('primary'),
             Stat::make(__('filament.news_plural'), News::published()->count())
-                ->description(__('filament.published_pages_desc'))
+                ->description(__('filament.published_news_desc'))
                 ->icon('heroicon-o-newspaper')
                 ->color('success'),
             Stat::make(__('filament.published_pages'), Page::published()->count())

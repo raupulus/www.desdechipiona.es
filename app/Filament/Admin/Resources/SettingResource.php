@@ -26,6 +26,8 @@ class SettingResource extends Resource
 
     protected static ?int $navigationSort = 10;
 
+    protected static ?string $recordTitleAttribute = 'display_name';
+
     /**
      * Devuelve el label del modelo traducido.
      */
@@ -119,6 +121,9 @@ class SettingResource extends Resource
             Forms\Components\TextInput::make('order')
                 ->label(__('filament.order'))
                 ->numeric()
+                ->integer()
+                ->minValue(0)
+                ->maxValue(2147483647)
                 ->required()
                 ->default(0),
 
@@ -147,12 +152,25 @@ class SettingResource extends Resource
             Tables\Columns\TextColumn::make('value')
                 ->label(__('filament.value'))
                 ->limit(50)
-                ->toggleable(),
+                ->toggleable(isToggledHiddenByDefault: true),
             Tables\Columns\TextColumn::make('group')
                 ->label(__('filament.group'))
                 ->sortable()
                 ->toggleable(),
         ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('group')
+                    ->label(__('filament.group'))
+                    ->options(fn () => Setting::query()->select('group')->distinct()->whereNotNull('group')->pluck('group', 'group')->toArray()),
+                Tables\Filters\SelectFilter::make('type')
+                    ->label(__('filament.type'))
+                    ->options([
+                        'text' => __('filament.type_text'),
+                        'textarea' => __('filament.type_textarea'),
+                        'image' => __('filament.type_image'),
+                        'number' => __('filament.type_number'),
+                    ]),
+            ])
             ->actions([
                 ActionGroup::make([
                     EditAction::make(),
