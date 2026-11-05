@@ -44,7 +44,7 @@
             x-show="!dismissed"
             x-cloak
             role="region"
-            aria-label="Aviso de privacidad y cookies técnicas"
+            aria-label="{{ __('messages.cookie_notice_aria') }}"
             class="fixed bottom-4 right-4 left-4 md:left-auto md:max-w-md z-40 rounded-2xl border-2 border-slate-800 bg-slate-950 p-4 text-white shadow-2xl"
         >
             <div class="flex items-start justify-between gap-3">

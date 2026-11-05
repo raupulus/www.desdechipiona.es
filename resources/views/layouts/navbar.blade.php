@@ -1,4 +1,5 @@
-{{-- Barra superior de accesibilidad, autoría verificada y canales oficiales --}}
+{{-- Barra superior de accesibilidad, autoría verificada y canales oficiales + Navegación Principal --}}
+<header class="sticky top-0 z-40">
 <div class="bg-slate-950 text-slate-100 border-b border-slate-800 text-xs">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-3">
         <div class="flex flex-wrap items-center gap-3">
@@ -45,7 +46,7 @@
 
             @auth
                 @if (auth()->user()->isAdmin())
-                    <a href="{{ route('filament.admin.pages.dashboard') }}" class="font-bold text-amber-300 hover:text-white">Intranet</a>
+                    <a href="{{ route('filament.admin.pages.dashboard') }}" class="font-bold text-amber-300 hover:text-white">{{ __('messages.intranet_link') }}</a>
                 @endif
                 <form method="POST" action="{{ route('logout') }}" class="inline">
                     @csrf
@@ -59,9 +60,9 @@
 {{-- Navegación Principal de Desde Chipiona --}}
 <nav
     aria-label="{{ __('messages.nav_primary') }}"
-    class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs"
+    class="bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs"
     x-data="{ open: false }"
-    @keydown.escape.window="open = false"
+    @keydown.escape.window="if (open) { open = false; $nextTick(() => $refs.mobileMenuBtn?.focus()); }"
     @click.outside="open = false"
 >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -70,7 +71,7 @@
             <a href="{{ route('home') }}" class="flex items-center gap-3 group min-w-0 shrink">
                 <img
                     src="{{ asset('images/logo.webp') }}"
-                    alt="{{ setting('site_title', config('app.name')) }}"
+                    alt=""
                     width="48"
                     height="48"
                     class="h-11 w-11 sm:h-12 sm:w-12 shrink-0 rounded-full border-2 border-amber-500/70 shadow-sm object-cover"
@@ -146,6 +147,7 @@
             <div class="flex items-center lg:hidden shrink-0">
                 <button
                     type="button"
+                    x-ref="mobileMenuBtn"
                     @click="open = !open"
                     :aria-expanded="open.toString()"
                     aria-controls="mobile-menu"
@@ -206,3 +208,4 @@
         </div>
     </div>
 </nav>
+</header>

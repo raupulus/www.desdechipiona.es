@@ -67,7 +67,7 @@
                 <div class="pt-2 flex flex-wrap items-center gap-4 text-xs text-slate-300">
                     <span>✍️ {{ __('messages.research_and_writing_by') }} <strong class="text-white">Raúl Caro Pastorino</strong> (<a href="https://raupulus.dev" target="_blank" rel="noopener noreferrer" class="underline text-amber-300">raupulus.dev</a>)</span>
                     @if($page->published_at)
-                        <span>· {{ __('messages.updated_label') }} {{ format_date($page->updated_at ?? $page->published_at) }}</span>
+                        <span>· {{ __('messages.updated_label') }} <time datetime="{{ ($page->updated_at ?? $page->published_at)?->toIso8601String() }}">{{ format_date($page->updated_at ?? $page->published_at) }}</time></span>
                     @endif
                 </div>
             </div>
@@ -88,7 +88,7 @@
                 @else
                     <div class="rounded-2xl border-2 border-slate-800 bg-slate-900/90 p-6 shadow-xl space-y-3">
                         <div class="flex items-center gap-3">
-                            <img src="{{ asset('images/logo.webp') }}" alt="Desde Chipiona" class="h-12 w-12 rounded-full border border-amber-400">
+                            <img src="{{ asset('images/logo.webp') }}" alt="" class="h-12 w-12 rounded-full border border-amber-400">
                             <div>
                                 <p class="text-xs font-extrabold uppercase tracking-wider text-amber-300">{{ __('messages.documentary_record_badge') }}</p>
                                 <p class="text-sm font-bold text-white">{{ __('messages.documentary_archive_brand') }}</p>
@@ -222,7 +222,7 @@
                 <div class="rounded-xl border border-slate-200 bg-white p-3.5 text-xs text-slate-900">
                     <p class="font-extrabold text-slate-950 mb-1">{{ __('messages.authorship_how_to_cite') }}</p>
                     <p class="font-mono text-slate-800 select-all break-words [overflow-wrap:anywhere]">
-                        Caro Pastorino, Raúl ({{ date('Y') }}). «{{ $title }}». En Desde Chipiona ({{ url()->current() }}).
+                        {{ __('messages.authorship_citation_template', ['year' => date('Y'), 'title' => $title, 'url' => url()->current()]) }}
                     </p>
                 </div>
             </section>
@@ -288,19 +288,19 @@
 
                             <div>
                                 <label for="quoted_text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.quoted_text_label') }}</label>
-                                <input type="text" id="quoted_text" name="quoted_text" value="{{ old('quoted_text') }}" placeholder="{{ __('messages.quoted_text_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                <input type="text" id="quoted_text" name="quoted_text" value="{{ old('quoted_text') }}" placeholder="{{ __('messages.quoted_text_placeholder') }}" class="w-full rounded-xl border border-slate-400 px-3.5 py-2.5 text-base lg:text-sm font-medium">
                                 <x-input-error :messages="$errors->get('quoted_text')" class="mt-1" />
                             </div>
 
                             <div>
                                 <label for="proposed_correction" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proposed_correction_full_label') }}</label>
-                                <textarea id="proposed_correction" name="proposed_correction" rows="4" required minlength="10" placeholder="{{ __('messages.proposed_correction_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('proposed_correction') }}</textarea>
+                                <textarea id="proposed_correction" name="proposed_correction" rows="4" required minlength="10" placeholder="{{ __('messages.proposed_correction_placeholder') }}" class="w-full rounded-xl border border-slate-400 px-3.5 py-2.5 text-base lg:text-sm font-medium">{{ old('proposed_correction') }}</textarea>
                                 <x-input-error :messages="$errors->get('proposed_correction')" class="mt-1" />
                             </div>
 
                             <div>
                                 <label for="sources_info" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sources_info_label') }}</label>
-                                <input type="text" id="sources_info" name="sources_info" value="{{ old('sources_info') }}" placeholder="{{ __('messages.sources_info_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">
+                                <input type="text" id="sources_info" name="sources_info" value="{{ old('sources_info') }}" placeholder="{{ __('messages.sources_info_placeholder') }}" class="w-full rounded-xl border border-slate-400 px-3.5 py-2.5 text-base lg:text-sm font-medium">
                                 <x-input-error :messages="$errors->get('sources_info')" class="mt-1" />
                             </div>
 
@@ -391,8 +391,8 @@
                     @else
                         @php
                             $socialUser = session('public_social_identity');
-                            $userName = $socialUser['name'] ?? auth()->user()?->name ?? 'Usuario Verificado';
-                            $userProvider = $socialUser['provider'] ?? 'cuenta';
+                            $userName = $socialUser['name'] ?? auth()->user()?->name ?? __('messages.verified_user_fallback');
+                            $userProvider = $socialUser['provider'] ?? __('messages.account_provider_fallback');
                         @endphp
                         <div class="flex items-center justify-between rounded-xl bg-slate-100 p-3 text-xs font-bold text-slate-800">
                             <span>{{ __('messages.commenting_as_label') }} <strong class="text-slate-950">{{ $userName }}</strong> ({{ ucfirst($userProvider) }})</span>
@@ -409,7 +409,7 @@
 
                             <div>
                                 <label for="comment-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.comment_body_label') }}</label>
-                                <textarea id="comment-body" name="body" rows="3" required minlength="5" placeholder="{{ __('messages.comment_body_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('body') }}</textarea>
+                                <textarea id="comment-body" name="body" rows="3" required minlength="5" placeholder="{{ __('messages.comment_body_placeholder') }}" class="w-full rounded-xl border border-slate-400 px-3.5 py-2.5 text-base lg:text-sm font-medium">{{ old('body') }}</textarea>
                                 <x-input-error :messages="$errors->get('body')" class="mt-1" />
                             </div>
 

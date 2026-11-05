@@ -260,16 +260,21 @@ class Page extends Model
             return $html;
         }
 
+        $totalTables = (int) preg_match_all('/<table\b/i', $html);
+        $index = 0;
+
         return (string) preg_replace_callback(
             '#(<div\s+class="[^"]*table-responsive-wrapper[^"]*"[^>]*>\s*)?<table\b([^>]*)>(.*?)<\/table>(\s*<\/div>)?#si',
-            function (array $matches): string {
+            function (array $matches) use ($totalTables, &$index): string {
                 if (! empty($matches[1]) && ! empty($matches[4])) {
                     return $matches[0];
                 }
 
+                $index++;
                 $attrs = $matches[2];
                 $inner = $matches[3];
-                $label = e(__('messages.table_data_label'));
+                $baseLabel = (string) __('messages.table_data_label');
+                $label = e($totalTables > 1 ? "{$baseLabel} ({$index})" : $baseLabel);
 
                 return '<div class="table-responsive-wrapper" tabindex="0" role="region" aria-label="'.$label.'"><table'.$attrs.'>'.$inner.'</table></div>';
             },

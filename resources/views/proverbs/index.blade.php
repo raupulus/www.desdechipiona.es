@@ -35,7 +35,7 @@
                 name="q"
                 value="{{ $search }}"
                 placeholder="{{ __('messages.proverbs_search_placeholder') }}"
-                class="flex-1 rounded-xl border-2 border-slate-300 bg-white px-4 py-2.5 text-base sm:text-sm font-bold text-slate-950 placeholder:text-slate-600"
+                class="flex-1 rounded-xl border-2 border-slate-400 bg-white px-4 py-2.5 text-base lg:text-sm font-bold text-slate-950 placeholder:text-slate-600"
             >
             <button type="submit" class="rounded-xl bg-orange-700 px-6 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 cursor-pointer">
                 {{ __('messages.proverbs_search_btn') }}
@@ -143,13 +143,13 @@
 
                 <div>
                     <label for="prov-text" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proverb_text_label') }}</label>
-                    <textarea id="prov-text" name="text" rows="2" required minlength="5" placeholder="{{ __('messages.proverb_text_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base font-bold text-slate-950">{{ old('text') }}</textarea>
+                    <textarea id="prov-text" name="text" rows="2" required minlength="5" placeholder="{{ __('messages.proverb_text_placeholder') }}" class="w-full rounded-xl border border-slate-400 px-3.5 py-2.5 text-base font-bold text-slate-950">{{ old('text') }}</textarea>
                     <x-input-error :messages="$errors->get('text')" class="mt-1" />
                 </div>
 
                 <div>
                     <label for="prov-meaning" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proverb_meaning_label') }}</label>
-                    <textarea id="prov-meaning" name="meaning" rows="3" placeholder="{{ __('messages.proverb_meaning_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('meaning') }}</textarea>
+                    <textarea id="prov-meaning" name="meaning" rows="3" placeholder="{{ __('messages.proverb_meaning_placeholder') }}" class="w-full rounded-xl border border-slate-400 px-3.5 py-2.5 text-base lg:text-sm font-medium">{{ old('meaning') }}</textarea>
                     <x-input-error :messages="$errors->get('meaning')" class="mt-1" />
                 </div>
 
@@ -159,6 +159,7 @@
                         <x-searchable-select
                             name="category"
                             id="prov-category"
+                            :label="__('messages.proverb_category_label')"
                             :options="[
                                 'mar' => __('messages.proverbs_cat_mar'),
                                 'campo' => __('messages.proverbs_cat_campo'),
@@ -182,6 +183,7 @@
                         <x-searchable-select
                             name="related_page_id"
                             id="prov-page"
+                            :label="__('messages.proverb_related_page_label')"
                             :options="$proverbPageOptions"
                             value=""
                             :placeholder="__('messages.proverb_search_page_placeholder')"

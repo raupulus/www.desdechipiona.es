@@ -58,6 +58,7 @@
             this.search = '';
             this.focusedIndex = -1;
             $dispatch('change', this.selected);
+            $nextTick(() => { $refs.triggerButton?.focus(); });
         },
         clear() {
             this.selected = '';
@@ -66,6 +67,7 @@
             this.search = '';
             this.focusedIndex = -1;
             $dispatch('change', '');
+            $nextTick(() => { $refs.triggerButton?.focus(); });
         },
         onKeyDown(e) {
             if (!this.open) {
@@ -89,6 +91,7 @@
             } else if (e.key === 'Escape') {
                 this.open = false;
                 this.search = '';
+                $nextTick(() => { $refs.triggerButton?.focus(); });
             }
         }
     }"
@@ -105,44 +108,47 @@
     <input
         type="hidden"
         name="{{ $name }}"
-        id="{{ $inputId }}"
         :value="selected"
-        @if($required) required @endif
     >
 
-    {{-- Botón disparador visible --}}
-    <button
-        type="button"
-        @click="open = !open"
-        role="combobox"
-        aria-label="{{ $accessibleLabel }}"
-        :aria-expanded="open"
-        aria-haspopup="listbox"
-        class="w-full flex items-center justify-between gap-2 rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-left text-base sm:text-sm font-bold text-slate-950 shadow-xs hover:border-slate-400 focus:border-orange-700 focus:ring-2 focus:ring-orange-700 transition cursor-pointer"
-    >
-        <span class="truncate" :title="selectedLabel" x-text="selectedLabel || @js($placeholderText)" :class="!selectedLabel ? 'text-slate-500 font-medium' : 'text-slate-950 font-bold'"></span>
-        <div class="flex items-center gap-1 shrink-0 text-slate-600">
-            <template x-if="selected && !{{ $required ? 'true' : 'false' }}">
-                <span
-                    role="button"
-                    tabindex="0"
-                    aria-label="{{ __('messages.clear_selection_title') }}"
-                    @click.stop="clear()"
-                    @keydown.enter.stop.prevent="clear()"
-                    @keydown.space.stop.prevent="clear()"
-                    title="{{ __('messages.clear_selection_title') }}"
-                    class="p-0.5 rounded-full hover:bg-slate-200 text-slate-600 hover:text-slate-900 cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-700"
-                >
-                    <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                </span>
-            </template>
-            <svg class="h-4 w-4 transition-transform duration-200" :class="open ? 'rotate-180 text-orange-700' : ''" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
-        </div>
-    </button>
+    {{-- Botón disparador visible y botón hermano de limpieza --}}
+    <div class="relative flex items-center">
+        <button
+            type="button"
+            id="{{ $inputId }}"
+            x-ref="triggerButton"
+            @click="open = !open"
+            role="combobox"
+            aria-label="{{ $accessibleLabel }}"
+            aria-controls="{{ $inputId }}-listbox"
+            :aria-activedescendant="open && focusedIndex >= 0 ? '{{ $inputId }}-opt-' + focusedIndex : null"
+            :aria-expanded="open"
+            aria-haspopup="listbox"
+            @if($required) aria-required="true" @endif
+            class="w-full flex items-center justify-between gap-2 rounded-xl border-2 border-slate-400 bg-white px-3.5 py-2.5 pr-14 text-left text-base lg:text-sm font-bold text-slate-950 shadow-xs hover:border-slate-500 focus:border-orange-700 focus:ring-2 focus:ring-orange-700 transition cursor-pointer"
+        >
+            <span class="truncate" :title="selectedLabel" x-text="selectedLabel || @js($placeholderText)" :class="!selectedLabel ? 'text-slate-600 font-medium' : 'text-slate-950 font-bold'"></span>
+            <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 flex items-center text-slate-600">
+                <svg class="h-4 w-4 transition-transform duration-200" :class="open ? 'rotate-180 text-orange-700' : ''" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </span>
+        </button>
+
+        <template x-if="selected && !{{ $required ? 'true' : 'false' }}">
+            <button
+                type="button"
+                aria-label="{{ __('messages.clear_selection_title') }}"
+                @click.stop="clear()"
+                title="{{ __('messages.clear_selection_title') }}"
+                class="absolute right-8 top-1/2 -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-full hover:bg-slate-200 text-slate-600 hover:text-slate-950 cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-700"
+            >
+                <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </template>
+    </div>
 
     {{-- Dropdown con buscador y lista de opciones --}}
     <div
@@ -162,14 +168,16 @@
                 x-ref="searchInput"
                 type="text"
                 x-model="search"
+                aria-label="{{ __('messages.type_to_search') }}"
                 placeholder="{{ __('messages.type_to_search') }}"
-                class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-base sm:text-sm font-medium text-slate-950 placeholder:text-slate-500 focus:border-orange-700 focus:bg-white focus:ring-1 focus:ring-orange-700"
+                class="w-full rounded-xl border border-slate-400 bg-slate-50 px-3 py-2 text-base lg:text-sm font-medium text-slate-950 placeholder:text-slate-600 focus:border-orange-700 focus:bg-white focus:ring-1 focus:ring-orange-700"
             >
             <template x-if="search">
                 <button
                     type="button"
+                    aria-label="{{ __('messages.clear_selection_title') }}"
                     @click="search = ''; $refs.searchInput.focus()"
-                    class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-600 hover:text-slate-950"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-slate-600 hover:bg-slate-200 hover:text-slate-950"
                 >
                     ✕
                 </button>
@@ -177,9 +185,10 @@
         </div>
 
         {{-- Opciones filtradas con teclado accesible --}}
-        <ul role="listbox" class="max-h-60 overflow-y-auto space-y-1 overscroll-contain pr-1">
+        <ul id="{{ $inputId }}-listbox" role="listbox" aria-label="{{ $accessibleLabel }}" class="max-h-60 overflow-y-auto space-y-1 overscroll-contain pr-1">
             <template x-for="(opt, idx) in filteredOptions" :key="opt.value">
                 <li
+                    :id="'{{ $inputId }}-opt-' + idx"
                     role="option"
                     :aria-selected="selected === opt.value"
                     @click="select(opt)"

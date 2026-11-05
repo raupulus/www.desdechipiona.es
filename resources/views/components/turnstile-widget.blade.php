@@ -23,9 +23,10 @@
     <div class="my-3 flex items-center justify-between gap-3 rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-xs font-semibold text-slate-800">
         <div class="flex items-center gap-2.5">
             <span class="inline-flex h-5 w-5 items-center justify-center rounded-md bg-emerald-700 text-white" aria-hidden="true">✓</span>
-            <span>Protegido contra spam con <strong>Cloudflare Turnstile</strong></span>
+            <span>{!! __('messages.turnstile_protected_badge') !!}</span>
         </div>
         <span class="font-mono text-xs text-slate-600">CF-TURNSTILE</span>
         <input type="hidden" name="cf-turnstile-response" value="dev-bypass-token">
     </div>
+    <x-input-error :messages="$errors->get('cf-turnstile-response')" class="mt-2" />
 @endif

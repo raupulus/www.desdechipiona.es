@@ -113,7 +113,7 @@
             <div class="rounded-xl border border-slate-200 bg-white p-3.5 text-xs text-slate-900">
                 <p class="font-extrabold text-slate-950 mb-1">{{ __('messages.authorship_how_to_cite') }}</p>
                 <p class="font-mono text-slate-800 select-all break-words [overflow-wrap:anywhere]">
-                    Caro Pastorino, Raúl ({{ date('Y') }}). «{{ $title }}». En Desde Chipiona ({{ url()->current() }}).
+                    {{ __('messages.authorship_citation_template', ['year' => date('Y'), 'title' => $title, 'url' => url()->current()]) }}
                 </p>
             </div>
         </section>
@@ -143,7 +143,7 @@
                     <input type="hidden" name="correctable_id" value="{{ $news->id }}">
                     <div>
                         <label for="news-proposed" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.proposed_correction_label') }}</label>
-                        <textarea id="news-proposed" name="proposed_correction" rows="3" required minlength="10" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-base sm:text-sm">{{ old('proposed_correction') }}</textarea>
+                        <textarea id="news-proposed" name="proposed_correction" rows="3" required minlength="10" class="w-full rounded-xl border border-slate-400 bg-white px-3.5 py-2 text-base lg:text-sm">{{ old('proposed_correction') }}</textarea>
                         <x-input-error :messages="$errors->get('proposed_correction')" class="mt-1" />
                     </div>
                     <x-turnstile-widget action="news_correction" />
@@ -213,8 +213,8 @@
                 @else
                     @php
                         $socialUser = session('public_social_identity');
-                        $userName = $socialUser['name'] ?? auth()->user()?->name ?? 'Usuario Verificado';
-                        $userProvider = $socialUser['provider'] ?? 'cuenta';
+                        $userName = $socialUser['name'] ?? auth()->user()?->name ?? __('messages.verified_user_fallback');
+                        $userProvider = $socialUser['provider'] ?? __('messages.account_provider_fallback');
                     @endphp
                     <div class="flex items-center justify-between rounded-xl bg-slate-100 p-3 text-xs font-bold text-slate-800">
                         <span>{{ __('messages.commenting_as_label') }} <strong class="text-slate-950">{{ $userName }}</strong> ({{ ucfirst($userProvider) }})</span>
@@ -230,7 +230,7 @@
                         <input type="hidden" name="commentable_id" value="{{ $news->id }}">
                         <div>
                             <label for="news-comm-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.comment_body_label') }}</label>
-                            <textarea id="news-comm-body" name="body" rows="3" required minlength="5" placeholder="{{ __('messages.comment_body_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm focus:border-orange-600 focus:ring-orange-600">{{ old('body') }}</textarea>
+                            <textarea id="news-comm-body" name="body" rows="3" required minlength="5" placeholder="{{ __('messages.comment_body_placeholder') }}" class="w-full rounded-xl border border-slate-400 px-3.5 py-2 text-base lg:text-sm focus:border-orange-600 focus:ring-orange-600">{{ old('body') }}</textarea>
                             <x-input-error :messages="$errors->get('body')" class="mt-1" />
                             <p class="text-xs text-slate-500 mt-1">{{ __('messages.no_external_links_notice') }}</p>
                         </div>

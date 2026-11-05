@@ -4,7 +4,7 @@
             {{-- Columna 1: Identidad y Autoría --}}
             <div class="space-y-4">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('images/logo.webp') }}" alt="{{ setting('site_title', config('app.name')) }}" width="44" height="44" class="h-11 w-11 rounded-full border border-amber-400">
+                    <img src="{{ asset('images/logo.webp') }}" alt="" width="44" height="44" class="h-11 w-11 rounded-full border border-amber-400">
                     <div>
                         <h2 class="font-serif text-lg font-extrabold text-white">{{ setting('site_title', config('app.name')) }}</h2>
                         <p class="text-xs text-amber-300 font-semibold">https://desdechipiona.es</p>
@@ -64,7 +64,7 @@
                 </div>
                 <div class="mt-4 rounded-xl border border-slate-800 bg-slate-900 p-3 text-xs text-slate-300 space-y-1.5">
                     <p>{{ __('messages.footer_content_license') }}</p>
-                    <p class="text-slate-400">Software web bajo licencia <strong>GNU AGPLv3</strong> · Protegido con <strong>Cloudflare Turnstile</strong>.</p>
+                    <p class="text-slate-400">{!! __('messages.footer_software_license') !!}</p>
                 </div>
             </div>
         </div>

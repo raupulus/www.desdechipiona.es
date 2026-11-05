@@ -586,4 +586,11 @@ return [
     'cookies_s1_li1' => '<strong>Laravel session & CSRF security:</strong> Essential for secure submission of participation forms and protection against attacks.',
     'cookies_s1_li2' => '<strong>Cloudflare Turnstile:</strong> Anti-bot technical verification on all form submissions without advertising tracking.',
     'cookies_s1_li3' => '<strong>Accessible reading preferences (<code class="font-mono">chipiona_font_scale</code>):</strong> Saves your chosen font size (<code class="font-mono">A / A+ / A++</code>) in your browser.',
+    'cookie_notice_aria' => 'Privacy and technical cookies notice',
+    'turnstile_protected_badge' => 'Protected against spam with <strong>Cloudflare Turnstile</strong>',
+    'footer_software_license' => 'Web software licensed under <strong>GNU AGPLv3</strong> · Protected with <strong>Cloudflare Turnstile</strong>.',
+    'intranet_link' => 'Intranet',
+    'authorship_citation_template' => 'Caro Pastorino, Raúl (:year). «:title». In Desde Chipiona (:url).',
+    'verified_user_fallback' => 'Verified User',
+    'account_provider_fallback' => 'account',
 ];

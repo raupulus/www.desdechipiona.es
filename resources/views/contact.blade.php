@@ -15,29 +15,29 @@
             @csrf
             <div>
                 <label for="name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.contact_name') }}</label>
-                <input type="text" name="name" id="name" value="{{ old('name') }}" required maxlength="255" autocomplete="name" @error('name') aria-invalid="true" aria-describedby="name-error" @enderror class="block w-full rounded-xl border-slate-300 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base sm:text-sm" />
-                @error('name')<p id="name-error" role="alert" class="mt-1 text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
+                <input type="text" name="name" id="name" value="{{ old('name') }}" required maxlength="255" autocomplete="name" @error('name') aria-invalid="true" aria-describedby="name-error" @enderror class="block w-full rounded-xl border border-slate-400 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base lg:text-sm" />
+                @error('name')<p id="name-error" role="alert" class="mt-1 text-sm text-red-700 font-bold">{{ $message }}</p>@enderror
             </div>
             <div>
                 <label for="email" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.contact_email') }}</label>
-                <input type="email" name="email" id="email" value="{{ old('email') }}" required maxlength="255" autocomplete="email" @error('email') aria-invalid="true" aria-describedby="email-error" @enderror class="block w-full rounded-xl border-slate-300 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base sm:text-sm" />
-                @error('email')<p id="email-error" role="alert" class="mt-1 text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
+                <input type="email" name="email" id="email" value="{{ old('email') }}" required maxlength="255" autocomplete="email" @error('email') aria-invalid="true" aria-describedby="email-error" @enderror class="block w-full rounded-xl border border-slate-400 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base lg:text-sm" />
+                @error('email')<p id="email-error" role="alert" class="mt-1 text-sm text-red-700 font-bold">{{ $message }}</p>@enderror
             </div>
             <div>
                 <label for="subject" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.contact_subject') }}</label>
-                <input type="text" name="subject" id="subject" value="{{ old('subject') }}" required maxlength="255" @error('subject') aria-invalid="true" aria-describedby="subject-error" @enderror class="block w-full rounded-xl border-slate-300 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base sm:text-sm" />
-                @error('subject')<p id="subject-error" role="alert" class="mt-1 text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
+                <input type="text" name="subject" id="subject" value="{{ old('subject') }}" required maxlength="255" @error('subject') aria-invalid="true" aria-describedby="subject-error" @enderror class="block w-full rounded-xl border border-slate-400 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base lg:text-sm" />
+                @error('subject')<p id="subject-error" role="alert" class="mt-1 text-sm text-red-700 font-bold">{{ $message }}</p>@enderror
             </div>
             <div>
                 <label for="message" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.contact_message') }}</label>
-                <textarea name="message" id="message" rows="5" required maxlength="5000" @error('message') aria-invalid="true" aria-describedby="message-error" @enderror class="block w-full rounded-xl border-slate-300 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base sm:text-sm">{{ old('message') }}</textarea>
-                @error('message')<p id="message-error" role="alert" class="mt-1 text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
+                <textarea name="message" id="message" rows="5" required maxlength="5000" @error('message') aria-invalid="true" aria-describedby="message-error" @enderror class="block w-full rounded-xl border border-slate-400 shadow-xs focus:border-orange-700 focus:ring-orange-700 text-base lg:text-sm">{{ old('message') }}</textarea>
+                @error('message')<p id="message-error" role="alert" class="mt-1 text-sm text-red-700 font-bold">{{ $message }}</p>@enderror
             </div>
             <div class="flex items-center">
-                <input type="checkbox" name="privacy" id="privacy" value="1" required @error('privacy') aria-invalid="true" aria-describedby="privacy-error" @enderror class="rounded border-slate-300 text-orange-700 focus:ring-orange-600" />
+                <input type="checkbox" name="privacy" id="privacy" value="1" required @error('privacy') aria-invalid="true" aria-describedby="privacy-error" @enderror class="rounded border-slate-400 text-orange-700 focus:ring-orange-600" />
                 <label for="privacy" class="ml-2 text-sm text-slate-700">{{ __('messages.contact_privacy_accept') }} <a href="{{ route('privacy') }}" class="text-orange-800 font-bold underline">{{ __('messages.contact_privacy_link') }}</a></label>
             </div>
-            @error('privacy')<p id="privacy-error" role="alert" class="text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
+            @error('privacy')<p id="privacy-error" role="alert" class="text-sm text-red-700 font-bold">{{ $message }}</p>@enderror
             <x-recaptcha-script action="contact" />
             <x-turnstile-widget action="contact" />
             @error('g-recaptcha-response')<p role="alert" class="text-sm text-red-600 font-bold">{{ $message }}</p>@enderror

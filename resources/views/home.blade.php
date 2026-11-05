@@ -116,6 +116,7 @@
                         <x-searchable-select
                             name="era"
                             id="filter-era"
+                            :label="__('messages.home_filter_era_title')"
                             :options="$eraOptions"
                             :value="$activeEra ?: 'all'"
                         />
@@ -134,6 +135,7 @@
                         <x-searchable-select
                             name="evidence"
                             id="filter-evidence"
+                            :label="__('messages.home_filter_evidence_title')"
                             :options="$evidenceOptions"
                             :value="$activeEvidence ?: 'all'"
                         />
@@ -156,7 +158,7 @@
                                     max="2100"
                                     value="{{ $filters['year_from'] ?? '' }}"
                                     placeholder="{{ __('messages.home_filter_year_from_placeholder') }}"
-                                    class="w-full rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-base sm:text-sm font-bold text-slate-950 placeholder:text-slate-500 focus:border-orange-700 focus:ring-2 focus:ring-orange-700 shadow-xs"
+                                    class="w-full rounded-xl border-2 border-slate-400 bg-white px-3.5 py-2.5 text-base lg:text-sm font-bold text-slate-950 placeholder:text-slate-600 focus:border-orange-700 focus:ring-2 focus:ring-orange-700 shadow-xs"
                                 >
                             </div>
                             <span class="text-slate-400 font-bold shrink-0 select-none">—</span>
@@ -169,7 +171,7 @@
                                     aria-label="{{ __('messages.home_filter_year_to_aria') }}"
                                     value="{{ $filters['year_to'] ?? '' }}"
                                     placeholder="{{ __('messages.home_filter_year_to_placeholder') }}"
-                                    class="w-full rounded-xl border-2 border-slate-300 bg-white px-3.5 py-2.5 text-base sm:text-sm font-bold text-slate-950 placeholder:text-slate-500 focus:border-orange-700 focus:ring-2 focus:ring-orange-700 shadow-xs"
+                                    class="w-full rounded-xl border-2 border-slate-400 bg-white px-3.5 py-2.5 text-base lg:text-sm font-bold text-slate-950 placeholder:text-slate-600 focus:border-orange-700 focus:ring-2 focus:ring-orange-700 shadow-xs"
                                 >
                             </div>
                         </div>
@@ -190,6 +192,7 @@
                         <x-searchable-select
                             name="sort"
                             id="filter-sort"
+                            :label="__('messages.home_filter_sort_label')"
                             :options="$sortOptions"
                             :value="$activeSort ?: 'featured'"
                         />
@@ -473,7 +476,7 @@
                     <article class="rounded-2xl border border-slate-200 bg-stone-50 p-5 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center gap-2 text-xs font-bold text-slate-700 mb-2">
-                                <span>{{ format_date($newsItem->published_at ?? $newsItem->created_at) }}</span>
+                                <time datetime="{{ ($newsItem->published_at ?? $newsItem->created_at)?->toIso8601String() }}">{{ format_date($newsItem->published_at ?? $newsItem->created_at) }}</time>
                                 @if($newsItem->location_name)
                                     <span>· 📍 {{ $newsItem->location_name }}</span>
                                 @endif

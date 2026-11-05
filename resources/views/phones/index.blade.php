@@ -35,7 +35,7 @@
                 name="q"
                 value="{{ $search ?? '' }}"
                 placeholder="{{ __('messages.phones_search_placeholder') }}"
-                class="flex-1 rounded-xl border-2 border-slate-300 bg-white px-4 py-2.5 text-base sm:text-sm font-bold text-slate-950 placeholder:text-slate-600"
+                class="flex-1 rounded-xl border-2 border-slate-400 bg-white px-4 py-2.5 text-base lg:text-sm font-bold text-slate-950 placeholder:text-slate-600"
             >
             <button type="submit" class="rounded-xl bg-orange-700 px-6 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 cursor-pointer">
                 {{ __('messages.proverbs_search_btn') }}

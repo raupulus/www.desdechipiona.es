@@ -48,6 +48,7 @@
                         <x-searchable-select
                             name="content_group"
                             id="sugg-group"
+                            :label="__('messages.sugg_step1_label')"
                             :options="$groupOptions"
                             :value="old('content_group', $groups[0]->value ?? 'historia')"
                             required
@@ -65,6 +66,7 @@
                         <x-searchable-select
                             name="related_page_id"
                             id="sugg-related"
+                            :label="__('messages.sugg_step2_label')"
                             :options="$pageOptions"
                             :value="old('related_page_id')"
                             :placeholder="__('messages.proverb_search_page_placeholder')"
@@ -74,33 +76,37 @@
 
                 <div>
                     <label for="sugg-title" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_step3_label') }}</label>
-                    <input type="text" id="sugg-title" name="title" value="{{ old('title') }}" required minlength="4" maxlength="255" placeholder="{{ __('messages.sugg_step3_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-3 text-base sm:text-sm font-bold text-slate-950">
+                    <input type="text" id="sugg-title" name="title" value="{{ old('title') }}" required minlength="4" maxlength="255" placeholder="{{ __('messages.sugg_step3_placeholder') }}" class="w-full rounded-xl border border-slate-400 px-3.5 py-3 text-base lg:text-sm font-bold text-slate-950">
                     <x-input-error :messages="$errors->get('title')" class="mt-1" />
                 </div>
 
                 <div>
                     <label for="sugg-body" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_step4_label') }}</label>
-                    <textarea id="sugg-body" name="body" rows="9" required minlength="20" placeholder="{{ __('messages.sugg_step4_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-base sm:text-sm font-medium text-slate-950 leading-relaxed">{{ old('body') }}</textarea>
+                    <textarea id="sugg-body" name="body" rows="9" required minlength="20" placeholder="{{ __('messages.sugg_step4_placeholder') }}" class="w-full rounded-xl border border-slate-400 px-4 py-3 text-base lg:text-sm font-medium text-slate-950 leading-relaxed">{{ old('body') }}</textarea>
                     <x-input-error :messages="$errors->get('body')" class="mt-1" />
                 </div>
 
                 <div>
                     <label for="sugg-sources" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_step5_label') }}</label>
-                    <textarea id="sugg-sources" name="sources_info" rows="2" placeholder="{{ __('messages.sugg_step5_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm font-medium">{{ old('sources_info') }}</textarea>
+                    <textarea id="sugg-sources" name="sources_info" rows="2" placeholder="{{ __('messages.sugg_step5_placeholder') }}" class="w-full rounded-xl border border-slate-400 px-3.5 py-2.5 text-base lg:text-sm font-medium">{{ old('sources_info') }}</textarea>
+                    <x-input-error :messages="$errors->get('sources_info')" class="mt-1" />
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label for="sugg-location" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_location_label') }}</label>
-                        <input type="text" id="sugg-location" name="location_name" value="{{ old('location_name') }}" placeholder="{{ __('messages.sugg_location_placeholder') }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">
+                        <input type="text" id="sugg-location" name="location_name" value="{{ old('location_name') }}" placeholder="{{ __('messages.sugg_location_placeholder') }}" class="w-full rounded-xl border border-slate-400 px-3.5 py-2 text-base lg:text-sm">
+                        <x-input-error :messages="$errors->get('location_name')" class="mt-1" />
                     </div>
                     <div>
                         <label for="sugg-lat" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_lat_label') }}</label>
-                        <input type="number" step="0.000001" id="sugg-lat" name="latitude" value="{{ old('latitude') }}" placeholder="36.7378" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">
+                        <input type="number" step="0.000001" id="sugg-lat" name="latitude" value="{{ old('latitude') }}" placeholder="36.7378" class="w-full rounded-xl border border-slate-400 px-3.5 py-2 text-base lg:text-sm">
+                        <x-input-error :messages="$errors->get('latitude')" class="mt-1" />
                     </div>
                     <div>
                         <label for="sugg-lng" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.sugg_lng_label') }}</label>
-                        <input type="number" step="0.000001" id="sugg-lng" name="longitude" value="{{ old('longitude') }}" placeholder="-6.4425" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm">
+                        <input type="number" step="0.000001" id="sugg-lng" name="longitude" value="{{ old('longitude') }}" placeholder="-6.4425" class="w-full rounded-xl border border-slate-400 px-3.5 py-2 text-base lg:text-sm">
+                        <x-input-error :messages="$errors->get('longitude')" class="mt-1" />
                     </div>
                 </div>
 
