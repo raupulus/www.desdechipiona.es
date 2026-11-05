@@ -32,25 +32,33 @@
                 </div>
                 @if(!empty($summary['aemet_code']))
                     <span class="rounded-xl bg-blue-950 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-300">AEMET {{ $summary['aemet_code'] }}</span>
+                @elseif(!empty($summary['is_fallback']))
+                    <span class="rounded-xl border border-amber-400 bg-amber-100 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-950" title="{{ __('messages.weather_fallback_notice') }}">{{ __('messages.weather_reference_badge') }}</span>
                 @else
                     <span class="rounded-xl bg-blue-950 px-3 py-1.5 font-mono text-xs font-extrabold text-amber-300">{{ __('messages.official_badge') }}</span>
                 @endif
             </div>
 
+            @if(!empty($summary['is_fallback']))
+                <p class="rounded-xl border border-amber-300 bg-amber-50 px-3.5 py-2 text-xs font-semibold text-amber-950">
+                    ℹ️ {{ __('messages.weather_fallback_notice') }}
+                </p>
+            @endif
+
             <div class="grid grid-cols-2 {{ isset($weather['current_temp']) ? 'sm:grid-cols-3' : '' }} gap-2.5 sm:gap-3 xl:gap-4">
                 @if(isset($weather['current_temp']))
                     <div class="rounded-xl border border-amber-300 bg-amber-50 p-3 sm:p-3.5 xl:p-4 col-span-2 sm:col-span-1 flex flex-col justify-between">
-                        <span class="block text-[11px] sm:text-xs font-extrabold uppercase text-amber-950 leading-tight mb-1">{{ __('messages.weather_temp_current') }}</span>
-                        <span class="font-serif text-xl sm:text-2xl lg:text-xl xl:text-2xl 2xl:text-3xl font-extrabold text-amber-950 whitespace-nowrap">{{ $weather['current_temp'] }}&nbsp;°C</span>
+                        <span class="block text-xs font-extrabold uppercase text-amber-950 leading-tight mb-1">{{ __('messages.weather_temp_current') }}</span>
+                        <span class="font-serif text-xl sm:text-2xl lg:text-xl xl:text-2xl 2xl:text-3xl font-extrabold text-amber-950 whitespace-nowrap tabular-nums">{{ $weather['current_temp'] }}&nbsp;°C</span>
                     </div>
                 @endif
                 <div class="rounded-xl border border-orange-200 bg-orange-50 p-3 sm:p-3.5 xl:p-4 flex flex-col justify-between">
-                    <span class="block text-[11px] sm:text-xs font-extrabold uppercase text-orange-950 leading-tight mb-1">{{ __('messages.weather_temp_max') }}</span>
-                    <span class="font-serif text-xl sm:text-2xl lg:text-xl xl:text-2xl 2xl:text-3xl font-extrabold text-slate-950 whitespace-nowrap">{{ $weather['temp_max'] ?? 22 }}&nbsp;°C</span>
+                    <span class="block text-xs font-extrabold uppercase text-orange-950 leading-tight mb-1">{{ __('messages.weather_temp_max') }}</span>
+                    <span class="font-serif text-xl sm:text-2xl lg:text-xl xl:text-2xl 2xl:text-3xl font-extrabold text-slate-950 whitespace-nowrap tabular-nums">{{ $weather['temp_max'] ?? 22 }}&nbsp;°C</span>
                 </div>
                 <div class="rounded-xl border border-sky-200 bg-sky-50 p-3 sm:p-3.5 xl:p-4 flex flex-col justify-between">
-                    <span class="block text-[11px] sm:text-xs font-extrabold uppercase text-sky-950 leading-tight mb-1">{{ __('messages.weather_temp_min') }}</span>
-                    <span class="font-serif text-xl sm:text-2xl lg:text-xl xl:text-2xl 2xl:text-3xl font-extrabold text-slate-950 whitespace-nowrap">{{ $weather['temp_min'] ?? 15 }}&nbsp;°C</span>
+                    <span class="block text-xs font-extrabold uppercase text-sky-950 leading-tight mb-1">{{ __('messages.weather_temp_min') }}</span>
+                    <span class="font-serif text-xl sm:text-2xl lg:text-xl xl:text-2xl 2xl:text-3xl font-extrabold text-slate-950 whitespace-nowrap tabular-nums">{{ $weather['temp_min'] ?? 15 }}&nbsp;°C</span>
                 </div>
             </div>
 
@@ -61,19 +69,19 @@
                 </div>
                 <div class="flex justify-between">
                     <dt class="font-bold text-slate-700">{{ __('messages.weather_wind') }}</dt>
-                    <dd class="font-extrabold text-slate-950">{{ $weather['wind_direction'] ?? 'Poniente' }} ({{ $weather['wind_speed_kmh'] ?? 15 }} km/h)</dd>
+                    <dd class="font-extrabold text-slate-950 tabular-nums">{{ $weather['wind_direction'] ?? 'Poniente' }} ({{ $weather['wind_speed_kmh'] ?? 15 }} km/h)</dd>
                 </div>
                 <div class="flex justify-between">
                     <dt class="font-bold text-slate-700">{{ __('messages.weather_rain_prob') }}</dt>
-                    <dd class="font-extrabold text-slate-950">{{ $weather['rain_prob'] ?? 5 }} %</dd>
+                    <dd class="font-extrabold text-slate-950 tabular-nums">{{ $weather['rain_prob'] ?? 5 }} %</dd>
                 </div>
                 <div class="flex justify-between">
                     <dt class="font-bold text-slate-700">{{ __('messages.weather_uv') }}</dt>
-                    <dd class="font-extrabold text-slate-950">{{ __('messages.uv_level_prefix') }} {{ $weather['uv_max'] ?? 6 }}</dd>
+                    <dd class="font-extrabold text-slate-950 tabular-nums">{{ __('messages.uv_level_prefix') }} {{ $weather['uv_max'] ?? 6 }}</dd>
                 </div>
                 <div class="flex justify-between">
                     <dt class="font-bold text-slate-700">{{ __('messages.weather_sea_temp') }}</dt>
-                    <dd class="font-extrabold text-blue-950">~{{ $weather['sea_temp'] ?? 19 }} °C</dd>
+                    <dd class="font-extrabold text-blue-950 tabular-nums">~{{ $weather['sea_temp'] ?? 19 }} °C</dd>
                 </div>
             </dl>
 

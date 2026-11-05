@@ -11,7 +11,7 @@
 </header>
 <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="rounded-2xl border-2 border-slate-200 bg-white p-6 sm:p-10 shadow-xs">
-        <form action="{{ route('contact.send') }}" method="POST" class="space-y-6">
+        <form action="{{ route('contact.send') }}" method="POST" x-data="{ submitting: false }" @submit="submitting = true" class="space-y-6">
             @csrf
             <div>
                 <label for="name" class="block text-xs font-extrabold uppercase text-slate-900 mb-1">{{ __('messages.contact_name') }}</label>
@@ -41,7 +41,7 @@
             <x-recaptcha-script action="contact" />
             <x-turnstile-widget action="contact" />
             @error('g-recaptcha-response')<p role="alert" class="text-sm text-red-600 font-bold">{{ $message }}</p>@enderror
-            <button type="submit" class="w-full bg-orange-700 text-white py-3.5 rounded-xl hover:bg-orange-800 transition font-extrabold">{{ __('messages.contact_send') }}</button>
+            <button type="submit" :disabled="submitting" class="w-full bg-orange-700 text-white py-3.5 rounded-xl hover:bg-orange-800 transition font-extrabold disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer">{{ __('messages.contact_send') }}</button>
         </form>
     </div>
 </div>

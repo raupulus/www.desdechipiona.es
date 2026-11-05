@@ -287,7 +287,8 @@
                     $borderClass = $groupMeta[$groupValue]['border'] ?? 'border-t-orange-600';
                     $evidence = $pageItem->evidence_level ?? \App\Enums\EvidenceLevel::Consolidated;
                     $badgeClasses = match ($evidence) {
-                        \App\Enums\EvidenceLevel::Consolidated, \App\Enums\EvidenceLevel::Documented => 'border-sky-800 bg-sky-50 text-sky-950',
+                        \App\Enums\EvidenceLevel::Consolidated => 'border-sky-800 bg-sky-50 text-sky-950',
+                        \App\Enums\EvidenceLevel::Documented => 'border-violet-800 bg-violet-50 text-violet-950',
                         \App\Enums\EvidenceLevel::Tradition => 'border-amber-800 bg-amber-50 text-amber-950',
                         \App\Enums\EvidenceLevel::Disputed => 'border-rose-800 bg-rose-50 text-rose-950',
                     };

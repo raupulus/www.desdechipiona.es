@@ -33,7 +33,7 @@
         @else
             <x-social-identity-banner />
 
-            <form action="{{ route('suggestions.store') }}" method="POST" class="space-y-6">
+            <form action="{{ route('suggestions.store') }}" method="POST" x-data="{ submitting: false }" @submit="submitting = true" class="space-y-6">
                 @csrf
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -120,7 +120,7 @@
                 </div>
                 @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
 
-                <button type="submit" class="w-full rounded-xl bg-orange-700 px-6 py-4 text-base font-extrabold text-white shadow-md hover:bg-orange-800 transition cursor-pointer">
+                <button type="submit" :disabled="submitting" class="w-full rounded-xl bg-orange-700 px-6 py-4 text-base font-extrabold text-white shadow-md hover:bg-orange-800 transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
                     {{ __('messages.sugg_submit_team_btn') }}
                 </button>
             </form>

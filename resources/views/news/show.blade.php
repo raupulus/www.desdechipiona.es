@@ -137,7 +137,7 @@
                 </div>
             @else
                 <x-social-identity-banner />
-                <form action="{{ route('corrections.store') }}" method="POST" class="space-y-4">
+                <form action="{{ route('corrections.store') }}" method="POST" x-data="{ submitting: false }" @submit="submitting = true" class="space-y-4">
                     @csrf
                     <input type="hidden" name="correctable_type" value="news">
                     <input type="hidden" name="correctable_id" value="{{ $news->id }}">
@@ -154,7 +154,7 @@
                         </label>
                     </div>
                     @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
-                    <button type="submit" class="rounded-xl bg-orange-700 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 cursor-pointer">
+                    <button type="submit" :disabled="submitting" class="rounded-xl bg-orange-700 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
                         {{ __('messages.send_correction_btn') }}
                     </button>
                 </form>
@@ -176,17 +176,17 @@
                                     <span class="font-extrabold text-sm text-slate-950">{{ $comment->author_name }}</span>
                                     @if($comment->oauth_provider)
                                         @if($comment->oauth_provider === 'facebook')
-                                            <span class="inline-flex items-center gap-1 rounded-md bg-[#145dbf]/10 px-2 py-0.5 text-[11px] font-bold text-[#145dbf]">
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-[#145dbf]/10 px-2 py-0.5 text-xs font-bold text-[#145dbf]">
                                                 <svg class="h-3 w-3 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
                                                 Facebook
                                             </span>
                                         @elseif($comment->oauth_provider === 'google')
-                                            <span class="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-bold text-slate-900 shadow-2xs">
+                                            <span class="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-0.5 text-xs font-bold text-slate-900 shadow-2xs">
                                                 <svg class="h-3 w-3" viewBox="0 0 24 24" aria-hidden="true"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.3-1.5 3.8-5.5 3.8-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.1.8 3.8 1.5l2.6-2.5C16.8 3.4 14.6 2.5 12 2.5 6.8 2.5 2.5 6.8 2.5 12s4.3 9.5 9.5 9.5c5.5 0 9.1-3.9 9.1-9.3 0-.6-.1-1.1-.2-1.6H12z"/></svg>
                                                 Google
                                             </span>
                                         @else
-                                            <span class="rounded-md bg-blue-100 px-2 py-0.5 text-[11px] font-bold text-blue-950">
+                                            <span class="rounded-md bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-950">
                                                 {{ __('messages.verified_with_provider', ['provider' => ucfirst($comment->oauth_provider)]) }}
                                             </span>
                                         @endif
@@ -224,7 +224,7 @@
                         </form>
                     </div>
 
-                    <form action="{{ route('comments.store') }}" method="POST" class="space-y-4">
+                    <form action="{{ route('comments.store') }}" method="POST" x-data="{ submitting: false }" @submit="submitting = true" class="space-y-4">
                         @csrf
                         <input type="hidden" name="commentable_type" value="news">
                         <input type="hidden" name="commentable_id" value="{{ $news->id }}">
@@ -243,7 +243,7 @@
                         </div>
                         @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
                         <div class="flex items-center justify-between">
-                            <button type="submit" class="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 transition">
+                            <button type="submit" :disabled="submitting" class="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-orange-800 transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
                                 {{ __('messages.publish_comment_btn') }}
                             </button>
                             <span class="text-xs text-slate-500">{{ __('messages.pre_moderation_active') }}</span>

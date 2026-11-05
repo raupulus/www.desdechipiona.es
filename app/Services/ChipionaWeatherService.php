@@ -46,6 +46,7 @@ class ChipionaWeatherService
         $fallbackData = [
             'municipality' => 'Chipiona (Cádiz)',
             'aemet_code' => null,
+            'is_fallback' => true,
             'updated_at' => Carbon::now('Europe/Madrid')->format('d/m/Y H:i'),
             'weather' => $weather,
             'tides' => $tides,
@@ -94,6 +95,10 @@ class ChipionaWeatherService
                 /** @var array<string, mixed>|null $payload */
                 $payload = $response->json();
 
+                if (is_array($payload) && array_key_exists('success', $payload) && $payload['success'] === false) {
+                    return null;
+                }
+
                 // Desenvolver el envelope estándar ApiResponseTrait {"success": true, "data": { ... }}
                 $data = (is_array($payload) && isset($payload['data']) && is_array($payload['data']))
                     ? $payload['data']
@@ -104,6 +109,7 @@ class ChipionaWeatherService
                         'municipality' => (string) ($data['municipality'] ?? 'Chipiona (Cádiz)'),
                         'province' => (string) ($data['province'] ?? 'Cádiz'),
                         'aemet_code' => (string) ($data['aemet_code'] ?? '11016'),
+                        'is_fallback' => false,
                         'updated_at' => (string) ($data['updated_at'] ?? Carbon::now('Europe/Madrid')->format('d/m/Y H:i')),
                         'updated_at_iso' => (string) ($data['updated_at_iso'] ?? null),
                         'weather' => (array) $data['weather'],

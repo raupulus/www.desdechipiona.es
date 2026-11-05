@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Enums\EmailStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\ContactRequest;
 use App\Mail\ContactMail;
@@ -48,11 +49,17 @@ class ContactController extends Controller
         $data = $request->validated();
 
         // Enviar email al destinatario configurado y registrarlo en sent_emails automáticamente
-        $emailService->send(
+        $sentEmail = $emailService->send(
             new ContactMail($data),
             setting('contact_email', config('mail.from.address')),
             'Contacto: '.$data['subject']
         );
+
+        if ($sentEmail->status === EmailStatus::Failed) {
+            return back()
+                ->withInput()
+                ->with('error', __('messages.contact_error'));
+        }
 
         return redirect()->route('contact')->with('success', __('messages.contact_success'));
     }

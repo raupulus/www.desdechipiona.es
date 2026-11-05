@@ -138,7 +138,7 @@
         @else
             <x-social-identity-banner />
 
-            <form action="{{ route('proverbs.store') }}" method="POST" class="space-y-5">
+            <form action="{{ route('proverbs.store') }}" method="POST" x-data="{ submitting: false }" @submit="submitting = true" class="space-y-5">
                 @csrf
 
                 <div>
@@ -201,7 +201,7 @@
                 </div>
                 @error('privacy')<p class="text-xs text-red-600 font-bold">{{ $message }}</p>@enderror
 
-                <button type="submit" class="w-full rounded-xl bg-orange-700 px-6 py-3.5 text-base font-extrabold text-white shadow-md hover:bg-orange-800 transition cursor-pointer">
+                <button type="submit" :disabled="submitting" class="w-full rounded-xl bg-orange-700 px-6 py-3.5 text-base font-extrabold text-white shadow-md hover:bg-orange-800 transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
                     {{ __('messages.proverb_submit_archive_btn') }}
                 </button>
             </form>

@@ -593,4 +593,7 @@ return [
     'authorship_citation_template' => 'Caro Pastorino, Raúl (:year). «:title». En Desde Chipiona (:url).',
     'verified_user_fallback' => 'Usuario Verificado',
     'account_provider_fallback' => 'cuenta',
+    'contact_error' => 'No se ha podido enviar el mensaje en este momento. Por favor, inténtalo de nuevo o escribe directamente a info@desdechipiona.es.',
+    'weather_reference_badge' => 'Estimación Local',
+    'weather_fallback_notice' => 'Mostrando valores climatológicos de referencia local y cálculo astronómico de mareas (sincronización con estación remota temporalmente en espera).',
 ];
