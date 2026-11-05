@@ -53,7 +53,7 @@ return [
     ],
 
     'raupulus_weather' => [
-        'url' => env('RAUPULUS_WEATHER_API_URL', 'https://api.raupulus.dev/api/v2/weather-station-official/cities/chipiona'),
+        'url' => env('RAUPULUS_WEATHER_API_URL', ''),
         'token' => env('RAUPULUS_WEATHER_API_TOKEN', env('AEMET_API_KEY')),
         'timeout' => (int) env('RAUPULUS_WEATHER_TIMEOUT', 4),
     ],

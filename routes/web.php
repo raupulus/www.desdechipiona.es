@@ -22,9 +22,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/explore', [HomeController::class, 'index'])->name('explore');
 Route::permanentRedirect('/explorar', '/');
 
-// --- Blog / Artículos ---
-Route::get('/blog', [PostController::class, 'index'])->name('blog.index');
-Route::get('/blog/{slug}', [PostController::class, 'show'])->name('blog.show');
+// --- Blog / Artículos (Módulo mantenido en código, desactivado temporalmente en frontend) ---
+// Route::get('/blog', [PostController::class, 'index'])->name('blog.index');
+// Route::get('/blog/{slug}', [PostController::class, 'show'])->name('blog.show');
 
 // --- Noticias independientes (CRUD separado de páginas) ---
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');

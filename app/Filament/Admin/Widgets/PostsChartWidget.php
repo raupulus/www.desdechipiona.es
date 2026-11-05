@@ -19,11 +19,11 @@ class PostsChartWidget extends ChartWidget
     protected int|string|array $columnSpan = 'full';
 
     /**
-     * Solo los administradores pueden ver este widget.
+     * Widget desactivado mientras el módulo de Blog (Posts) permanezca oculto.
      */
     public static function canView(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        return false;
     }
 
     /**

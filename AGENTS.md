@@ -1,6 +1,6 @@
 # AGENTS.md — Guía completa del proyecto para agentes de IA
 
-*Última actualización: 2026-11-04*
+*Última actualización: 2026-11-05*
 
 Este archivo proporciona el contexto y las directrices obligatorias del proyecto para que los agentes de IA
 puedan trabajar de forma autónoma, consistente y precisa. Léelo completamente antes de realizar cualquier modificación.
@@ -207,7 +207,7 @@ La documentación de cada módulo se encuentra en `docs/info/`. **Es obligatorio
 | [commands.md](docs/info/commands.md) | Especificación completa de comandos Artisan personalizados |
 | [apis/README.md](docs/info/apis/README.md) | Arquitectura y consumo de APIs externas en la aplicación |
 | [usuarios.md](docs/info/usuarios.md) | Gestión de usuarios, roles y autenticación |
-| [posts.md](docs/info/posts.md) | Sistema de blog con artículos traducibles |
+| [posts.md](docs/info/posts.md) | Sistema de blog con artículos traducibles (mantenido en código, desactivado temporalmente) |
 | [paginas.md](docs/info/paginas.md) | Páginas de contenido estático/dinámico |
 | [noticias.md](docs/info/noticias.md) | Noticias y hallazgos documentales de Chipiona (CRUD independiente) |
 | [participacion-ciudadana.md](docs/info/participacion-ciudadana.md) | Correcciones, sugerencias de contenido, refranero y comentarios con OAuth ligero y Turnstile |
@@ -318,8 +318,6 @@ www.desdechipiona.es/
 - `GET  /auth/social/{provider}/callback` (`social.callback`, `throttle:15,1`): Callback OAuth de identificación social en sesión.
 - `POST /auth/social/disconnect` (`social.disconnect`, `throttle:15,1`): Desconexión de la identidad social de la sesión actual.
 - `GET  /legal` (`legal`): Página de autoría verificada, propiedad intelectual y licencia AGPLv3.
-- `GET  /blog` (`blog.index`): Listado paginado de posts publicados con filtro de categorías.
-- `GET  /blog/{slug}` (`blog.show`): Vista detallada de un artículo de blog.
 - `GET  /contact` (`contact`): Formulario de contacto con rate limiting, Turnstile y reCAPTCHA v3.
 - `POST /contact` (`contact.send`): Envío del formulario de contacto (`throttle:10,1`).
 - `GET  /about` (`about`): Página institucional Sobre Nosotros.

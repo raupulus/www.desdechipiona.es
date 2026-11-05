@@ -1,6 +1,6 @@
 # Módulo: Configuración (Settings)
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-05*
 
 > Ajustes globales de la plataforma en formato clave-valor, agrupados por categoría, cacheados durante 1 hora y accesibles mediante el helper global `setting()`.
 
@@ -87,18 +87,18 @@ Registrado en `composer.json` bajo `autoload.files` junto con `media_url()`, `st
 
 | Clave | Grupo | Descripción |
 |-------|-------|-------------|
-| `site_title` | general | Nombre del sitio |
+| `site_title` | general | Nombre del sitio (`Desde Chipiona`) |
 | `site_description` | general | Descripción general |
-| `site_logo` | general | Ruta del logotipo |
 | `contact_email` | contact | Email de contacto |
-| `contact_phone` | contact | Teléfono de contacto |
-| `contact_address` | contact | Dirección postal |
-| `facebook_url` | social | URL de Facebook |
-| `twitter_url` | social | URL de Twitter/X |
-| `instagram_url` | social | URL de Instagram |
-| `linkedin_url` | social | URL de LinkedIn |
+| `noreply_email` | contact | Email de envíos automáticos |
+| `contact_address` | contact | Ubicación (`Chipiona (Cádiz), Andalucía, España`) |
+| `facebook_url` | social | URL de Facebook (`https://www.facebook.com/desdechipiona`) |
+| `github_url` | social | URL de GitHub (`https://github.com/raupulus/www.desdechipiona.es`) |
+| `gitlab_url` | social | URL de GitLab (`https://gitlab.com/raupulus/www.desdechipiona.es`) |
+| `telegram_url` | social | URL de Telegram (`https://t.me/desdechipiona`) |
+| `youtube_url` | social | URL de YouTube (`https://www.youtube.com/@desdechipiona`) |
+| `author_url` | social | Web del autor (`https://raupulus.dev`) |
 | `default_meta_keywords` | seo | Keywords SEO por defecto |
-| `default_meta_description` | seo | Descripción SEO por defecto |
 
 ---
 

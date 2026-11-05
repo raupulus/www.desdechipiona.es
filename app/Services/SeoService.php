@@ -326,10 +326,10 @@ class SeoService
 
         $sameAs = array_values(array_filter([
             setting('facebook_url'),
-            setting('twitter_url'),
-            setting('instagram_url'),
-            setting('linkedin_url'),
             setting('github_url'),
+            setting('gitlab_url'),
+            setting('telegram_url'),
+            setting('youtube_url'),
         ]));
 
         $organization = array_filter([

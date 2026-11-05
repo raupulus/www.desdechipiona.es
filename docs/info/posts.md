@@ -1,8 +1,14 @@
 # Módulo: Posts (Blog)
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-05*
 
 > Sistema de blog con artículos traducibles (es/en), categorías, campos SEO, estados de publicación y asignación automática de autor.
+>
+> ⚠️ **Estado actual en producción (Desactivado temporalmente):** El módulo completo (modelo `Post`, migraciones, `PostResource`, `PostController`, vistas Blade y endpoints API) se mantiene implementado y probado en el código base, pero **se encuentra oculto y desactivado temporalmente** porque el portal prioriza las fichas enciclopédicas (`/pages/{slug}`) y las noticias documentales (`/news`).
+> Para activarlo en el futuro basta con:
+> 1. Descomentar las rutas `blog.index` y `blog.show` en `routes/web.php`.
+> 2. Cambiar `protected static bool $shouldRegisterNavigation = true;` en `app/Filament/Admin/Resources/PostResource.php`.
+> 3. Descomentar `$this->addPosts($sitemap)` y la ruta `blog.index` en `app/Services/SitemapService.php`.
 
 ---
 

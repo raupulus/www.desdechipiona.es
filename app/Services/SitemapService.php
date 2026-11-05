@@ -39,8 +39,8 @@ class SitemapService
         // Añadir URLs estáticas del sitio
         $this->addStaticUrls($sitemap);
 
-        // Añadir posts publicados con sus metadatos
-        $this->addPosts($sitemap);
+        // Módulo de Blog (Posts) desactivado temporalmente en el frontend:
+        // $this->addPosts($sitemap);
 
         // Añadir páginas dinámicas publicadas (excluyendo páginas legales noindex)
         $this->addPages($sitemap);
@@ -96,17 +96,6 @@ class SitemapService
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
                     ->setPriority(1.0),
                 $homeUrl
-            )
-        );
-
-        $blogUrl = route('blog.index');
-        $sitemap->add(
-            $this->addHreflangAlternates(
-                Url::create($blogUrl)
-                    ->setLastModificationDate($lastMod)
-                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
-                    ->setPriority(0.8),
-                $blogUrl
             )
         );
 

@@ -38,6 +38,9 @@ class PostResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    /** @var bool Oculto en el menú lateral de la intranet mientras el módulo de Blog no esté en uso */
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $recordTitleAttribute = 'slug';
 
     /**

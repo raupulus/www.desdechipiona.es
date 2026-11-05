@@ -42,7 +42,6 @@
                     <li><a href="{{ route('weather.index') }}" class="text-slate-300 hover:text-white">🌊 {{ __('messages.weather_tides_nav') }}</a></li>
                     <li><a href="{{ route('phones.index') }}" class="text-slate-300 hover:text-white">📞 {{ __('messages.phones_nav') }}</a></li>
                     <li><a href="{{ route('suggestions.create') }}" class="text-slate-300 hover:text-white">✍️ {{ __('messages.contribute_btn') }}</a></li>
-                    <li><a href="{{ route('blog.index') }}" class="text-slate-300 hover:text-white">{{ __('messages.blog') }}</a></li>
                     <li><a href="{{ route('contact') }}" class="text-slate-300 hover:text-white">{{ __('messages.contact') }} (info@desdechipiona.es)</a></li>
                 </ul>
             </div>
@@ -55,8 +54,14 @@
                     <li><a href="{{ route('about') }}" class="text-slate-300 hover:text-white">{{ __('messages.about') }}</a></li>
                     <li><a href="{{ route('privacy') }}" class="text-slate-300 hover:text-white">{{ __('messages.privacy') }}</a></li>
                     <li><a href="{{ route('cookies') }}" class="text-slate-300 hover:text-white">{{ __('messages.cookies') }}</a></li>
-                    <li><a href="https://t.me/desdechipiona" target="_blank" rel="noopener noreferrer" class="text-sky-300 hover:text-white font-semibold">📢 {{ __('messages.top_bar_telegram') }}</a></li>
                 </ul>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-bold">
+                    <a href="{{ setting('telegram_url', 'https://t.me/desdechipiona') }}" target="_blank" rel="noopener noreferrer" class="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-sky-300 hover:text-white hover:border-sky-500">Telegram</a>
+                    <a href="{{ setting('facebook_url', 'https://www.facebook.com/desdechipiona') }}" target="_blank" rel="noopener noreferrer" class="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-slate-300 hover:text-white hover:border-blue-500">Facebook</a>
+                    <a href="{{ setting('youtube_url', 'https://www.youtube.com/@desdechipiona') }}" target="_blank" rel="noopener noreferrer" class="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-slate-300 hover:text-white hover:border-rose-500">YouTube</a>
+                    <a href="{{ setting('gitlab_url', 'https://gitlab.com/raupulus/www.desdechipiona.es') }}" target="_blank" rel="noopener noreferrer" class="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-slate-300 hover:text-white hover:border-orange-500">GitLab</a>
+                    <a href="{{ setting('github_url', 'https://github.com/raupulus/www.desdechipiona.es') }}" target="_blank" rel="noopener noreferrer" class="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-slate-300 hover:text-white hover:border-slate-400">GitHub</a>
+                </div>
                 <div class="mt-4 rounded-xl border border-slate-800 bg-slate-900 p-3 text-xs text-slate-300 space-y-1.5">
                     <p>{{ __('messages.footer_content_license') }}</p>
                     <p class="text-slate-400">Software web bajo licencia <strong>GNU AGPLv3</strong> · Protegido con <strong>Cloudflare Turnstile</strong>.</p>

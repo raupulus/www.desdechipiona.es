@@ -51,7 +51,6 @@ class SitemapServiceTest extends TestCase
 
         $content = File::get($sitemapPath);
         $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>', $content);
-        $this->assertStringContainsString('post-sitemap', $content);
         $this->assertStringContainsString('pagina-sitemap', $content);
         $this->assertStringContainsString('hreflang="es"', $content);
         $this->assertStringContainsString('hreflang="en"', $content);

@@ -135,8 +135,6 @@ class SeoAndResponsiveAuditTest extends TestCase
             ['url' => route('legal'), 'is_interior' => true, 'is_article' => false],
             ['url' => route('privacy'), 'is_interior' => true, 'is_article' => false],
             ['url' => route('cookies'), 'is_interior' => true, 'is_article' => false],
-            ['url' => route('blog.index'), 'is_interior' => true, 'is_article' => false],
-            ['url' => route('blog.show', $this->post->slug), 'is_interior' => true, 'is_article' => true],
         ];
 
         foreach (['es', 'en'] as $locale) {

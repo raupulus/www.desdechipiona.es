@@ -189,11 +189,6 @@
                 class="block px-3 py-2 rounded-lg font-bold transition {{ request()->routeIs('phones.*') ? 'bg-slate-950 text-white' : 'text-slate-950 hover:bg-slate-100' }}"
             >{{ __('messages.phones_nav') }}</a>
             <a
-                href="{{ route('blog.index') }}"
-                @if(request()->routeIs('blog.*')) aria-current="page" @endif
-                class="block px-3 py-2 rounded-lg font-bold transition {{ request()->routeIs('blog.*') ? 'bg-slate-950 text-white' : 'text-slate-950 hover:bg-slate-100' }}"
-            >{{ __('messages.blog') }}</a>
-            <a
                 href="{{ route('legal') }}"
                 @if(request()->routeIs('legal') || request()->routeIs('about')) aria-current="page" @endif
                 class="block px-3 py-2 rounded-lg font-bold transition {{ request()->routeIs('legal') || request()->routeIs('about') ? 'bg-slate-950 text-white' : 'text-slate-950 hover:bg-slate-100' }}"

@@ -1,6 +1,6 @@
 # Documentación técnica de módulos
 
-*Última actualización: 2026-11-04*
+*Última actualización: 2026-11-05*
 
 Este directorio contiene la documentación técnica viva y detallada de cada módulo implementado en la plataforma. Cada archivo describe el objetivo, la arquitectura, los archivos involucrados, los campos, las relaciones, qué es editable desde el panel y el comportamiento de un módulo concreto.
 
@@ -11,7 +11,7 @@ Este directorio contiene la documentación técnica viva y detallada de cada mó
 | Módulo | Archivo | Descripción |
 |--------|---------|-------------|
 | [Usuarios](usuarios.md) | `usuarios.md` | Gestión de usuarios, roles y autenticación |
-| [Posts](posts.md) | `posts.md` | Sistema de blog con artículos traducibles |
+| [Posts](posts.md) | `posts.md` | Sistema de blog con artículos traducibles (mantenido en código, desactivado temporalmente) |
 | [Páginas](paginas.md) | `paginas.md` | Páginas enciclopédicas y patrimoniales con Markdown, GPS, fuentes y páginas enlazadas |
 | [Noticias](noticias.md) | `noticias.md` | CRUD independiente de noticias y hallazgos documentales de Chipiona |
 | [Participación y Refranes](participacion-ciudadana.md) | `participacion-ciudadana.md` | Correcciones sugeridas, propuestas de contenido, refranero popular y comentarios con OAuth ligero y Turnstile |
