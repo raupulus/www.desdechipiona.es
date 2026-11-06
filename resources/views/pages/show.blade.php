@@ -2,12 +2,15 @@
 
 @section('content')
 @php
-    $title = $page->getTranslation('title', app()->getLocale());
-    $excerpt = $page->getTranslation('excerpt', app()->getLocale());
-    $evidenceNote = $page->getTranslation('evidence_note', app()->getLocale());
+    $title = $page->getTranslation('title', app()->getLocale()) ?: $page->getTranslation('title', 'es');
+    $excerpt = $page->getTranslation('excerpt', app()->getLocale()) ?: $page->getTranslation('excerpt', 'es');
+    $evidenceNote = $page->getTranslation('evidence_note', app()->getLocale()) ?: $page->getTranslation('evidence_note', 'es');
     $evidence = $page->evidence_level ?? \App\Enums\EvidenceLevel::Consolidated;
     $sources = is_array($page->source_references) ? $page->source_references : [];
     $rawContent = $page->getTranslation('content', app()->getLocale());
+    if (empty($rawContent)) {
+        $rawContent = $page->getTranslation('content', 'es');
+    }
 
     $evidenceBannerClasses = match ($evidence) {
         \App\Enums\EvidenceLevel::Consolidated => 'border-sky-800 bg-sky-50 text-sky-950',

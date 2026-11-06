@@ -2,8 +2,8 @@
 
 @section('content')
 @php
-    $title = $news->getTranslation('title', app()->getLocale());
-    $excerpt = $news->getTranslation('excerpt', app()->getLocale());
+    $title = $news->getTranslation('title', app()->getLocale()) ?: $news->getTranslation('title', 'es');
+    $excerpt = $news->getTranslation('excerpt', app()->getLocale()) ?: $news->getTranslation('excerpt', 'es');
 @endphp
 
 <header class="bg-gradient-to-br from-slate-950 via-blue-950 to-violet-950 text-white border-b-4 border-orange-700">

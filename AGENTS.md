@@ -116,7 +116,7 @@ La plataforma implementa tres roles definidos mediante el enum respaldado `App\E
 **NUNCA escribir textos hardcodeados en vistas Blade.**
 1. **Textos estáticos de interfaz**: Usar `__('messages.key')` o `__('Log in')` (vía `lang/es.json` y `lang/{es,en}/messages.php`).
 2. **Contenido dinámico de modelos**: Usar `$model->getTranslation('campo', app()->getLocale())`.
-3. El idioma por defecto es español (`es`), fallback en inglés (`en`). La zona horaria en `config/app.php` es `Europe/Madrid` (`env('APP_TIMEZONE', 'Europe/Madrid')`); el frontend muestra las fechas formateadas con `format_date($date, 'd/m/Y')` o según el idioma activo.
+3. El idioma por defecto es español (`es`), y el fallback del sistema es español (`es`) para garantizar que el contenido documental original de Chipiona permanezca siempre visible y legible cuando un visitante navega en inglés (`en`) mientras se completa la traducción progresiva. La zona horaria en `config/app.php` es `Europe/Madrid` (`env('APP_TIMEZONE', 'Europe/Madrid')`); el frontend muestra las fechas formateadas con `format_date($date, 'd/m/Y')` o según el idioma activo.
 
 ### ⚠️ Backend Filament — Traducciones y Formularios
 1. **Traducción integral**: Todos los labels de formulario, columnas de tabla, badges, acciones y títulos (`getModelLabel()`, `getPluralModelLabel()`, `getNavigationGroup()`) deben usar `__('filament.key')` con correspondencia exacta en `lang/es/filament.php` y `lang/en/filament.php`.

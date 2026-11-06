@@ -1,6 +1,6 @@
 # Módulo: Traducciones (i18n)
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-06*
 
 > Sistema de internacionalización bilingüe (español/inglés) para textos de la interfaz y contenido de modelos, con cambio de idioma persistido en sesión.
 
@@ -16,13 +16,13 @@ El sistema opera con dos mecanismos complementarios:
 
 2. **Contenido dinámico de modelos** (Spatie Translatable): los campos de contenido de posts, páginas, categorías, slides y secciones se almacenan como JSON en la base de datos con una versión por idioma, accesibles con `$modelo->getTranslation('campo', $locale)`. Los formularios de Filament presentan tabs por idioma (ES/EN) para editar cada versión.
 
-El cambio de idioma se realiza desde el frontend mediante el selector de idioma (`<x-language-switcher />`), que redirige a `/lang/{locale}`, o mediante el parámetro de consulta `?lang={locale}` utilizado también en las etiquetas `hreflang` de SEO y el sitemap. El middleware `SetLocale` lo persiste en sesión y lo aplica en cada request posterior. El idioma por defecto es español, con inglés como fallback.
+El cambio de idioma se realiza desde el frontend mediante el selector de idioma (`<x-language-switcher />`), que redirige a `/lang/{locale}`, o mediante el parámetro de consulta `?lang={locale}` utilizado también en las etiquetas `hreflang` de SEO y el sitemap. El middleware `SetLocale` lo persiste en sesión y lo aplica en cada request posterior. El idioma por defecto es español (`es`), y el fallback del sistema es español (`es`) para garantizar que el contenido documental original permanezca siempre visible y legible cuando un visitante navega en inglés (`en`) mientras se completa la traducción progresiva.
 
 ---
 
 ## Resumen
 
-La plataforma soporta dos idiomas: español (por defecto) e inglés. Hay dos mecanismos de traducción: archivos de idioma para textos estáticos de la UI (`__('messages.key')`, `__('filament.key')`) y campos traducibles en modelos con `spatie/laravel-translatable` para contenido dinámico. El idioma se cambia con el selector del frontend o `?lang=xx` y se persiste en sesión mediante el middleware `SetLocale`.
+La plataforma soporta dos idiomas: español (por defecto) e inglés. Hay dos mecanismos de traducción: archivos de idioma para textos estáticos de la UI (`__('messages.key')`, `__('filament.key')`) y campos traducibles en modelos con `spatie/laravel-translatable` para contenido dinámico. El fallback del sistema está fijado en español (`es`) tanto en Laravel (`config/app.php`) como en Spatie (`AppServiceProvider`), asegurando que ningún artículo quede en blanco al navegar en inglés si aún no dispone de traducción en ese idioma. El idioma se cambia con el selector del frontend o `?lang=xx` y se persiste en sesión mediante el middleware `SetLocale`.
 
 ---
 

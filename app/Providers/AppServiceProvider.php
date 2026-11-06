@@ -35,6 +35,7 @@ use App\Services\SettingService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Translatable\Translatable;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -53,6 +54,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::preventLazyLoading(! $this->app->isProduction());
+
+        // Configuración de Spatie Translatable: fallback a español y fallbackAny
+        // para garantizar que si un contenido aún no está traducido al inglés
+        // se muestre siempre la versión documental en español sin dejar huecos vacíos.
+        app(Translatable::class)
+            ->fallback(
+                fallbackLocale: (string) config('app.fallback_locale', 'es'),
+                fallbackAny: true
+            );
 
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Page::class, PagePolicy::class);

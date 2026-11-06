@@ -191,7 +191,8 @@ class SeoService
         if (isset($model->title)) {
             $rawTitle = $model->title;
             if (is_array($rawTitle)) {
-                $rawTitle = $rawTitle[app()->getLocale()] ?? $rawTitle[config('app.fallback_locale')] ?? '';
+                $fallback = (string) config('app.fallback_locale', 'es');
+                $rawTitle = $rawTitle[app()->getLocale()] ?? $rawTitle[$fallback] ?? $rawTitle['es'] ?? '';
             }
             $this->headline = Str::limit(trim(strip_tags((string) $rawTitle)), 110, '');
         }

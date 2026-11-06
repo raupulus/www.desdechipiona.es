@@ -20,10 +20,11 @@ trait HasSeo
     public function getSeoTitleText(): string
     {
         $seoTitle = $this->seo_title;
+        $fallback = (string) config('app.fallback_locale', 'es');
 
-        // Si es array de traducciones, obtener el idioma actual
+        // Si es array de traducciones, obtener el idioma actual o fallback
         if (is_array($seoTitle)) {
-            $seoTitle = $seoTitle[app()->getLocale()] ?? $seoTitle[config('app.fallback_locale')] ?? '';
+            $seoTitle = $seoTitle[app()->getLocale()] ?? $seoTitle[$fallback] ?? $seoTitle['es'] ?? '';
         }
 
         // Si el seo_title está vacío, usar el título del modelo
@@ -33,7 +34,7 @@ trait HasSeo
 
         $title = $this->title;
         if (is_array($title)) {
-            $title = $title[app()->getLocale()] ?? $title[config('app.fallback_locale')] ?? '';
+            $title = $title[app()->getLocale()] ?? $title[$fallback] ?? $title['es'] ?? '';
         }
 
         $rawTitle = (string) ($title ?? '');
@@ -56,10 +57,11 @@ trait HasSeo
      */
     public function getSeoDescriptionText(): string
     {
+        $fallback = (string) config('app.fallback_locale', 'es');
         $seoDesc = $this->seo_description;
 
         if (is_array($seoDesc)) {
-            $seoDesc = $seoDesc[app()->getLocale()] ?? $seoDesc[config('app.fallback_locale')] ?? '';
+            $seoDesc = $seoDesc[app()->getLocale()] ?? $seoDesc[$fallback] ?? $seoDesc['es'] ?? '';
         }
 
         if (! empty($seoDesc)) {
@@ -70,7 +72,7 @@ trait HasSeo
         if (isset($this->excerpt)) {
             $excerpt = $this->excerpt;
             if (is_array($excerpt)) {
-                $excerpt = $excerpt[app()->getLocale()] ?? $excerpt[config('app.fallback_locale')] ?? '';
+                $excerpt = $excerpt[app()->getLocale()] ?? $excerpt[$fallback] ?? $excerpt['es'] ?? '';
             }
 
             if (! empty($excerpt)) {
@@ -82,7 +84,7 @@ trait HasSeo
         if (isset($this->content)) {
             $content = $this->content;
             if (is_array($content)) {
-                $content = $content[app()->getLocale()] ?? $content[config('app.fallback_locale')] ?? '';
+                $content = $content[app()->getLocale()] ?? $content[$fallback] ?? $content['es'] ?? '';
             }
 
             if (! empty($content)) {

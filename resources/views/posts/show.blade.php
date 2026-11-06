@@ -1,8 +1,11 @@
 @extends('layouts.app')
 @section('content')
+@php
+    $title = $post->getTranslation('title', app()->getLocale()) ?: $post->getTranslation('title', 'es');
+@endphp
 <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    @if($post->image_url)<img src="{{ $post->image_url }}" alt="{{ $post->getTranslation('title', app()->getLocale()) }}" width="1200" height="675" fetchpriority="high" decoding="async" class="w-full h-64 md:h-96 object-cover rounded-2xl mb-8" />@endif
-    <h1 class="font-serif text-3xl sm:text-5xl font-extrabold text-slate-950 mb-4 leading-tight">{{ $post->getTranslation('title', app()->getLocale()) }}</h1>
+    @if($post->image_url)<img src="{{ $post->image_url }}" alt="{{ $title }}" width="1200" height="675" fetchpriority="high" decoding="async" class="w-full h-64 md:h-96 object-cover rounded-2xl mb-8" />@endif
+    <h1 class="font-serif text-3xl sm:text-5xl font-extrabold text-slate-950 mb-4 leading-tight">{{ $title }}</h1>
     <div class="flex flex-wrap items-center text-sm font-bold text-slate-700 mb-8 gap-4">
         @if($post->user)<span>{{ $post->user->name }}</span>@endif
         @if($post->published_at)<time datetime="{{ $post->published_at->toIso8601String() }}">{{ format_date($post->published_at) }}</time>@endif

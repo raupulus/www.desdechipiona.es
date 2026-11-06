@@ -373,4 +373,39 @@ class ChipionaFeaturesTest extends TestCase
         $this->get(route('news.index', ['page' => 999]))->assertNotFound();
         $this->get(route('proverbs.index', ['page' => 999]))->assertNotFound();
     }
+
+    public function test_page_falls_back_to_spanish_content_when_viewed_in_english_if_english_content_is_missing(): void
+    {
+        $page = Page::factory()->published()->create([
+            'slug' => 'test-fallback-es-en',
+            'title' => ['es' => 'Pinar de Prueba', 'en' => 'Test Pine Forest'],
+            'content' => [
+                'es' => '<p>Contenido histórico original de Chipiona en español.</p>',
+            ],
+            'evidence_note' => [
+                'es' => 'Nota probatoria en español',
+            ],
+        ]);
+
+        $response = $this->get(route('pages.show', ['slug' => $page->slug, 'lang' => 'en']));
+
+        $response->assertOk();
+        $response->assertSee('Test Pine Forest');
+        $response->assertSee('Contenido histórico original de Chipiona en español.');
+        $response->assertSee('Nota probatoria en español');
+
+        // Verificar también con contenido vacío en inglés
+        $pageEmptyEn = Page::factory()->published()->create([
+            'slug' => 'test-fallback-empty-en',
+            'title' => ['es' => 'Faro de Prueba'],
+            'content' => [
+                'es' => '<p>Historia del Faro de Chipiona.</p>',
+                'en' => '',
+            ],
+        ]);
+
+        app()->setLocale('en');
+        $this->assertSame('Faro de Prueba', $pageEmptyEn->title);
+        $this->assertStringContainsString('Historia del Faro de Chipiona.', $pageEmptyEn->rendered_content);
+    }
 }

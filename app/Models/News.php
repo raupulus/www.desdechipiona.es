@@ -204,12 +204,19 @@ class News extends Model
     {
         $raw = $this->getTranslation('content', app()->getLocale());
 
+        if (empty($raw) || (is_string($raw) && trim($raw) === '')) {
+            $raw = $this->getTranslation('content', config('app.fallback_locale', 'es'));
+            if (empty($raw) || (is_string($raw) && trim($raw) === '')) {
+                $raw = $this->getTranslation('content', 'es');
+            }
+        }
+
         if (is_array($raw)) {
             return '';
         }
 
         $text = (string) $raw;
-        if ($text === '') {
+        if (trim($text) === '') {
             return '';
         }
 
