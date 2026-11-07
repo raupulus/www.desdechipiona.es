@@ -1,8 +1,8 @@
-# Módulo: Panel Usuario (Filament)
+# Módulo: Panel Usuario (Filament) [DESACTIVADO / UNIFICADO EN /admin]
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-07*
 
-> Panel de usuario en `/panel` con edición de perfil personal y gestión de tokens API propios.
+> **Nota de arquitectura:** Este panel secundario ha sido desactivado y unificado en el panel único de administración `/admin`. Todas las peticiones a `/panel` y `/panel/login` son redirigidas a `/admin`. No existe registro público de usuarios (0 registros).
 
 ---
 

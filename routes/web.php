@@ -88,5 +88,9 @@ Route::get('/admin/logs/download/{filename}', [LogDownloadController::class, 'do
     ->middleware(['auth'])
     ->name('admin.logs.download');
 
+// --- Redirección unificada al panel único de administración (/admin) ---
+Route::redirect('/panel', '/admin');
+Route::redirect('/panel/{any}', '/admin')->where('any', '.*');
+
 // --- Autenticación (Breeze para intranet /admin) ---
 require __DIR__.'/auth.php';

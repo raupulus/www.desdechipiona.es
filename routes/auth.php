@@ -7,22 +7,17 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
+    // 0 Registros: El registro público de usuarios está totalmente deshabilitado
+    Route::any('register', fn () => abort(404))->name('register');
 
-    Route::post('register', [RegisteredUserController::class, 'store'])
-        ->middleware('throttle:10,1');
-
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
+    // 1 Solo Login: Redirección unificada directa al panel único de administración (/admin)
+    Route::get('login', fn () => redirect()->route('filament.admin.auth.login'))
         ->name('login');
-
-    Route::post('login', [AuthenticatedSessionController::class, 'store'])
-        ->middleware('throttle:10,1');
+    Route::post('login', fn () => redirect()->route('filament.admin.auth.login'));
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');

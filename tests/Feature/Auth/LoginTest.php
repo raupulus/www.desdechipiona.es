@@ -10,23 +10,24 @@ class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_login_screen_can_be_rendered(): void
+    public function test_login_route_redirects_to_admin_login(): void
     {
-        $this->get('/login')->assertStatus(200);
+        $this->get('/login')->assertRedirect(route('filament.admin.auth.login'));
     }
 
-    public function test_users_can_authenticate(): void
+    public function test_login_post_route_redirects_to_admin_login(): void
     {
-        $user = User::factory()->create();
-        $this->post('/login', ['email' => $user->email, 'password' => 'password']);
-        $this->assertAuthenticated();
+        $this->post('/login')->assertRedirect(route('filament.admin.auth.login'));
     }
 
-    public function test_users_can_not_authenticate_with_invalid_password(): void
+    public function test_panel_route_redirects_to_admin(): void
     {
-        $user = User::factory()->create();
-        $this->post('/login', ['email' => $user->email, 'password' => 'wrong']);
-        $this->assertGuest();
+        $this->get('/panel')->assertRedirect('/admin');
+    }
+
+    public function test_panel_login_route_redirects_to_admin(): void
+    {
+        $this->get('/panel/login')->assertRedirect('/admin');
     }
 
     public function test_users_can_logout(): void

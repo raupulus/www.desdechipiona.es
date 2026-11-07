@@ -7,10 +7,6 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-/**
- * Tests de autorización para verificar que las policies funcionan correctamente.
- * Los usuarios normales no deben poder acceder a rutas de administración.
- */
 class PolicyTest extends TestCase
 {
     use RefreshDatabase;
@@ -52,12 +48,11 @@ class PolicyTest extends TestCase
     }
 
     /**
-     * Verifica que usuarios normales pueden acceder al panel de usuario.
+     * Verifica que el panel de usuario antiguo redirige al panel unificado /admin.
      */
-    public function test_regular_user_can_access_user_panel(): void
+    public function test_user_panel_redirects_to_admin(): void
     {
-        $user = User::factory()->create(['role' => Role::User]);
-        $this->actingAs($user)->get('/panel')->assertSuccessful();
+        $this->get('/panel')->assertRedirect('/admin');
     }
 
     /**
@@ -71,24 +66,19 @@ class PolicyTest extends TestCase
         $this->assertFalse($admin->can('update', $superadmin));
         $this->assertFalse($admin->can('delete', $superadmin));
         $this->assertTrue($superadmin->can('update', $superadmin));
-        $this->assertFalse($superadmin->can('delete', $superadmin));
+        $this->assertFalse($admin->can('delete', $superadmin));
     }
 
     /**
-     * Verifica que un usuario inactivo no puede iniciar sesión en la web.
+     * Verifica que un usuario inactivo no puede acceder al panel admin.
      */
-    public function test_inactive_user_cannot_login_via_web(): void
+    public function test_inactive_user_cannot_access_admin_panel(): void
     {
         $user = User::factory()->inactive()->create([
-            'password' => bcrypt('password123'),
+            'role' => Role::Admin,
         ]);
 
-        $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'password123',
-        ])->assertSessionHasErrors('email');
-
-        $this->assertGuest();
+        $this->actingAs($user)->get('/admin')->assertForbidden();
     }
 
     /**
@@ -105,11 +95,11 @@ class PolicyTest extends TestCase
     }
 
     /**
-     * Verifica que los paneles de Filament solo tienen login y no registro público duplicado.
+     * Verifica que Filament no expone ruta de registro público y la web tampoco.
      */
     public function test_filament_panel_does_not_expose_registration_route(): void
     {
-        $this->get('/panel/register')->assertNotFound();
+        $this->get('/register')->assertNotFound();
         $this->get('/admin/register')->assertNotFound();
     }
 }

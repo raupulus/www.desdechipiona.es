@@ -1,8 +1,8 @@
 # Módulo: Autenticación y Autorización
 
-*Última actualización: 2026-11-04*
+*Última actualización: 2026-11-07*
 
-> Autenticación web con sesiones, autenticación API con Laravel Sanctum, protección Google reCAPTCHA v3 y rate limiting, policies de autorización por modelo, middlewares globales (`SetLocale`, `SecurityHeaders`) y guards de Filament.
+> Autenticación web unificada en Filament `/admin`, autenticación API con Laravel Sanctum, protección Google reCAPTCHA v3 y rate limiting, policies de autorización por modelo, middlewares globales (`SetLocale`, `SecurityHeaders`) y guards de Filament.
 
 ---
 
@@ -10,7 +10,7 @@
 
 El módulo de autenticación y autorización proporciona toda la infraestructura de seguridad y control de acceso de la plataforma:
 
-1. **Autenticación web**: formularios HTML con sesiones (`routes/auth.php`) para el acceso de administradores al panel Filament (`/admin`). Incluye login (exigiendo `is_active = true`), recuperación y restablecimiento de contraseña, verificación de email y confirmación de contraseña. **El registro público está estrictamente desactivado (`AUTH_REGISTRATION_ENABLED=false`) y devuelve 404.**
+1. **Autenticación web unificada (1 solo Login en `/admin`)**: acceso exclusivo de administradores al panel Filament (`/admin`). Cualquier petición a `/login`, `/panel` o `/panel/login` es redirigida de forma unificada a `/admin/login`. **El registro público está estrictamente desactivado (0 registros) y devuelve 404.**
 2. **Autenticación API** (Laravel Sanctum): tokens Bearer personales para que aplicaciones autorizadas consuman la API REST (`/api/v1`). Incluye login, logout, recuperación de contraseña y gestión de tokens personales (crear, listar, revocar). El registro vía API está igualmente desactivado (404).
 3. **Protección de formularios públicos**: todos los POST públicos aplican rate limiting (`throttle:10,1` en web) y validación invisible con Google reCAPTCHA v3 (`App\Rules\Recaptcha` + `<x-recaptcha-script>`).
 4. **Autorización mediante Policies**: restringe por modelo y rol qué acciones están permitidas, protegiendo las cuentas `superadmin` frente a modificaciones de administradores regulares.
@@ -22,32 +22,32 @@ El módulo de autenticación y autorización proporciona toda la infraestructura
 ## Autenticación Web
 
 ### Vistas (`resources/views/auth/`)
-- `login.blade.php` — Inicio de sesión (`<x-recaptcha-script action="login" />`)
-- `register.blade.php` — Registro de cuenta (`<x-recaptcha-script action="register" />`)
+- `login.blade.php` — Redirigido a `/admin/login` (login nativo Filament)
+- `register.blade.php` — Desactivado (devuelve 404)
 - `forgot-password.blade.php` — Solicitar enlace de restablecimiento (`<x-recaptcha-script action="forgot_password" />`)
 - `reset-password.blade.php` — Restablecer contraseña (`<x-recaptcha-script action="reset_password" />`)
 - `verify-email.blade.php` — Verificación de email
 - `confirm-password.blade.php` — Confirmar contraseña
 
-### Rutas (`routes/auth.php`)
+### Rutas (`routes/auth.php` y `routes/web.php`)
 
-| Método | URI | Nombre | Middleware |
-|--------|-----|--------|------------|
-| GET | `/register` | `register` | `guest` |
-| POST | `/register` | — | `guest`, `throttle:10,1` |
-| GET | `/login` | `login` | `guest` |
-| POST | `/login` | — | `guest`, `throttle:10,1` |
-| GET | `/forgot-password` | `password.request` | `guest` |
-| POST | `/forgot-password` | `password.email` | `guest`, `throttle:10,1` |
-| GET | `/reset-password/{token}` | `password.reset` | `guest` |
-| POST | `/reset-password` | `password.store` | `guest`, `throttle:10,1` |
-| GET | `/verify-email` | `verification.notice` | `auth` |
-| GET | `/verify-email/{id}/{hash}` | `verification.verify` | `auth`, `signed`, `throttle:6,1` |
-| POST | `/email/verification-notification` | `verification.send` | `auth`, `throttle:6,1` |
-| GET | `/confirm-password` | `password.confirm` | `auth` |
-| POST | `/confirm-password` | — | `auth` |
-| PUT | `/password` | `password.update` | `auth` |
-| POST | `/logout` | `logout` | `auth` |
+| Método | URI | Nombre | Destino / Comportamiento |
+|--------|-----|--------|-------------------------|
+| GET/POST | `/register` | `register` | 404 Not Found (0 registros) |
+| GET/POST | `/login` | `login` | Redirección a `/admin/login` |
+| GET | `/panel` | — | Redirección a `/admin` |
+| GET | `/panel/login` | — | Redirección a `/admin/login` |
+| GET | `/forgot-password` | `password.request` | Formulario solicitar reset |
+| POST | `/forgot-password` | `password.email` | Envío enlace reset (`throttle:10,1`) |
+| GET | `/reset-password/{token}` | `password.reset` | Formulario resetear clave |
+| POST | `/reset-password` | `password.store` | Guardar nueva clave (`throttle:10,1`) |
+| GET | `/verify-email` | `verification.notice` | Aviso verificación email |
+| GET | `/verify-email/{id}/{hash}` | `verification.verify` | Validar hash (`signed`, `throttle:6,1`) |
+| POST | `/email/verification-notification` | `verification.send` | Reenviar email verificación (`throttle:6,1`) |
+| GET | `/confirm-password` | `password.confirm` | Confirmación contraseña |
+| POST | `/confirm-password` | — | Procesar confirmación |
+| PUT | `/password` | `password.update` | Actualizar contraseña |
+| POST | `/logout` | `logout` | Cerrar sesión |
 
 ---
 

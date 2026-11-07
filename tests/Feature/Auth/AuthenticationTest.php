@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -10,36 +11,30 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_login_screen_can_be_rendered(): void
+    public function test_login_route_redirects_to_admin_login(): void
     {
         $response = $this->get('/login');
+
+        $response->assertRedirect(route('filament.admin.auth.login'));
+    }
+
+    public function test_admin_login_screen_can_be_rendered(): void
+    {
+        $response = $this->get(route('filament.admin.auth.login'));
 
         $response->assertStatus(200);
     }
 
-    public function test_users_can_authenticate_using_the_login_screen(): void
+    public function test_admin_user_can_access_admin_dashboard(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'password',
+        $admin = User::factory()->create([
+            'role' => Role::SuperAdmin,
+            'is_active' => true,
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('home', absolute: false));
-    }
+        $response = $this->actingAs($admin)->get('/admin');
 
-    public function test_users_can_not_authenticate_with_invalid_password(): void
-    {
-        $user = User::factory()->create();
-
-        $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'wrong-password',
-        ]);
-
-        $this->assertGuest();
+        $response->assertStatus(200);
     }
 
     public function test_users_can_logout(): void

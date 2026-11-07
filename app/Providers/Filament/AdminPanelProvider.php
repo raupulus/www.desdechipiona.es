@@ -78,11 +78,6 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-globe-alt')
                     ->url(fn () => route('home'))
                     ->sort(PHP_INT_MAX - 5),
-                Action::make('go_user_panel')
-                    ->label(fn () => __('filament.user_panel'))
-                    ->icon('heroicon-o-user-circle')
-                    ->url(fn () => route('filament.panel.pages.dashboard'))
-                    ->sort(PHP_INT_MAX - 4),
                 Action::make('lang_es')
                     ->label('Español')
                     ->icon('heroicon-o-check-circle')

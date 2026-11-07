@@ -109,7 +109,7 @@ class User extends Authenticatable implements FilamentUser
 
     /**
      * Determina si el usuario puede acceder a un panel Filament específico.
-     * El panel admin requiere rol admin o superadmin; el panel usuario requiere estar activo.
+     * Solo el panel de administración (/admin) está habilitado y requiere rol admin o superadmin activo.
      *
      * @param  Panel  $panel  El panel Filament al que se intenta acceder
      * @return bool True si el usuario tiene acceso al panel
@@ -120,8 +120,7 @@ class User extends Authenticatable implements FilamentUser
             return $this->role->isAdmin() && $this->is_active;
         }
 
-        // El panel de usuario (/panel) es accesible por cualquier usuario activo
-        return $this->is_active;
+        return false;
     }
 
     // =========================================================
