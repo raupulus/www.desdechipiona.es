@@ -62,8 +62,8 @@
             </div>
             @php
                 $isLocalOrTesting = app()->environment(['local', 'testing']);
-                $showFacebook = $isLocalOrTesting || !empty(config('services.facebook.client_id'));
-                $showGoogle = $isLocalOrTesting || !empty(config('services.google.client_id'));
+                $showFacebook = ! empty(config('services.facebook.client_id'));
+                $showGoogle = $isLocalOrTesting || ! empty(config('services.google.client_id'));
             @endphp
             <div class="flex flex-wrap items-center gap-2.5 pt-0.5">
                 @if($showFacebook)

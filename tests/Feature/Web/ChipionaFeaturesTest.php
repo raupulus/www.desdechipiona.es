@@ -219,7 +219,7 @@ class ChipionaFeaturesTest extends TestCase
         $page = Page::factory()->published()->create(['slug' => 'corrales-de-pesca']);
 
         // 1. Identificación social ligera simulada
-        $this->get(route('social.redirect', ['provider' => 'facebook']))
+        $this->get(route('social.redirect', ['provider' => 'google']))
             ->assertRedirect();
         $this->assertNotNull(session('public_social_identity'));
 
@@ -236,7 +236,7 @@ class ChipionaFeaturesTest extends TestCase
 
         $this->assertDatabaseHas('correction_requests', [
             'correctable_id' => $page->id,
-            'oauth_provider' => 'facebook',
+            'oauth_provider' => 'google',
             'status' => SuggestionStatus::Pending->value,
         ]);
 
@@ -251,7 +251,7 @@ class ChipionaFeaturesTest extends TestCase
 
         $this->assertDatabaseHas('comments', [
             'commentable_id' => $page->id,
-            'oauth_provider' => 'facebook',
+            'oauth_provider' => 'google',
             'is_approved' => false,
         ]);
 
