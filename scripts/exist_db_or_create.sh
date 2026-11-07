@@ -6,7 +6,7 @@ set -euo pipefail
 ## $1 DB_USERNAME
 ## $2 DB_PASSWORD
 
-DB_USERNAME="${DB_USERNAME:-${1:-fryntiz}}"
+DB_USERNAME="${DB_USERNAME:-${1:-dev}}"
 DB_PASSWORD="${DB_PASSWORD:-${2:-}}"
 DB_HOST="${DB_HOST:-127.0.0.1}"
 DB_PORT="${DB_PORT:-5432}"

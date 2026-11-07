@@ -1,6 +1,6 @@
 # Módulo: Panel Admin (Filament)
 
-*Última actualización: 2026-11-04*
+*Última actualización: 2026-11-07*
 
 > Panel de administración completo en `/admin` con CRUD de todos los modelos, moderación de participación ciudadana, dashboard con widgets y navegación organizada por grupos.
 

@@ -1,6 +1,6 @@
 # Documentación técnica de módulos
 
-*Última actualización: 2026-11-05*
+*Última actualización: 2026-11-07*
 
 Este directorio contiene la documentación técnica viva y detallada de cada módulo implementado en la plataforma. Cada archivo describe el objetivo, la arquitectura, los archivos involucrados, los campos, las relaciones, qué es editable desde el panel y el comportamiento de un módulo concreto.
 
@@ -48,7 +48,7 @@ Este directorio contiene la documentación técnica viva y detallada de cada mó
 | [Autenticación y autorización](autenticacion.md) | `autenticacion.md` | Auth web por sesión, API (Sanctum), policies y guards |
 | [Traducciones](traducciones.md) | `traducciones.md` | Sistema i18n: archivos de idioma, modelos traducibles, middleware |
 | [Panel Admin Filament](panel-admin.md) | `panel-admin.md` | Panel de administración con todos los Resources |
-| [Panel Usuario Filament](panel-usuario.md) | `panel-usuario.md` | Panel de usuario con perfil y tokens API |
+| [Panel Usuario Filament](panel-usuario.md) | `panel-usuario.md` | Panel desactivado y unificado en /admin |
 | [API REST](api-rest.md) | `api-rest.md` | Endpoints públicos y autenticados de la API v1 |
 | [Integración de APIs](apis/README.md) | `apis/README.md` | Arquitectura de consumo de APIs externas |
 | [Frontend público](frontend.md) | `frontend.md` | Vistas Blade, layout, componentes y páginas públicas |

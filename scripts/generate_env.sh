@@ -5,7 +5,7 @@ set -euo pipefail
 ## Script para generar o sincronizar el archivo .env de producción en GoCD (Odin)
 ## ==============================================================================
 
-DB_USERNAME="${DB_USERNAME:-${1:-fryntiz}}"
+DB_USERNAME="${DB_USERNAME:-${1:-dev}}"
 DB_PASSWORD="${DB_PASSWORD:-${2:-}}"
 
 WORKSCRIPT="$(pwd)"

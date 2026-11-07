@@ -1,6 +1,6 @@
 # AGENTS.md — Guía completa del proyecto para agentes de IA
 
-*Última actualización: 2026-11-05*
+*Última actualización: 2026-11-07*
 
 Este archivo proporciona el contexto y las directrices obligatorias del proyecto para que los agentes de IA
 puedan trabajar de forma autónoma, consistente y precisa. Léelo completamente antes de realizar cualquier modificación.
@@ -18,7 +18,7 @@ puedan trabajar de forma autónoma, consistente y precisa. Léelo completamente 
 - **PHP 8.5** — Tipado estricto en parámetros y retornos, backed enums, readonly properties, typed properties.
 - **Laravel 13** — Framework principal.
 - **Base de datos — PostgreSQL** — **OBLIGATORIO**: La base de datos que se usará es SIEMPRE PostgreSQL (`DB_CONNECTION=pgsql`). No utilizar MySQL ni SQLite salvo en tests en memoria si aplica.
-- **Filament 5** — Panel admin (`/admin`) y panel de usuario (`/panel`). Completamente traducido al español.
+- **Filament 5** — Panel de administración unificado (`/admin`). Completamente traducido al español.
 - **Tailwind CSS 4** — Motor de estilos CSS utilitarios configurado con `@theme` en `resources/css/app.css`.
 - **Alpine.js 3** — Interactividad reactiva ligera y modales.
 - **Vue 3** — Preparado en el frontend para componentes enriquecidos (no requerido en producción aún).
@@ -64,13 +64,13 @@ Los siguientes directorios y archivos están estrictamente excluidos del reposit
 
 La plataforma implementa tres roles definidos mediante el enum respaldado `App\Enums\Role`:
 
-| Rol | Valor (`role`) | Acceso Panel Admin (`/admin`) | Acceso Panel Usuario (`/panel`) | API REST | Propósito |
-|-----|----------------|-------------------------------|---------------------------------|----------|-----------|
-| **SuperAdmin** | `superadmin` | Sí (Total) | Sí | Sí | Control total del sistema, configuración, logs, auditoría y gestión de cuentas `superadmin` |
-| **Admin** | `admin` | Sí (Gestión) | Sí | Sí | Gestión de contenidos y usuarios estándar (no puede asignar ni modificar cuentas `superadmin`) |
-| **User** | `user` | No | Sí (si `is_active = true`) | Sí | Usuario registrado general; gestiona su perfil y sus tokens de API |
+| Rol | Valor (`role`) | Acceso Panel Admin (`/admin`) | API REST | Propósito |
+|-----|----------------|-------------------------------|----------|-----------|
+| **SuperAdmin** | `superadmin` | Sí (Total) | Sí | Control total del sistema, configuración, logs, auditoría y gestión de cuentas `superadmin` |
+| **Admin** | `admin` | Sí (Gestión) | Sí | Gestión de contenidos y usuarios estándar (no puede asignar ni modificar cuentas `superadmin`) |
+| **User** | `user` | No | Sí | Usuario de API / datos; no accede a administración |
 
-> El método `canAccessPanel(Panel $panel)` en `App\Models\User` restringe el acceso al panel admin únicamente a usuarios con rol `superadmin` o `admin` y estado `is_active = true`, mientras que `/panel` permite el acceso a cualquier usuario activo (`is_active = true`).
+> El método `canAccessPanel(Panel $panel)` en `App\Models\User` restringe el acceso al panel admin únicamente a usuarios con rol `superadmin` o `admin` y estado `is_active = true`. El acceso está centralizado en `/admin` (con redirección unificada desde `/login` y `/panel`), y el registro público de cuentas está totalmente deshabilitado (0 registros, 404).
 
 ---
 
@@ -267,7 +267,7 @@ www.desdechipiona.es/
 │   ├── Models/                   # User, Post, Page, News, Category, Slide, Section, OfficialPhone, Proverb, ContentSuggestion, CorrectionRequest, Comment, Setting, SentEmail
 │   ├── Policies/                 # Políticas de autorización por modelo
 │   ├── Providers/
-│   │   └── Filament/             # AdminPanelProvider (/admin), PanelUserProvider (/panel)
+│   │   └── Filament/             # AdminPanelProvider (/admin)
 │   ├── Rules/                    # Reglas de validación personalizadas (Recaptcha, Turnstile)
 │   ├── Services/                 # ContentSearchService, ChipionaWeatherService, EmailService, SeoService, SettingService, SitemapService
 │   └── Traits/                   # HasSlug, HasStatus, HasSeo, BelongsToUser, SanitizesHtmlContent
@@ -327,12 +327,11 @@ www.desdechipiona.es/
 - `GET  /admin/logs/download/{filename}` (`admin.logs.download`): Descarga segura de archivo de log (solo admin activo).
 - `GET  /up`: Health check nativo de Laravel.
 
-### Rutas de Autenticación Web (`routes/auth.php`)
-- `GET  /login` (`login`): Pantalla de inicio de sesión.
-- `POST /login`: Procesamiento de login (`throttle:10,1`, reCAPTCHA v3, requiere `is_active = true`).
+### Rutas de Autenticación Web (`routes/auth.php` y `routes/web.php`)
+- `GET/POST /login` (`login`): Redirección automática al login unificado de administración (`/admin/login`).
+- `GET/POST /panel` y `/panel/{any}`: Redirección automática al panel de administración (`/admin`).
+- `GET/POST /register` (`register`): 404 Not Found. Registro público permanentemente desactivado (0 registros).
 - `POST /logout` (`logout`): Cierre de sesión y revocación.
-- `GET  /register` (`register`): Pantalla de registro de usuario.
-- `POST /register`: Registro de nuevo usuario (`throttle:10,1`, reCAPTCHA v3).
 - `GET  /forgot-password` (`password.request`): Solicitud de recuperación de contraseña.
 - `POST /forgot-password` (`password.email`): Envío del enlace de recuperación (`throttle:10,1`, reCAPTCHA v3).
 - `GET  /reset-password/{token}` (`password.reset`): Formulario de restablecimiento.
@@ -346,7 +345,7 @@ www.desdechipiona.es/
 
 ### Rutas Panel Admin Filament (`/admin`)
 - `GET  /admin` (`filament.admin.pages.dashboard`): Dashboard del administrador con estadísticas y widgets.
-- `GET  /admin/login` (`filament.admin.auth.login`): Login específico del panel admin.
+- `GET  /admin/login` (`filament.admin.auth.login`): Único login oficial de la plataforma (con Turnstile/reCAPTCHA v3 opcional).
 - `POST /admin/logout` (`filament.admin.auth.logout`): Cierre de sesión de administración.
 - CRUDs de Administración:
   - `/admin/users`: Listado, creación y edición de usuarios.
@@ -368,11 +367,8 @@ www.desdechipiona.es/
   - `/admin/regenerate-sitemap`: Regeneración manual de `sitemap.xml`.
   - `/admin/view-logs`: Explorador y visor de logs del sistema.
 
-### Rutas Panel Usuario Filament (`/panel`)
-- `GET  /panel` (`filament.panel.pages.dashboard`): Dashboard del usuario con bienvenida y resumen de tokens.
-- `GET  /panel/edit-profile` (`filament.panel.pages.edit-profile`): Edición de datos del perfil y contraseña propia (requiere contraseña actual).
-- `GET  /panel/api-tokens` (`filament.panel.pages.api-tokens`): Creación y revocación de tokens API personales Sanctum.
-- `GET  /panel/login`: Login de usuarios al panel.
+### Rutas Panel Usuario Filament (`/panel`) [Desactivado]
+- Redirigido de forma unificada a `/admin` (panel único de administración). No existen cuentas de usuario con acceso web fuera de administración.
 
 ### Rutas API REST (`/api/v1`)
 - **Públicas**:

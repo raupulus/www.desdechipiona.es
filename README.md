@@ -17,7 +17,7 @@
 
 </div>
 
-*Última actualización: 2026-11-04*
+*Última actualización: 2026-11-07*
 
 ## 📖 Sobre el Proyecto
 
@@ -49,7 +49,7 @@ Consulte la especificación completa en [docs/info/DESIGN.md](docs/info/DESIGN.m
 | **PHP** | 8.5 | Backend tipado estricto con backed enums y readonly properties |
 | **Laravel** | 13.x | Framework de aplicaciones web |
 | **PostgreSQL** | 16.x | **Motor de base de datos obligatorio** (`DB_CONNECTION=pgsql`) |
-| **Filament** | 5.x | Panel de administración (`/admin`) y panel de usuario (`/panel`) |
+| **Filament** | 5.x | Panel de administración unificado (`/admin`) |
 | **Tailwind CSS** | 4.x | Framework CSS utilitario configurado vía `@theme` nativo |
 | **Alpine.js** | 3.x | Interactividad reactiva ligera y modales |
 | **Vite + pnpm** | 8.x / 10.x | Bundler de assets y gestor de paquetes frontend |

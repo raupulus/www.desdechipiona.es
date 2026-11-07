@@ -1,8 +1,8 @@
 # Módulo: Usuarios
 
-*Última actualización: 2026-11-04*
+*Última actualización: 2026-11-07*
 
-> Gestión de cuentas de usuario con sistema de roles, autenticación web y API, y control de acceso a los paneles Filament.
+> Gestión de cuentas de usuario con sistema de roles, autenticación web y API, y control de acceso exclusivo al panel Filament /admin.
 
 ---
 
@@ -12,13 +12,13 @@ El módulo de usuarios proporciona toda la infraestructura de gestión de identi
 
 - **Superadmin**: control total del sistema, acceso al panel de administración (`/admin`) con permisos completos sobre todos los recursos.
 - **Admin**: acceso al panel de administración con los mismos permisos de gestión de contenido, pero sin capacidad para modificar ni asignar el rol `superadmin`.
-- **User**: acceso únicamente al panel de usuario (`/panel`), donde puede gestionar su perfil personal y sus tokens de API.
+- **User**: usuario de base de datos y consumo de API REST. El antiguo panel secundario de usuario (`/panel`) ha sido desactivado y unificado hacia `/admin`.
 
-> ⚠️ **Registro público desactivado por diseño**: El registro abierto de usuarios está estrictamente desactivado (`AUTH_REGISTRATION_ENABLED=false`). Cualquier intento de acceso a `/register` o a `/api/v1/auth/register` devuelve un error 404 (Not Found). Únicamente el administrador del sistema puede crear nuevos usuarios desde el panel de administración (`/admin/users`) o mediante comandos Artisan por consola (`php artisan make:filament-user`).
+> ⚠️ **Registro público desactivado por diseño (0 registros)**: El registro abierto de usuarios está estrictamente desactivado. Cualquier intento de acceso a `/register` devuelve un error 404 (Not Found). Únicamente el administrador del sistema puede crear nuevos usuarios desde el panel de administración (`/admin/users`) o mediante comandos Artisan por consola (`php artisan make:filament-user`).
 
-El módulo incluye autenticación web con sesiones HTTP (login con verificación `is_active = true`, recuperación y confirmación de contraseña) y autenticación API con Laravel Sanctum (generación de tokens Bearer para consumo externo). Cada usuario puede tener un avatar, un estado activo/inactivo que controla el acceso a toda la plataforma, y se implementa borrado lógico (soft delete) para no perder datos históricos.
+El módulo incluye autenticación web con sesiones HTTP unificada en `/admin` (con redirección automática desde `/login` y `/panel`), y autenticación API con Laravel Sanctum (generación de tokens Bearer para consumo externo). Cada usuario puede tener un avatar, un estado activo/inactivo que controla el acceso a toda la plataforma, y se implementa borrado lógico (soft delete) para no perder datos históricos.
 
-Desde el panel admin, los administradores pueden crear, editar, desactivar y eliminar usuarios. Los usuarios normales solo pueden editar su propio perfil desde el panel de usuario (`/panel`). Las policies de autorización garantizan que un usuario no pueda eliminarse a sí mismo ni que un `admin` pueda alterar cuentas `superadmin`.
+Desde el panel admin, los administradores pueden crear, editar, desactivar y eliminar usuarios. Las policies de autorización garantizan que un usuario no pueda eliminarse a sí mismo ni que un `admin` pueda alterar cuentas `superadmin`.
 
 ---
 
