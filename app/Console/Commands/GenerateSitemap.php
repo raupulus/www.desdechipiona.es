@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class GenerateSitemap extends Command
 {
-    protected $signature = 'sitemap:generate';
+    protected $signature = 'sitemap:generate {--force : Regenerar sitemap sin confirmación}';
 
     protected $description = 'Genera el archivo sitemap.xml';
 
