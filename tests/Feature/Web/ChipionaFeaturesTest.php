@@ -461,9 +461,12 @@ class ChipionaFeaturesTest extends TestCase
             ->assertSee('width:300px;height:250px', false)
             ->assertSee('max-width:728px;height:90px', false)
             ->assertSee('chipiona-adsbygoogle-script', false)
+            ->assertSee('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456', false)
             ->assertSee('window.chipionaBootAdsense = function', false)
             ->assertSee('ins.offsetParent === null', false)
-            ->assertSee("localStorage.getItem('chipiona_cookie_consent') !== 'all'", false);
+            ->assertSee("(window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds =\n                        localStorage.getItem('chipiona_cookie_consent') === 'all' ? 0 : 1;", false)
+            ->assertSee("(window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = consent === 'all' ? 0 : 1;", false)
+            ->assertDontSee('x-show="cookieConsent === \'all\'"', false);
     }
 
     public function test_ads_txt_and_legal_cookie_privacy_compliance(): void
@@ -492,11 +495,12 @@ class ChipionaFeaturesTest extends TestCase
             ->assertOk()
             ->assertSee('google.com, pub-1122334455667788, DIRECT, f08c47fec0942fa0', false);
 
-        // 4. Banner RGPD y páginas /cookies y /privacy contienen información de Google AdSense y panel de revocación
+        // 4. Banner RGPD y páginas /cookies y /privacy contienen información de Google AdSense, modo contextual (requestNonPersonalizedAds) y panel de revocación
         $this->withSession(['locale' => 'es'])
             ->get(route('cookies'))
             ->assertOk()
             ->assertSee('Google AdSense')
+            ->assertSee('requestNonPersonalizedAds = 1')
             ->assertSee('policies.google.com/technologies/partner-sites', false)
             ->assertSee('adssettings.google.com', false)
             ->assertSee('cookie-consent-panel', false)
@@ -508,6 +512,7 @@ class ChipionaFeaturesTest extends TestCase
             ->get(route('privacy'))
             ->assertOk()
             ->assertSee('Google AdSense')
+            ->assertSee('requestNonPersonalizedAds = 1')
             ->assertSee('policies.google.com/technologies/partner-sites', false)
             ->assertSee('adssettings.google.com', false);
 
@@ -515,6 +520,7 @@ class ChipionaFeaturesTest extends TestCase
             ->get(route('cookies'))
             ->assertOk()
             ->assertSee('Google AdSense')
+            ->assertSee('requestNonPersonalizedAds = 1')
             ->assertSee('Accept all')
             ->assertSee('Essential only');
     }

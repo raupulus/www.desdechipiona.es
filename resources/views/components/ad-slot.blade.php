@@ -29,10 +29,13 @@
         @once
             @push('head_js')
                 <script>
-                    window.chipionaBootAdsense = function () {
-                        if (localStorage.getItem('chipiona_cookie_consent') !== 'all') {
-                            return;
-                        }
+                    (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds =
+                        localStorage.getItem('chipiona_cookie_consent') === 'all' ? 0 : 1;
+
+                    window.chipionaBootAdsense = function (consentChoice) {
+                        var consent = consentChoice || localStorage.getItem('chipiona_cookie_consent');
+                        (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = consent === 'all' ? 0 : 1;
+
                         if (!document.getElementById('chipiona-adsbygoogle-script')) {
                             var s = document.createElement('script');
                             s.id = 'chipiona-adsbygoogle-script';
@@ -41,6 +44,7 @@
                             s.crossOrigin = 'anonymous';
                             document.head.appendChild(s);
                         }
+
                         var pushSlots = function () {
                             document.querySelectorAll('ins.adsbygoogle[data-chipiona-pushed="0"]').forEach(function (ins) {
                                 if (ins.offsetParent === null) {
@@ -52,6 +56,7 @@
                                 } catch (e) {}
                             });
                         };
+
                         if (typeof window.requestAnimationFrame === 'function') {
                             window.requestAnimationFrame(function () {
                                 setTimeout(pushSlots, 0);
@@ -60,12 +65,17 @@
                             setTimeout(pushSlots, 0);
                         }
                     };
+
                     document.addEventListener('DOMContentLoaded', function () {
-                        if (localStorage.getItem('chipiona_cookie_consent') === 'all') {
-                            window.chipionaBootAdsense();
-                        }
+                        window.chipionaBootAdsense();
                     });
                 </script>
+                <script
+                    id="chipiona-adsbygoogle-script"
+                    async
+                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ urlencode($clientId) }}"
+                    crossorigin="anonymous"
+                ></script>
             @endpush
         @endonce
     @endif
@@ -86,29 +96,12 @@
             <div class="relative mx-auto flex h-[250px] w-full max-w-[300px] items-center justify-center overflow-hidden rounded-xl bg-white/80">
                 @if($canRenderLiveAd)
                     <ins
-                        x-show="cookieConsent === 'all'"
                         class="adsbygoogle"
                         style="display:inline-block;width:300px;height:250px"
                         data-ad-client="{{ $clientId }}"
                         data-ad-slot="{{ $slotId }}"
                         data-chipiona-pushed="0"
                     ></ins>
-                    <div
-                        x-show="cookieConsent !== 'all'"
-                        x-cloak
-                        class="flex h-full w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-stone-50/90 p-4 text-center"
-                    >
-                        <span class="text-[11px] font-medium text-slate-500 leading-snug">
-                            {{ __('messages.ad_consent_required_desc') }}
-                        </span>
-                        <button
-                            type="button"
-                            @click="setCookieConsent('all')"
-                            class="rounded-lg border border-slate-300 bg-white px-3 py-1 text-[11px] font-bold text-slate-700 hover:bg-slate-100 cursor-pointer"
-                        >
-                            {{ __('messages.ad_consent_enable_btn') }}
-                        </button>
-                    </div>
                 @else
                     <div class="flex h-full w-full flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-stone-50/90 p-4 text-center">
                         <span class="font-mono text-xs font-extrabold text-slate-500">300 × 250</span>
@@ -122,29 +115,12 @@
             <div class="relative mx-auto flex h-[90px] w-full max-w-[728px] items-center justify-center overflow-hidden rounded-xl bg-white/80">
                 @if($canRenderLiveAd)
                     <ins
-                        x-show="cookieConsent === 'all'"
                         class="adsbygoogle"
                         style="display:inline-block;width:100%;max-width:728px;height:90px"
                         data-ad-client="{{ $clientId }}"
                         data-ad-slot="{{ $slotId }}"
                         data-chipiona-pushed="0"
                     ></ins>
-                    <div
-                        x-show="cookieConsent !== 'all'"
-                        x-cloak
-                        class="flex h-full w-full flex-wrap items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-stone-50/90 px-4 py-2 text-center"
-                    >
-                        <span class="text-[11px] font-medium text-slate-500 leading-snug">
-                            {{ __('messages.ad_consent_required_desc') }}
-                        </span>
-                        <button
-                            type="button"
-                            @click="setCookieConsent('all')"
-                            class="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-700 hover:bg-slate-100 cursor-pointer"
-                        >
-                            {{ __('messages.ad_consent_enable_btn') }}
-                        </button>
-                    </div>
                 @else
                     <div class="flex h-full w-full flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-stone-50/90 px-4 py-2 text-center">
                         <span class="font-mono text-xs font-extrabold text-slate-500">728 × 90</span>

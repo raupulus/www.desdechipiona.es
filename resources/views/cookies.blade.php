@@ -41,6 +41,7 @@
                 } else {
                     localStorage.setItem('chipiona_cookie_consent', value);
                     localStorage.setItem('chipiona_cookie_notice', '1');
+                    (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = value === 'all' ? 0 : 1;
                     window.dispatchEvent(new CustomEvent('chipiona-consent-updated', { detail: value }));
                 }
                 setTimeout(() => { this.savedFeedback = false; }, 3500);
