@@ -42,6 +42,7 @@
    - [x-slide-carousel](#x-slide-carousel)
    - [x-pagination](#x-pagination)
    - [x-application-logo](#x-application-logo)
+   - [x-ad-slot](#x-ad-slot)
 
 ---
 
@@ -328,7 +329,7 @@ Logotipo SVG corporativo vectorial escalable.
 ```
 
 ### `x-ad-slot`
-Bloque publicitario fijo y discreto de Google AdSense (exclusivo para páginas interiores; bloqueado por código en la página principal). Reserva dimensiones fijas (`300×250` en lateral o `728×90` en horizontal) para garantizar `CLS = 0` y soporta modo previsualización en entorno local (`ADSENSE_PREVIEW=true`).
+Bloque publicitario fijo y discreto de Google AdSense (exclusivo para páginas interiores; bloqueado por código en la página principal). Reserva dimensiones fijas (`300×250` en lateral o `728×90` en horizontal) para garantizar `CLS = 0`, soporta modo previsualización en entorno local (`ADSENSE_PREVIEW=true`) e inyecta el script `adsbygoogle.js` exclusivamente en las páginas que contienen bloques publicitarios y tras el consentimiento RGPD del usuario (`chipiona_cookie_consent = 'all'`).
 
 - **Archivo**: `resources/views/components/ad-slot.blade.php`
 - **Propiedades**:

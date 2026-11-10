@@ -79,6 +79,7 @@ Route::get('/about', [StaticPageController::class, 'about'])->name('about');
 Route::get('/legal', [StaticPageController::class, 'legal'])->name('legal');
 Route::get('/privacy', [StaticPageController::class, 'privacy'])->name('privacy');
 Route::get('/cookies', [StaticPageController::class, 'cookies'])->name('cookies');
+Route::get('/ads.txt', [StaticPageController::class, 'adsTxt'])->name('ads.txt');
 
 // --- Cambio de idioma ---
 Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('language.switch');

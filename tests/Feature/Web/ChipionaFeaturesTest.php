@@ -10,6 +10,8 @@ use App\Models\News;
 use App\Models\OfficialPhone;
 use App\Models\Page;
 use App\Models\Proverb;
+use App\Models\Setting;
+use App\Services\SettingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -416,16 +418,24 @@ class ChipionaFeaturesTest extends TestCase
             'title' => ['es' => 'Ficha Interior AdSense', 'en' => 'Interior AdSense Page'],
         ]);
 
-        // 1. Con AdSense y preview desactivados: no se muestra nada en ninguna vista
+        // 1. Con AdSense y preview desactivados: no se muestra nada ni se inyecta script en ninguna vista
         config([
             'services.adsense.enabled' => false,
             'services.adsense.preview' => false,
         ]);
 
-        $this->get(route('home'))->assertOk()->assertDontSee('data-ad-variant', false);
-        $this->get(route('pages.show', $page->slug))->assertOk()->assertDontSee('data-ad-variant', false);
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertDontSee('data-ad-variant', false)
+            ->assertDontSee('pagead2.googlesyndication.com', false);
 
-        // 2. Con AdSense activo: en portada jamás se renderizan anuncios; en páginas interiores sí (lateral + horizontal)
+        $this->get(route('pages.show', $page->slug))
+            ->assertOk()
+            ->assertDontSee('data-ad-variant', false)
+            ->assertDontSee('pagead2.googlesyndication.com', false);
+
+        // 2. Con AdSense activo: en portada y páginas sin slots jamás se incluye el cargador de AdSense;
+        //    en páginas interiores con slots sí se incluye el cargador condicionado a consentimiento RGPD
         config([
             'services.adsense.enabled' => true,
             'services.adsense.preview' => false,
@@ -434,10 +444,14 @@ class ChipionaFeaturesTest extends TestCase
             'services.adsense.slot_horizontal' => '2222222222',
         ]);
 
-        $this->get(route('home'))
-            ->assertOk()
-            ->assertDontSee('adsbygoogle', false)
-            ->assertDontSee('data-ad-variant', false);
+        foreach (['home', 'explore', 'about', 'legal', 'contact', 'privacy', 'cookies', 'suggestions.create'] as $nonAdRoute) {
+            $this->get(route($nonAdRoute))
+                ->assertOk()
+                ->assertDontSee('pagead2.googlesyndication.com', false)
+                ->assertDontSee('chipiona-adsbygoogle-script', false)
+                ->assertDontSee('window.chipionaBootAdsense = function', false)
+                ->assertDontSee('data-ad-variant', false);
+        }
 
         $this->get(route('pages.show', $page->slug))
             ->assertOk()
@@ -445,6 +459,63 @@ class ChipionaFeaturesTest extends TestCase
             ->assertSee('data-ad-variant="horizontal"', false)
             ->assertSee('data-ad-client="ca-pub-1234567890123456"', false)
             ->assertSee('width:300px;height:250px', false)
-            ->assertSee('max-width:728px;height:90px', false);
+            ->assertSee('max-width:728px;height:90px', false)
+            ->assertSee('chipiona-adsbygoogle-script', false)
+            ->assertSee('window.chipionaBootAdsense = function', false)
+            ->assertSee('ins.offsetParent === null', false)
+            ->assertSee("localStorage.getItem('chipiona_cookie_consent') !== 'all'", false);
+    }
+
+    public function test_ads_txt_and_legal_cookie_privacy_compliance(): void
+    {
+        // 1. Sin client_id configurado -> /ads.txt devuelve 404
+        config(['services.adsense.client_id' => '']);
+        Setting::where('key', 'adsense_client_id')->delete();
+        app(SettingService::class)->clearCache();
+        $this->get(route('ads.txt'))->assertNotFound();
+
+        // 2. Con client_id ca-pub-... en config -> /ads.txt normaliza a pub-... y devuelve línea oficial IAB
+        config(['services.adsense.client_id' => 'ca-pub-9876543210987654']);
+        $this->get(route('ads.txt'))
+            ->assertOk()
+            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
+            ->assertSee('google.com, pub-9876543210987654, DIRECT, f08c47fec0942fa0', false);
+
+        // 3. Con client_id guardado en base de datos (Setting) sin prefijo ca-pub- -> normaliza a pub-...
+        config(['services.adsense.client_id' => '']);
+        Setting::updateOrCreate(
+            ['key' => 'adsense_client_id'],
+            ['display_name' => 'AdSense Client ID', 'value' => '1122334455667788', 'type' => 'text', 'group' => 'ads', 'order' => 2]
+        );
+        app(SettingService::class)->clearCache();
+        $this->get(route('ads.txt'))
+            ->assertOk()
+            ->assertSee('google.com, pub-1122334455667788, DIRECT, f08c47fec0942fa0', false);
+
+        // 4. Banner RGPD y páginas /cookies y /privacy contienen información de Google AdSense y panel de revocación
+        $this->withSession(['locale' => 'es'])
+            ->get(route('cookies'))
+            ->assertOk()
+            ->assertSee('Google AdSense')
+            ->assertSee('policies.google.com/technologies/partner-sites', false)
+            ->assertSee('adssettings.google.com', false)
+            ->assertSee('cookie-consent-panel', false)
+            ->assertSee('this.setCookieConsent(value)', false)
+            ->assertSee('Aceptar todas')
+            ->assertSee('Solo necesarias');
+
+        $this->withSession(['locale' => 'es'])
+            ->get(route('privacy'))
+            ->assertOk()
+            ->assertSee('Google AdSense')
+            ->assertSee('policies.google.com/technologies/partner-sites', false)
+            ->assertSee('adssettings.google.com', false);
+
+        $this->withSession(['locale' => 'en'])
+            ->get(route('cookies'))
+            ->assertOk()
+            ->assertSee('Google AdSense')
+            ->assertSee('Accept all')
+            ->assertSee('Essential only');
     }
 }

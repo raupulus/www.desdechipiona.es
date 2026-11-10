@@ -1,6 +1,6 @@
 # AGENTS.md — Guía completa del proyecto para agentes de IA
 
-*Última actualización: 2026-11-07*
+*Última actualización: 2026-11-10*
 
 Este archivo proporciona el contexto y las directrices obligatorias del proyecto para que los agentes de IA
 puedan trabajar de forma autónoma, consistente y precisa. Léelo completamente antes de realizar cualquier modificación.
@@ -145,7 +145,7 @@ Consulte la especificación completa en [COMPONENTS.md](docs/info/COMPONENTS.md)
 > - Formulario: `<x-text-input>`, `<x-input-label>`, `<x-input-error>`, `<x-recaptcha-script>`
 > - Mensajes: `<x-flash-messages>`, `<x-auth-session-status>`
 > - Navegación: `<x-nav-link>`, `<x-responsive-nav-link>`, `<x-dropdown>`, `<x-modal>`, `<x-language-switcher>`
-> - Contenido: `<x-post-card>`, `<x-section-block>`, `<x-slide-carousel>`, `<x-pagination>`
+> - Contenido: `<x-post-card>`, `<x-section-block>`, `<x-slide-carousel>`, `<x-pagination>`, `<x-ad-slot>`
 
 ---
 
@@ -322,7 +322,8 @@ www.desdechipiona.es/
 - `POST /contact` (`contact.send`): Envío del formulario de contacto (`throttle:10,1`).
 - `GET  /about` (`about`): Página institucional Sobre Nosotros.
 - `GET  /privacy` (`privacy`): Política de privacidad.
-- `GET  /cookies` (`cookies`): Política de cookies.
+- `GET  /cookies` (`cookies`): Política de cookies y panel interactivo de consentimiento RGPD.
+- `GET  /ads.txt` (`ads.txt`): Archivo oficial IAB de vendedores digitales autorizados (Google AdSense).
 - `GET  /lang/{locale}` (`language.switch`): Cambio de idioma activo en sesión.
 - `GET  /admin/logs/download/{filename}` (`admin.logs.download`): Descarga segura de archivo de log (solo admin activo).
 - `GET  /up`: Health check nativo de Laravel.

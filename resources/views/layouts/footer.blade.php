@@ -53,7 +53,17 @@
                     <li><a href="{{ route('legal') }}" class="text-slate-300 hover:text-white">⚖️ {{ __('messages.authorship_box_title') }}</a></li>
                     <li><a href="{{ route('about') }}" class="text-slate-300 hover:text-white">{{ __('messages.about') }}</a></li>
                     <li><a href="{{ route('privacy') }}" class="text-slate-300 hover:text-white">{{ __('messages.privacy') }}</a></li>
-                    <li><a href="{{ route('cookies') }}" class="text-slate-300 hover:text-white">{{ __('messages.cookies') }}</a></li>
+                    <li>
+                        <a href="{{ route('cookies') }}" class="text-slate-300 hover:text-white">{{ __('messages.cookies') }}</a>
+                        <span class="text-slate-600 mx-1">·</span>
+                        <button
+                            type="button"
+                            @click="window.dispatchEvent(new CustomEvent('chipiona-open-cookie-banner'))"
+                            class="text-amber-300 underline hover:text-white cursor-pointer"
+                        >
+                            {{ __('messages.cookie_manage_footer') }}
+                        </button>
+                    </li>
                 </ul>
                 <div class="mt-4 flex flex-wrap gap-2 text-xs font-bold">
                     <a href="{{ setting('telegram_url', 'https://t.me/desdechipiona') }}" target="_blank" rel="noopener noreferrer" class="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-sky-300 hover:text-white hover:border-sky-500">Telegram</a>

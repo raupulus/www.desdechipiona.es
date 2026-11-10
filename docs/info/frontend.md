@@ -1,6 +1,6 @@
 # Módulo: Frontend público
 
-*Última actualización: 2026-11-05*
+*Última actualización: 2026-11-10*
 
 > Layout principal, barra de navegación, pie de página, componentes Blade reutilizables y páginas públicas del sitio web con Tailwind CSS y Alpine.js.
 
@@ -8,7 +8,7 @@
 
 ## Resumen
 
-El frontend público incluye el layout HTML5 con Tailwind CSS v4, la barra de navegación responsive con Alpine.js, el pie de página con redes sociales, componentes Blade reutilizables (carrusel, tarjeta de post, selector de idioma, mensajes flash, secciones dinámicas, script de reCAPTCHA v3, botones, inputs y modales) y las páginas: home, blog, detalle de post, detalle de página, about, contacto, privacidad y cookies.
+El frontend público incluye el layout HTML5 con Tailwind CSS v4, la barra de navegación responsive con Alpine.js, el pie de página con redes sociales, componentes Blade reutilizables (carrusel, tarjeta de post, selector de idioma, mensajes flash, secciones dinámicas, script de reCAPTCHA v3, bloques fijos discretos de AdSense con consentimiento RGPD, botones, inputs y modales) y las páginas: home, blog, detalle de post, detalle de página, about, contacto, privacidad, cookies y `/ads.txt`.
 
 ---
 
@@ -16,11 +16,11 @@ El frontend público incluye el layout HTML5 con Tailwind CSS v4, la barra de na
 
 | Archivo | Descripción |
 |---------|-------------|
-| `resources/views/layouts/app.blade.php` | Layout principal HTML5 con `@vite`, `@stack`, navbar y footer |
+| `resources/views/layouts/app.blade.php` | Layout principal HTML5 con `@vite`, `@stack`, navbar, footer y banner RGPD de cookies |
 | `resources/views/layouts/guest.blade.php` | Layout centrado para páginas de autenticación (`/login`, `/register`, etc.) |
 | `resources/views/layouts/head.blade.php` | Meta tags SEO completos (OG, Twitter, JSON-LD, hreflang) |
 | `resources/views/layouts/navbar.blade.php` | Barra de navegación responsive con Alpine.js |
-| `resources/views/layouts/footer.blade.php` | Pie de página con copyright, enlaces legales y redes sociales |
+| `resources/views/layouts/footer.blade.php` | Pie de página con copyright, enlaces legales, gestor de cookies y redes sociales |
 
 ---
 
@@ -41,6 +41,7 @@ El frontend público incluye el layout HTML5 con Tailwind CSS v4, la barra de na
 | `<x-social-identity-banner />` | `components/social-identity-banner.blade.php` | Identificación social ligera en sesión (Facebook / Google) sin cuenta local |
 | `<x-searchable-select />` | `components/searchable-select.blade.php` | Selector desplegable accesible (ARIA APG combobox) con búsqueda en vivo |
 | `<x-content-builder :blocks="$blocks" />` | `components/content-builder.blade.php` | Renderizador público de bloques modulares de contenido |
+| `<x-ad-slot variant="sidebar\|horizontal" />` | `components/ad-slot.blade.php` | Bloque publicitario fijo (`300×250` / `728×90`) exclusivo para vistas interiores con consentimiento RGPD |
 
 ---
 
@@ -56,13 +57,14 @@ El frontend público incluye el layout HTML5 con Tailwind CSS v4, la barra de na
 | El Tiempo y Mareas (AEMET 11016) | `weather/index.blade.php` | `/weather` | `WeatherController@index` |
 | Teléfonos Oficiales | `phones/index.blade.php` | `/phones` | `OfficialPhoneController@index` |
 | Sugerir y Aportar Contenido | `suggestions/create.blade.php` | `/suggestions` | `ContentSuggestionController@create/store` |
-| Autoría y Aviso Legal | `static/legal.blade.php` | `/legal` | `StaticPageController@legal` |
+| Autoría y Aviso Legal | `legal.blade.php` | `/legal` | `StaticPageController@legal` |
 | Blog (listado, *desactivado temporalmente*) | `posts/index.blade.php` | `/blog` *(comentada)* | `PostController@index` |
 | Blog (detalle, *desactivado temporalmente*) | `posts/show.blade.php` | `/blog/{slug}` *(comentada)* | `PostController@show` |
-| Sobre nosotros | `static/about.blade.php` | `/about` | `StaticPageController@about` |
+| Sobre nosotros | `about.blade.php` | `/about` | `StaticPageController@about` |
 | Contacto | `contact.blade.php` | `/contact` | `ContactController@show/send` |
-| Privacidad | `static/privacy.blade.php` | `/privacy` | `StaticPageController@privacy` |
-| Cookies | `static/cookies.blade.php` | `/cookies` | `StaticPageController@cookies` |
+| Privacidad | `privacy.blade.php` | `/privacy` | `StaticPageController@privacy` |
+| Cookies | `cookies.blade.php` | `/cookies` | `StaticPageController@cookies` |
+| Vendedores Autorizados IAB | *(texto plano)* | `/ads.txt` | `StaticPageController@adsTxt` |
 
 ### Errores personalizados
 

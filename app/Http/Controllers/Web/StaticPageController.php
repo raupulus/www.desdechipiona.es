@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Section;
 use App\Services\SeoService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * Controlador para las páginas estáticas del sitio web: About, Privacy y Cookies.
+ * Controlador para las páginas estáticas del sitio web: About, Privacy, Cookies, Legal y ads.txt.
  * Cada página carga contenido dinámico desde las secciones de su zona correspondiente.
  */
 class StaticPageController extends Controller
@@ -100,5 +101,34 @@ class StaticPageController extends Controller
             ]);
 
         return view('legal', compact('seo'));
+    }
+
+    /**
+     * Devuelve el archivo /ads.txt oficial de vendedores digitales autorizados (IAB / Google AdSense).
+     *
+     * Si no existe un identificador de editor configurado, devuelve HTTP 404.
+     *
+     * @return Response Respuesta en texto plano con la línea autorizada de Google AdSense
+     */
+    public function adsTxt(): Response
+    {
+        $rawClientId = trim((string) (setting('adsense_client_id') ?: config('services.adsense.client_id', '')));
+
+        if ($rawClientId === '') {
+            abort(404);
+        }
+
+        // Normalizar ca-pub-XXXXXXXXXXXXXXXX o pub-XXXXXXXXXXXXXXXX a pub-XXXXXXXXXXXXXXXX
+        $publisherId = preg_replace('/^ca-/i', '', $rawClientId) ?? $rawClientId;
+        if (! str_starts_with(strtolower($publisherId), 'pub-')) {
+            $publisherId = 'pub-'.ltrim($publisherId, '-');
+        }
+
+        $content = "google.com, {$publisherId}, DIRECT, f08c47fec0942fa0\n";
+
+        return response($content, 200, [
+            'Content-Type' => 'text/plain; charset=UTF-8',
+            'Cache-Control' => 'public, max-age=3600',
+        ]);
     }
 }

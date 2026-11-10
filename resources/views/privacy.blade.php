@@ -15,6 +15,8 @@
             <p>{!! __('messages.privacy_s2_body') !!}</p>
             <h2>{{ __('messages.privacy_s3_title') }}</h2>
             <p>{!! __('messages.privacy_s3_body') !!}</p>
+            <h2>{{ __('messages.privacy_s4_title') }}</h2>
+            <p>{!! __('messages.privacy_s4_body') !!}</p>
         </div>
     @endforelse
 </div>

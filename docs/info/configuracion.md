@@ -1,6 +1,6 @@
 # Módulo: Configuración (Settings)
 
-*Última actualización: 2026-11-05*
+*Última actualización: 2026-11-10*
 
 > Ajustes globales de la plataforma en formato clave-valor, agrupados por categoría, cacheados durante 1 hora y accesibles mediante el helper global `setting()`.
 
@@ -8,9 +8,9 @@
 
 ## Objetivo y funcionalidad
 
-El módulo de configuración permite gestionar los ajustes globales del sitio web desde el panel de administración, sin necesidad de modificar archivos `.env` ni código fuente. Su objetivo es centralizar toda la configuración dinámica de la plataforma (nombre del sitio, datos de contacto, URLs de redes sociales, valores SEO por defecto, logotipo, etc.) en un sistema key-value editable en tiempo real.
+El módulo de configuración permite gestionar los ajustes globales del sitio web desde el panel de administración, sin necesidad de modificar archivos `.env` ni código fuente. Su objetivo es centralizar toda la configuración dinámica de la plataforma (nombre del sitio, datos de contacto, URLs de redes sociales, valores SEO por defecto, logotipo, publicidad discreta en interiores, etc.) en un sistema key-value editable en tiempo real.
 
-Cada setting tiene una clave única, un valor, un tipo de dato (text, textarea, image, number), un grupo de clasificación (general, contact, social, seo) y un orden de visualización. Los valores se cachean durante 1 hora para optimizar el rendimiento, y la caché se invalida automáticamente al editar cualquier setting desde Filament.
+Cada setting tiene una clave única, un valor, un tipo de dato (text, textarea, image, number), un grupo de clasificación (general, contact, social, seo, ads) y un orden de visualización. Los valores se cachean durante 1 hora para optimizar el rendimiento, y la caché se invalida automáticamente al editar cualquier setting desde Filament.
 
 El acceso a los settings desde cualquier parte de la aplicación se realiza mediante el helper global `setting('clave', 'valor_por_defecto')`, que internamente consulta el `SettingService`. Esto permite que las vistas Blade, controladores, servicios y mailables consuman la configuración de forma sencilla y uniforme. Los settings se utilizan extensivamente en el layout (logo, nombre del sitio, redes sociales, copyright), en el servicio SEO (meta tags por defecto), en el envío de emails (dirección de contacto) y en múltiples componentes del frontend.
 
@@ -18,7 +18,7 @@ El acceso a los settings desde cualquier parte de la aplicación se realiza medi
 
 ## Resumen
 
-El módulo de configuración permite gestionar ajustes del sitio (título, descripción, redes sociales, datos de contacto, SEO por defecto, etc.) desde el panel admin sin tocar código. Funciona con un patrón key-value donde cada registro tiene una clave única, un valor, un tipo de dato, un grupo y un orden. Los valores se cachean 1 hora para optimizar el rendimiento.
+El módulo de configuración permite gestionar ajustes del sitio (título, descripción, redes sociales, datos de contacto, SEO por defecto, Google AdSense, etc.) desde el panel admin sin tocar código. Funciona con un patrón key-value donde cada registro tiene una clave única, un valor, un tipo de dato, un grupo y un orden. Los valores se cachean 1 hora para optimizar el rendimiento.
 
 ---
 
@@ -47,7 +47,7 @@ El módulo de configuración permite gestionar ajustes del sitio (título, descr
 | `details` | text (nullable) | Descripción interna/ayuda del propósito del setting |
 | `type` | string | Tipo de dato: `text`, `textarea`, `image`, `number` |
 | `order` | integer | Posición dentro de su grupo |
-| `group` | string | Grupo: `general`, `seo`, `social`, `contact` |
+| `group` | string | Grupo: `general`, `seo`, `social`, `contact`, `ads` |
 
 ---
 
@@ -99,6 +99,10 @@ Registrado en `composer.json` bajo `autoload.files` junto con `media_url()`, `st
 | `youtube_url` | social | URL de YouTube (`https://www.youtube.com/@desdechipiona`) |
 | `author_url` | social | Web del autor (`https://raupulus.dev`) |
 | `default_meta_keywords` | seo | Keywords SEO por defecto |
+| `adsense_enabled` | ads | Activa o desactiva Google AdSense en páginas interiores (`1` / `0`) |
+| `adsense_client_id` | ads | Identificador de editor de Google AdSense (`ca-pub-...`) |
+| `adsense_slot_sidebar` | ads | ID del bloque fijo lateral (`300×250`) |
+| `adsense_slot_horizontal` | ads | ID del bloque fijo horizontal (`728×90`) |
 
 ---
 
