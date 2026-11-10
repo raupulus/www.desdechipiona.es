@@ -62,4 +62,12 @@ return [
         'corpus_path' => env('CHIPIONA_CORPUS_PATH'),
     ],
 
+    'adsense' => [
+        'enabled' => (bool) env('ADSENSE_ENABLED', false),
+        'preview' => (bool) env('ADSENSE_PREVIEW', env('APP_ENV') === 'local'),
+        'client_id' => env('ADSENSE_CLIENT_ID', ''),
+        'slot_sidebar' => env('ADSENSE_SLOT_SIDEBAR', ''),
+        'slot_horizontal' => env('ADSENSE_SLOT_HORIZONTAL', ''),
+    ],
+
 ];

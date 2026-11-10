@@ -161,6 +161,9 @@
             @endif
         </section>
 
+        {{-- Bloque publicitario fijo horizontal discreto antes de los comentarios --}}
+        <x-ad-slot variant="horizontal" />
+
         {{-- Comentarios --}}
         <section class="rounded-2xl border border-slate-200 bg-white p-6 space-y-5">
             <h2 class="font-serif text-2xl font-extrabold text-slate-950">💬 {{ __('messages.comments_section_title') }} ({{ $news->comments->count() }})</h2>
@@ -295,6 +298,9 @@
                 </ul>
             </div>
         @endif
+
+        {{-- Bloque publicitario fijo lateral discreto (300x250) --}}
+        <x-ad-slot variant="sidebar" />
     </aside>
 </div>
 @endsection

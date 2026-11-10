@@ -107,5 +107,8 @@
             <p class="text-base font-extrabold text-slate-950">{{ __('messages.no_phones_found') }}</p>
         </div>
     @endif
+
+    {{-- Bloque publicitario fijo horizontal discreto --}}
+    <x-ad-slot variant="horizontal" />
 </div>
 @endsection

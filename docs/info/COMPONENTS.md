@@ -1,6 +1,6 @@
 # Catálogo de Componentes UI Reutilizables (COMPONENTS.md)
 
-*Última actualización: 2026-11-04*
+*Última actualización: 2026-11-10*
 
 > Catálogo completo de componentes Blade disponibles en `resources/views/components/`. Contiene la especificación de tags, propiedades, variantes visuales y ejemplos prácticos de uso.
 
@@ -325,4 +325,17 @@ Logotipo SVG corporativo vectorial escalable.
 
 ```blade
 <x-application-logo class="w-10 h-10 text-indigo-600" />
+```
+
+### `x-ad-slot`
+Bloque publicitario fijo y discreto de Google AdSense (exclusivo para páginas interiores; bloqueado por código en la página principal). Reserva dimensiones fijas (`300×250` en lateral o `728×90` en horizontal) para garantizar `CLS = 0` y soporta modo previsualización en entorno local (`ADSENSE_PREVIEW=true`).
+
+- **Archivo**: `resources/views/components/ad-slot.blade.php`
+- **Propiedades**:
+  - `variant` (`'sidebar'` | `'horizontal'`, default `'horizontal'`).
+  - `adSlot` (string|null): Identificador opcional del slot de AdSense si difiere del global configurado.
+
+```blade
+<x-ad-slot variant="sidebar" />
+<x-ad-slot variant="horizontal" />
 ```

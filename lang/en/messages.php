@@ -596,4 +596,8 @@ return [
     'contact_error' => 'Your message could not be sent right now. Please try again later or email info@desdechipiona.es directly.',
     'weather_reference_badge' => 'Local Estimate',
     'weather_fallback_notice' => 'Showing local reference climate values and astronomical tide calculation (remote station sync temporarily on standby).',
+    'ad_label' => 'Advertisement',
+    'ad_region_aria' => 'Advertising space',
+    'ad_preview_sidebar_desc' => 'Reserved AdSense Sidebar Slot (300×250 px fixed · zero CLS)',
+    'ad_preview_horizontal_desc' => 'Reserved AdSense Horizontal Slot (728×90 px responsive fixed · zero CLS)',
 ];

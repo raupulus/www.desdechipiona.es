@@ -138,6 +138,9 @@
         </section>
     </div>
 
+    {{-- Bloque publicitario fijo horizontal discreto --}}
+    <x-ad-slot variant="horizontal" />
+
     @if($coastalPages->count() > 0)
         <section class="space-y-4">
             <h2 class="font-serif text-2xl font-extrabold text-slate-950">🏖️ {{ __('messages.coastal_linked_heading') }}</h2>

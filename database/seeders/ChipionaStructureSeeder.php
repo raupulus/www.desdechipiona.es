@@ -60,6 +60,10 @@ class ChipionaStructureSeeder extends Seeder
             ['key' => 'youtube_url', 'display_name' => 'YouTube', 'value' => 'https://www.youtube.com/@desdechipiona', 'type' => 'text', 'group' => 'social', 'order' => 5],
             ['key' => 'author_url', 'display_name' => 'Web del Autor', 'value' => 'https://raupulus.dev', 'type' => 'text', 'group' => 'social', 'order' => 6],
             ['key' => 'default_meta_keywords', 'display_name' => 'Keywords por defecto', 'value' => 'Chipiona, historia de Chipiona, Faro de Chipiona, Corrales de Pesca, Virgen de Regla, Camaleón, Moscatel de Chipiona, Raúl Caro Pastorino', 'type' => 'text', 'group' => 'seo', 'order' => 1],
+            ['key' => 'adsense_enabled', 'display_name' => 'Google AdSense activo (1 = sí, 0 = no)', 'value' => '0', 'type' => 'text', 'group' => 'ads', 'order' => 1],
+            ['key' => 'adsense_client_id', 'display_name' => 'Google AdSense Client ID (ca-pub-...)', 'value' => '', 'type' => 'text', 'group' => 'ads', 'order' => 2],
+            ['key' => 'adsense_slot_sidebar', 'display_name' => 'Google AdSense Slot Lateral (300x250)', 'value' => '', 'type' => 'text', 'group' => 'ads', 'order' => 3],
+            ['key' => 'adsense_slot_horizontal', 'display_name' => 'Google AdSense Slot Horizontal (728x90)', 'value' => '', 'type' => 'text', 'group' => 'ads', 'order' => 4],
         ];
 
         foreach ($settings as $setting) {

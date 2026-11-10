@@ -408,4 +408,43 @@ class ChipionaFeaturesTest extends TestCase
         $this->assertSame('Faro de Prueba', $pageEmptyEn->title);
         $this->assertStringContainsString('Historia del Faro de Chipiona.', $pageEmptyEn->rendered_content);
     }
+
+    public function test_adsense_fixed_slots_render_only_on_interior_pages_and_never_on_home(): void
+    {
+        $page = Page::factory()->published()->create([
+            'slug' => 'test-adsense-interior',
+            'title' => ['es' => 'Ficha Interior AdSense', 'en' => 'Interior AdSense Page'],
+        ]);
+
+        // 1. Con AdSense y preview desactivados: no se muestra nada en ninguna vista
+        config([
+            'services.adsense.enabled' => false,
+            'services.adsense.preview' => false,
+        ]);
+
+        $this->get(route('home'))->assertOk()->assertDontSee('data-ad-variant', false);
+        $this->get(route('pages.show', $page->slug))->assertOk()->assertDontSee('data-ad-variant', false);
+
+        // 2. Con AdSense activo: en portada jamás se renderizan anuncios; en páginas interiores sí (lateral + horizontal)
+        config([
+            'services.adsense.enabled' => true,
+            'services.adsense.preview' => false,
+            'services.adsense.client_id' => 'ca-pub-1234567890123456',
+            'services.adsense.slot_sidebar' => '1111111111',
+            'services.adsense.slot_horizontal' => '2222222222',
+        ]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertDontSee('adsbygoogle', false)
+            ->assertDontSee('data-ad-variant', false);
+
+        $this->get(route('pages.show', $page->slug))
+            ->assertOk()
+            ->assertSee('data-ad-variant="sidebar"', false)
+            ->assertSee('data-ad-variant="horizontal"', false)
+            ->assertSee('data-ad-client="ca-pub-1234567890123456"', false)
+            ->assertSee('width:300px;height:250px', false)
+            ->assertSee('max-width:728px;height:90px', false);
+    }
 }

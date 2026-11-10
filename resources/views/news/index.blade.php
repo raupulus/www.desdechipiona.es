@@ -115,5 +115,9 @@
             <p class="text-base font-extrabold text-slate-950">{{ __('messages.no_results') }}</p>
         </div>
     @endif
+
+    <div class="mt-10">
+        <x-ad-slot variant="horizontal" />
+    </div>
 </section>
 @endsection

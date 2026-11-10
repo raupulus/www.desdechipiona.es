@@ -110,6 +110,9 @@
         @endif
     </section>
 
+    {{-- Bloque publicitario fijo horizontal discreto --}}
+    <x-ad-slot variant="horizontal" />
+
     {{-- Formulario para subir un refrán (requiere verificación OAuth anti-spam) --}}
     <section id="subir-refran" class="max-w-3xl mx-auto rounded-2xl border-2 border-slate-900 bg-white p-6 sm:p-10 shadow-lg space-y-6">
         <div>

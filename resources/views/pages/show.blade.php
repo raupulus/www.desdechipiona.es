@@ -331,6 +331,9 @@
                 </div>
             </dialog>
 
+            {{-- Bloque publicitario fijo horizontal discreto antes de los comentarios --}}
+            <x-ad-slot variant="horizontal" />
+
             {{-- Sección de Comentarios y Memoria Vecinal --}}
             <section id="comentarios" aria-label="{{ __('messages.comments_section_title') }}" class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-6">
                 <div>
@@ -524,6 +527,9 @@
                     </ul>
                 </div>
             @endif
+
+            {{-- Bloque publicitario fijo lateral discreto (300x250) --}}
+            <x-ad-slot variant="sidebar" />
         </aside>
     </div>
 </div>

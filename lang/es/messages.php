@@ -596,4 +596,8 @@ return [
     'contact_error' => 'No se ha podido enviar el mensaje en este momento. Por favor, inténtalo de nuevo o escribe directamente a info@desdechipiona.es.',
     'weather_reference_badge' => 'Estimación Local',
     'weather_fallback_notice' => 'Mostrando valores climatológicos de referencia local y cálculo astronómico de mareas (sincronización con estación remota temporalmente en espera).',
+    'ad_label' => 'Publicidad',
+    'ad_region_aria' => 'Espacio publicitario',
+    'ad_preview_sidebar_desc' => 'Espacio reservado AdSense Lateral (300×250 px fijo · sin salto CLS)',
+    'ad_preview_horizontal_desc' => 'Espacio reservado AdSense Horizontal (728×90 px adaptable fijo · sin salto CLS)',
 ];
