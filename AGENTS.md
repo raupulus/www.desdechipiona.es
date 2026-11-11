@@ -1,6 +1,6 @@
 # AGENTS.md — Guía completa del proyecto para agentes de IA
 
-*Última actualización: 2026-11-10*
+*Última actualización: 2026-11-11*
 
 Este archivo proporciona el contexto y las directrices obligatorias del proyecto para que los agentes de IA
 puedan trabajar de forma autónoma, consistente y precisa. Léelo completamente antes de realizar cualquier modificación.
@@ -159,6 +159,7 @@ Consulte la especificación detallada en [commands.md](docs/info/commands.md).
 | `php artisan project:clear {--force}` | Limpieza profunda de cachés, reinicio de colas, rotación segura de `APP_KEY` y `composer dump-autoload` |
 | `php artisan project:dummy {--fresh}` | Inserción de datos corporativos de muestra en todos los módulos (para clientes y desarrollo) |
 | `php artisan chipiona:import-corpus {--path=} {--clean}` | Importador local del corpus privado de investigación de Chipiona (nunca versionado en git) |
+| `php artisan chipiona:sanitize-content {--dry-run}` | Saneamiento de páginas en base de datos: elimina indicios de archivo, notas de investigación y enlaces rotos |
 | `php artisan sitemap:generate` | Generación de `public/sitemap.xml` con alternates hreflang para todas las rutas públicas |
 | `php artisan manual:generate-pdf` | Compilación de los manuales Markdown a PDFs corporativos |
 
@@ -247,7 +248,7 @@ www.desdechipiona.es/
 ├── AGENTS.md                     # Directrices maestras del proyecto
 ├── README.md                     # Documentación de instalación y despliegue
 ├── app/
-│   ├── Console/Commands/         # ProjectInstall, ProjectClear, ProjectDummy, ImportChipionaCorpus, GenerateSitemap, GenerateManualPdf
+│   ├── Console/Commands/         # ProjectInstall, ProjectClear, ProjectDummy, ImportChipionaCorpus, SanitizeContentCommand, GenerateSitemap, GenerateManualPdf
 │   ├── Enums/                    # Role, ContentStatus, EmailStatus, ContentGroup, HistoricalEra, EvidenceLevel, SuggestionStatus
 │   ├── Filament/
 │   │   ├── Admin/                # Panel Admin (/admin): Resources, Pages, Widgets
