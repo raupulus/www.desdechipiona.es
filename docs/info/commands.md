@@ -1,6 +1,6 @@
 # Módulo: Comandos Artisan
 
-*Última actualización: 2026-11-05*
+*Última actualización: 2026-11-11*
 
 > Catálogo y especificación técnica exhaustiva de los comandos Artisan personalizados de la plataforma.
 
@@ -8,7 +8,7 @@
 
 ## Resumen
 
-La plataforma incluye 6 comandos Artisan personalizados en `app/Console/Commands/` para automatizar la instalación inicial, la limpieza profunda y rotación segura de claves, la carga de datos corporativos de muestra, la importación del corpus privado de investigación de Chipiona, la generación del sitemap XML y la compilación de los manuales de usuario en PDF.
+La plataforma incluye 7 comandos Artisan personalizados en `app/Console/Commands/` para automatizar la instalación inicial, la limpieza profunda y rotación segura de claves, la carga de datos corporativos de muestra, la importación del corpus privado de investigación de Chipiona, el saneamiento de contenidos e indicios internos, la generación del sitemap XML y la compilación de los manuales de usuario en PDF.
 
 | Comando | Firma | Archivo | Propósito |
 |---------|-------|---------|-----------|
@@ -16,6 +16,7 @@ La plataforma incluye 6 comandos Artisan personalizados en `app/Console/Commands
 | **project:clear** | `project:clear {--force} {--rotate-key}` | `app/Console/Commands/ProjectClear.php` | Limpieza integral de cachés y colas, rotación segura opcional de `APP_KEY` (preservando `APP_PREVIOUS_KEYS`) y `composer dump-autoload` |
 | **project:dummy** | `project:dummy {--fresh}` | `app/Console/Commands/ProjectDummy.php` | Población de datos corporativos de muestra en todos los módulos (bloqueado en producción) |
 | **chipiona:import-corpus** | `chipiona:import-corpus {--path=} {--clean}` | `app/Console/Commands/ImportChipionaCorpus.php` | Importa, categoriza y relaciona el corpus privado de investigación desde fuera del repositorio git |
+| **chipiona:sanitize-content** | `chipiona:sanitize-content {--dry-run}` | `app/Console/Commands/SanitizeContentCommand.php` | Sanea páginas en base de datos eliminando notas de investigación, indicios de archivo internos y enlaces rotos |
 | **sitemap:generate** | `sitemap:generate` | `app/Console/Commands/GenerateSitemap.php` | Generación de `public/sitemap.xml` con alternates `hreflang` para todas las rutas públicas |
 | **manual:generate-pdf** | `manual:generate-pdf` | `app/Console/Commands/GenerateManualPdf.php` | Compilación de los manuales Markdown (`docs/manual/`) a PDFs corporativos con DomPDF |
 
@@ -137,4 +138,39 @@ Compila los manuales Markdown de `docs/manual/{admin,user_backend,user}/` y gene
 
 ```bash
 php artisan manual:generate-pdf
+```
+
+---
+
+## 6. `php artisan chipiona:import-corpus`
+
+**Archivo**: `app/Console/Commands/ImportChipionaCorpus.php`
+
+Importa, categoriza y relaciona el corpus documental y de investigación de Chipiona desde un directorio local o externo. Limpia metadatos, filtra marcas inline `[F-XXXX]`, sanea secciones internas y conecta enlaces enciclopédicos entre artículos.
+
+```bash
+# Importación estándar:
+php artisan chipiona:import-corpus
+
+# Importación indicando ruta explícita al corpus:
+php artisan chipiona:import-corpus --path=/ruta/al/corpus
+
+# Limpieza previa de páginas antes de importar:
+php artisan chipiona:import-corpus --clean
+```
+
+---
+
+## 7. `php artisan chipiona:sanitize-content`
+
+**Archivo**: `app/Console/Commands/SanitizeContentCommand.php`
+
+Inspecciona y sanea todas las páginas del catálogo en base de datos. Elimina notas internas de investigación (`## Notas de investigación`), indicios de archivo preliminares (`## Indicios pendientes`, `## Pending clues`), confirmaciones orales (`## Confirmación local`) y tareas de ampliación (`## Para ampliar`). Además, resuelve alias tipográficos de slugs y elimina enlaces a archivos no publicados o carpetas internas del repositorio (`00-proyecto`, `nota-indicios.md`).
+
+```bash
+# Modo simulación (no escribe en base de datos):
+php artisan chipiona:sanitize-content --dry-run
+
+# Ejecución real en desarrollo o producción:
+php artisan chipiona:sanitize-content
 ```

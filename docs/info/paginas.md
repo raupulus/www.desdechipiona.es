@@ -1,6 +1,6 @@
 # Módulo: Páginas
 
-*Última actualización: 2026-11-01*
+*Última actualización: 2026-11-11*
 
 > Páginas de contenido estático/dinámico traducibles (es/en) con campos SEO, categorías opcionales y estados de publicación.
 
@@ -95,3 +95,13 @@ Mismos que Post: `HasTranslations`, `HasSlug`, `HasStatus`, `HasSeo`, `BelongsTo
 El `PageSeeder` crea 12 páginas con traducciones es/en (10 publicadas, 2 borradores). Es idempotente.
 
 Las páginas **`politica-privacidad`** y **`politica-cookies`** se crean siempre en el seeder como páginas dinámicas editables desde Filament Admin (`/pages/politica-privacidad`, `/pages/politica-cookies`), además de existir las vistas Blade estáticas (`resources/views/static/privacy.blade.php` y `resources/views/static/cookies.blade.php`) en `/privacy` y `/cookies`.
+
+---
+
+## Saneamiento y Renderizado Dinámico (`rendered_content`)
+
+El modelo `Page` implementa el accessor dinámico `$page->rendered_content` (`getRenderedContentAttribute()`), respaldado por `Page::sanitizeContentBody()` y `ContentAutoLinker`:
+1. **Filtro de secciones de trabajo interno**: Elimina encabezados y cuerpos de trabajo de investigación (`## Indicios pendientes`, `## Confirmación local`, `## Confirmación documental`, `## Para ampliar`, `## Notas de investigación`, `## Fuentes`, etc.).
+2. **Protección contra enlaces rotos**: Convierte o elimina enlaces a carpetas internas del repositorio (`00-proyecto`, `01-fuentes`, `04-recursos`, `99-archivo`, `nota-indicios`).
+3. **Resolución de alias y validación de existencia**: Corrige automáticamente erratas tipográficas en slugs de enlaces (`playa-de-relga` → `playa-de-regla`) y degrada a texto plano cualquier enlace cuyo slug destino no exista en el catálogo de páginas publicadas, previniendo errores 404 para el usuario.
+4. **Envoltura responsiva de tablas**: Envuelve cualquier tabla HTML generada en un contenedor con scroll horizontal accesible (`<div class="table-responsive-wrapper">`).

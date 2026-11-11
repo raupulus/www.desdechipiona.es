@@ -232,15 +232,10 @@ class Page extends Model
             return '';
         }
 
-        $text = (string) $raw;
-        if (trim($text) === '') {
+        $text = static::sanitizeContentBody((string) $raw);
+        if ($text === '') {
             return '';
         }
-
-        // Eliminar H1 inicial en Markdown (# Título) e imágenes/enlaces relativos al corpus privado (04-recursos / .jpg)
-        $text = (string) preg_replace('/^\s*#\s+[^\r\n]+\R*/u', '', $text);
-        $text = (string) preg_replace('/!\[[^\]]*\]\((?:[^)]*04-recursos[^)]*|[^)]*\.(?:jpe?g|png|gif))(?:\s+"[^"]*")?\)\R*/iu', '', $text);
-        $text = (string) preg_replace('/\[([^\]]+)\]\([^)]*04-recursos[^)]*\)/iu', '$1', $text);
 
         // Si ya contiene bloques HTML principales, devolver saneado directamente
         if (preg_match('/<(p|div|section|article|h2|h3|ul|ol|table)\b/i', $text)) {
@@ -256,6 +251,46 @@ class Page extends Model
         $html = (string) preg_replace('/<h1(\b[^>]*)>(.*?)<\/h1>/is', '<h2$1>$2</h2>', $html);
 
         return static::wrapTablesInResponsiveContainer($html);
+    }
+
+    /**
+     * Limpia secciones de trabajo interno, notas de investigación y enlaces al corpus privado
+     * antes de la persistencia o renderización pública.
+     */
+    public static function sanitizeContentBody(string $text): string
+    {
+        // 1. Eliminar H1 inicial en Markdown (# Título) para evitar duplicidad con el header
+        $text = (string) preg_replace('/^\s*#\s+[^\r\n]+\R*/u', '', $text);
+
+        // 2. Eliminar imágenes relativas al corpus privado (00-proyecto, 01-fuentes, 04-recursos, 99-archivo) o no WebP
+        $text = (string) preg_replace('/!\[[^\]]*\]\((?:[^)]*(?:00-proyecto|01-fuentes|04-recursos|99-archivo)[^)]*|[^)]*\.(?:jpe?g|png|gif))(?:\s+"[^"]*")?\)\R*/iu', '', $text);
+
+        // 3. Eliminar secciones de trabajo interno, indicios de archivo y notas preliminares
+        $internalSectionsPattern = '/(?ms)^##\s+(?:'
+            .'Indicios pendientes|Pending indications|Pending clues|Pending archival clues|Pending archival traces|Pending documentary clues|Pending archival leads|Pending leads|'
+            .'Confirmación local|Local confirmation|'
+            .'Confirmación documental|Documentary confirmation|'
+            .'Para ampliar|To expand|Further reading|Further research|'
+            .'Notas de investigación|Research notes|'
+            .'Cómo citar esta ficha|Cómo citar este documento|How to cite this (?:entry|sheet|document)|'
+            .'Fuentes|Sources|'
+            .'Por documentar|Por hacer|Preguntas de investigación|Estado de la investigación|Checklist antes de publicar|Fichas descartadas|Fuera del alcance'
+            .')\b.*?(?=\R##\s+|\Z)/u';
+        $text = (string) preg_replace($internalSectionsPattern, '', $text);
+
+        // 4. Limpiar enlaces a carpetas internas del repositorio o archivos de indicio
+        $text = (string) preg_replace('/\[([^\]]+)\]\([^)]*?(?:00-proyecto|01-fuentes|04-recursos|99-archivo|nota-indicios)[^)]*?\)/iu', '$1', $text);
+
+        // 5. Eliminar enlaces residuales a /pages/nota-indicios
+        $text = (string) preg_replace('/\[([^\]]+)\]\(\/pages\/nota-indicios\)/iu', '$1', $text);
+
+        // 6. Eliminar cualquier línea residual que mencione nota-indicios
+        $text = (string) preg_replace('/^[^\r\n]*nota-indicios[^\r\n]*\R*/imu', '', $text);
+
+        // 7. Normalizar saltos de línea triples o superiores
+        $text = (string) preg_replace('/\n{3,}/u', "\n\n", $text);
+
+        return trim($text);
     }
 
     /**
