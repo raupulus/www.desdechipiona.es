@@ -448,8 +448,7 @@ class ChipionaFeaturesTest extends TestCase
             $this->get(route($nonAdRoute))
                 ->assertOk()
                 ->assertDontSee('pagead2.googlesyndication.com', false)
-                ->assertDontSee('chipiona-adsbygoogle-script', false)
-                ->assertDontSee('window.chipionaBootAdsense = function', false)
+                ->assertDontSee('data-ad-format="auto"', false)
                 ->assertDontSee('data-ad-variant', false);
         }
 
@@ -458,14 +457,11 @@ class ChipionaFeaturesTest extends TestCase
             ->assertSee('data-ad-variant="sidebar"', false)
             ->assertSee('data-ad-variant="horizontal"', false)
             ->assertSee('data-ad-client="ca-pub-1234567890123456"', false)
-            ->assertSee('width:300px;height:250px', false)
-            ->assertSee('max-width:728px;height:90px', false)
-            ->assertSee('chipiona-adsbygoogle-script', false)
+            ->assertSee('data-ad-format="auto"', false)
+            ->assertSee('data-full-width-responsive="true"', false)
             ->assertSee('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456', false)
-            ->assertSee('window.chipionaBootAdsense = function', false)
-            ->assertSee('ins.offsetParent === null', false)
+            ->assertSee('(adsbygoogle = window.adsbygoogle || []).push({});', false)
             ->assertSee("(window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds =\n                        localStorage.getItem('chipiona_cookie_consent') === 'all' ? 0 : 1;", false)
-            ->assertSee("(window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = consent === 'all' ? 0 : 1;", false)
             ->assertDontSee('x-show="cookieConsent === \'all\'"', false);
     }
 

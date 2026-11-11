@@ -17,13 +17,10 @@
             localStorage.setItem('chipiona_cookie_notice', '1');
             (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = choice === 'all' ? 0 : 1;
             window.dispatchEvent(new CustomEvent('chipiona-consent-updated', { detail: choice }));
-            if (typeof window.chipionaBootAdsense === 'function') {
-                this.$nextTick(() => window.chipionaBootAdsense(choice));
-            }
         }
     }"
     x-init="document.documentElement.setAttribute('data-font-scale', fontScale)"
-    @chipiona-consent-updated.window="cookieConsent = $event.detail; showCookieBanner = false; (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = $event.detail === 'all' ? 0 : 1; if (typeof window.chipionaBootAdsense === 'function') { $nextTick(() => window.chipionaBootAdsense($event.detail)); }"
+    @chipiona-consent-updated.window="cookieConsent = $event.detail; showCookieBanner = false; (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = $event.detail === 'all' ? 0 : 1;"
     @chipiona-open-cookie-banner.window="showCookieBanner = true"
 >
     <head>

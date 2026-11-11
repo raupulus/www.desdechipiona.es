@@ -31,47 +31,8 @@
                 <script>
                     (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds =
                         localStorage.getItem('chipiona_cookie_consent') === 'all' ? 0 : 1;
-
-                    window.chipionaBootAdsense = function (consentChoice) {
-                        var consent = consentChoice || localStorage.getItem('chipiona_cookie_consent');
-                        (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = consent === 'all' ? 0 : 1;
-
-                        if (!document.getElementById('chipiona-adsbygoogle-script')) {
-                            var s = document.createElement('script');
-                            s.id = 'chipiona-adsbygoogle-script';
-                            s.async = true;
-                            s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ urlencode($clientId) }}';
-                            s.crossOrigin = 'anonymous';
-                            document.head.appendChild(s);
-                        }
-
-                        var pushSlots = function () {
-                            document.querySelectorAll('ins.adsbygoogle[data-chipiona-pushed="0"]').forEach(function (ins) {
-                                if (ins.offsetParent === null) {
-                                    return;
-                                }
-                                ins.setAttribute('data-chipiona-pushed', '1');
-                                try {
-                                    (window.adsbygoogle = window.adsbygoogle || []).push({});
-                                } catch (e) {}
-                            });
-                        };
-
-                        if (typeof window.requestAnimationFrame === 'function') {
-                            window.requestAnimationFrame(function () {
-                                setTimeout(pushSlots, 0);
-                            });
-                        } else {
-                            setTimeout(pushSlots, 0);
-                        }
-                    };
-
-                    document.addEventListener('DOMContentLoaded', function () {
-                        window.chipionaBootAdsense();
-                    });
                 </script>
                 <script
-                    id="chipiona-adsbygoogle-script"
                     async
                     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ urlencode($clientId) }}"
                     crossorigin="anonymous"
@@ -93,15 +54,19 @@
         </div>
 
         @if($variant === 'sidebar')
-            <div class="relative mx-auto flex h-[250px] w-full max-w-[300px] items-center justify-center overflow-hidden rounded-xl bg-white/80">
+            <div class="relative mx-auto flex min-h-[250px] w-full max-w-[300px] items-center justify-center rounded-xl bg-white/80">
                 @if($canRenderLiveAd)
                     <ins
                         class="adsbygoogle"
-                        style="display:inline-block;width:300px;height:250px"
+                        style="display:block;width:100%"
                         data-ad-client="{{ $clientId }}"
                         data-ad-slot="{{ $slotId }}"
-                        data-chipiona-pushed="0"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"
                     ></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
                 @else
                     <div class="flex h-full w-full flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-stone-50/90 p-4 text-center">
                         <span class="font-mono text-xs font-extrabold text-slate-500">300 × 250</span>
@@ -112,15 +77,19 @@
                 @endif
             </div>
         @else
-            <div class="relative mx-auto flex h-[90px] w-full max-w-[728px] items-center justify-center overflow-hidden rounded-xl bg-white/80">
+            <div class="relative mx-auto flex min-h-[90px] w-full max-w-[728px] items-center justify-center rounded-xl bg-white/80">
                 @if($canRenderLiveAd)
                     <ins
                         class="adsbygoogle"
-                        style="display:inline-block;width:100%;max-width:728px;height:90px"
+                        style="display:block;width:100%"
                         data-ad-client="{{ $clientId }}"
                         data-ad-slot="{{ $slotId }}"
-                        data-chipiona-pushed="0"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"
                     ></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
                 @else
                     <div class="flex h-full w-full flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-stone-50/90 px-4 py-2 text-center">
                         <span class="font-mono text-xs font-extrabold text-slate-500">728 × 90</span>
