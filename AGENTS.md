@@ -38,7 +38,7 @@ Los siguientes directorios y archivos están estrictamente excluidos del reposit
 - Carpetas internas y de agentes: `.junie/`, `docs/planning/`, `pnpm-store/`, `docs/auditorias/`.
 - IDEs y editores: `.idea/`, `.vscode/`, `*.sublime-*`, `.DS_Store`, `Thumbs.db`.
 - Logs y cachés: `/storage/logs/*.log`, `bootstrap/cache/*.php`, `storage/framework/cache/`.
-- Artefactos generados: `public/build/`, `public/sitemap.xml`, `public/docs/api/`, `.scribe/endpoints.cache/`.
+- Artefactos generados: `public/build/`, `public/sitemap.xml`, `public/ads.txt`, `public/docs/api/`, `.scribe/endpoints.cache/`.
 
 ### ⚠️ Política de commits — OBLIGATORIO
 - **Commits agrupados por funcionalidad**: Cada commit debe agrupar única y estrictamente los cambios relacionados que compartan un mismo contexto o funcionalidad (p. ej., maquetación base, módulo de blog, actualización de documentación, fix específico). Se cierra y valida el commit de una funcionalidad **antes** de pasar a la siguiente.
