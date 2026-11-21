@@ -14,11 +14,29 @@
     $currentLocale = app()->getLocale();
     $availableLocales = config('locales.available', ['es', 'en']);
     $twitterHandle = setting('twitter_url') ? '@'.basename(rtrim((string) setting('twitter_url'), '/')) : null;
+
+    $adsenseClientId = trim((string) (setting('adsense_client_id') ?: config('services.adsense.client_id', '')));
+    $adsenseEnabled = (bool) config('services.adsense.enabled', false)
+        || filter_var(setting('adsense_enabled', false), FILTER_VALIDATE_BOOLEAN);
+    $adsenseCmpEnabled = (bool) config('services.adsense.cmp_enabled', true);
+
+    $adsensePublisherId = '';
+    $adsenseAccountMeta = '';
+    if ($adsenseClientId !== '') {
+        $adsensePublisherId = preg_replace('/^ca-/i', '', $adsenseClientId) ?? $adsenseClientId;
+        if (! str_starts_with(strtolower($adsensePublisherId), 'pub-')) {
+            $adsensePublisherId = 'pub-'.ltrim($adsensePublisherId, '-');
+        }
+        $adsenseAccountMeta = 'ca-'.$adsensePublisherId;
+    }
 @endphp
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <meta name="theme-color" content="#020617" />
+@if($adsenseAccountMeta !== '')
+<meta name="google-adsense-account" content="{{ $adsenseAccountMeta }}" />
+@endif
 <title>{{ $pageTitle }}</title>
 <meta name="description" content="{{ $pageDescription }}" />
 <meta name="author" content="{{ $seoData['author'] ?? 'Raúl Caro Pastorino' }}" />
@@ -81,3 +99,28 @@
 <link rel="icon" type="image/webp" sizes="32x32" href="{{ asset('images/logos/logo-32x32.webp') }}" />
 <link rel="icon" type="image/webp" sizes="16x16" href="{{ asset('images/logos/logo-16x16.webp') }}" />
 <link rel="manifest" href="{{ asset('site.webmanifest') }}" />
+@if($adsenseEnabled && $adsensePublisherId !== '')
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    (function(){
+        var stored = localStorage.getItem('chipiona_cookie_consent');
+        var state = stored === 'all' ? 'granted' : 'denied';
+        gtag('consent', 'default', {
+            ad_storage: state,
+            ad_user_data: state,
+            ad_personalization: state,
+            analytics_storage: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+        gtag('set', 'ads_data_redaction', true);
+        (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = stored === 'all' ? 0 : 1;
+    })();
+</script>
+@if($adsenseCmpEnabled)
+<script async src="https://fundingchoicesmessages.google.com/i/{{ urlencode($adsensePublisherId) }}?ers=1"></script>
+<script>(function(){function signalGooglefcPresent(){if(!window.frames['googlefcPresent']){if(document.body){var iframe=document.createElement('iframe');iframe.style='width:0;height:0;border:none;z-index:-1000;left:-1000px;top:-1000px;';iframe.style.display='none';iframe.name='googlefcPresent';document.body.appendChild(iframe);}else{setTimeout(signalGooglefcPresent,0);}}}signalGooglefcPresent();})();</script>
+@endif
+@endif

@@ -422,23 +422,30 @@ class ChipionaFeaturesTest extends TestCase
         config([
             'services.adsense.enabled' => false,
             'services.adsense.preview' => false,
+            'services.adsense.client_id' => '',
         ]);
 
         $this->get(route('home'))
             ->assertOk()
             ->assertDontSee('data-ad-variant', false)
-            ->assertDontSee('pagead2.googlesyndication.com', false);
+            ->assertDontSee('pagead2.googlesyndication.com', false)
+            ->assertDontSee('google-adsense-account', false)
+            ->assertDontSee('fundingchoicesmessages.google.com', false);
 
         $this->get(route('pages.show', $page->slug))
             ->assertOk()
             ->assertDontSee('data-ad-variant', false)
-            ->assertDontSee('pagead2.googlesyndication.com', false);
+            ->assertDontSee('pagead2.googlesyndication.com', false)
+            ->assertDontSee('google-adsense-account', false)
+            ->assertDontSee('fundingchoicesmessages.google.com', false);
 
-        // 2. Con AdSense activo: en portada y páginas sin slots jamás se incluye el cargador de AdSense;
-        //    en páginas interiores con slots sí se incluye el cargador condicionado a consentimiento RGPD
+        // 2. Con AdSense activo: en portada y páginas sin slots jamás se incluye el cargador de bloques ni anuncios,
+        //    pero sí se declaran google-adsense-account, Google Consent Mode v2 y la CMP certificada TCF v2.2;
+        //    en páginas interiores con slots sí se incluye el cargador de AdSense condicionado a consentimiento RGPD
         config([
             'services.adsense.enabled' => true,
             'services.adsense.preview' => false,
+            'services.adsense.cmp_enabled' => true,
             'services.adsense.client_id' => 'ca-pub-1234567890123456',
             'services.adsense.slot_sidebar' => '1111111111',
             'services.adsense.slot_horizontal' => '2222222222',
@@ -447,6 +454,9 @@ class ChipionaFeaturesTest extends TestCase
         foreach (['home', 'explore', 'about', 'legal', 'contact', 'privacy', 'cookies', 'suggestions.create'] as $nonAdRoute) {
             $this->get(route($nonAdRoute))
                 ->assertOk()
+                ->assertSee('<meta name="google-adsense-account" content="ca-pub-1234567890123456" />', false)
+                ->assertSee("gtag('consent', 'default'", false)
+                ->assertSee('https://fundingchoicesmessages.google.com/i/pub-1234567890123456?ers=1', false)
                 ->assertDontSee('pagead2.googlesyndication.com', false)
                 ->assertDontSee('data-ad-format="auto"', false)
                 ->assertDontSee('data-ad-variant', false);
@@ -454,6 +464,9 @@ class ChipionaFeaturesTest extends TestCase
 
         $this->get(route('pages.show', $page->slug))
             ->assertOk()
+            ->assertSee('<meta name="google-adsense-account" content="ca-pub-1234567890123456" />', false)
+            ->assertSee("gtag('consent', 'default'", false)
+            ->assertSee('https://fundingchoicesmessages.google.com/i/pub-1234567890123456?ers=1', false)
             ->assertSee('data-ad-variant="sidebar"', false)
             ->assertSee('data-ad-variant="horizontal"', false)
             ->assertSee('data-ad-client="ca-pub-1234567890123456"', false)

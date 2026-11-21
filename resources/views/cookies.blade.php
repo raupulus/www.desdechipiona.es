@@ -33,6 +33,17 @@
         x-data="{
             consent: localStorage.getItem('chipiona_cookie_consent') || 'pending',
             savedFeedback: false,
+            hasGoogleCmp: !!(window.googlefc && typeof window.googlefc.showRevocationMessage === 'function'),
+            init() {
+                setTimeout(() => {
+                    this.hasGoogleCmp = !!(window.googlefc && typeof window.googlefc.showRevocationMessage === 'function');
+                }, 800);
+            },
+            openGoogleCmp() {
+                if (window.googlefc && typeof window.googlefc.showRevocationMessage === 'function') {
+                    window.googlefc.showRevocationMessage();
+                }
+            },
             updateChoice(value) {
                 this.consent = value;
                 this.savedFeedback = true;
@@ -42,6 +53,14 @@
                     localStorage.setItem('chipiona_cookie_consent', value);
                     localStorage.setItem('chipiona_cookie_notice', '1');
                     (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = value === 'all' ? 0 : 1;
+                    if (typeof window.gtag === 'function') {
+                        var consentState = value === 'all' ? 'granted' : 'denied';
+                        window.gtag('consent', 'update', {
+                            ad_storage: consentState,
+                            ad_user_data: consentState,
+                            ad_personalization: consentState
+                        });
+                    }
                     window.dispatchEvent(new CustomEvent('chipiona-consent-updated', { detail: value }));
                 }
                 setTimeout(() => { this.savedFeedback = false; }, 3500);
@@ -78,6 +97,15 @@
                 class="rounded-xl border border-slate-300 bg-stone-100 px-5 py-2.5 text-xs sm:text-sm font-extrabold text-slate-950 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 cursor-pointer"
             >
                 {{ __('messages.cookies_consent_btn_reject_ads') }}
+            </button>
+            <button
+                type="button"
+                x-show="hasGoogleCmp"
+                x-cloak
+                @click="openGoogleCmp()"
+                class="rounded-xl border border-blue-800 bg-blue-50 px-5 py-2.5 text-xs sm:text-sm font-extrabold text-blue-950 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"
+            >
+                {{ __('messages.cookies_consent_btn_google_cmp') }}
             </button>
         </div>
 

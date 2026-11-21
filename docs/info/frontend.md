@@ -1,6 +1,6 @@
 # Módulo: Frontend público
 
-*Última actualización: 2026-11-10*
+*Última actualización: 2026-11-21*
 
 > Layout principal, barra de navegación, pie de página, componentes Blade reutilizables y páginas públicas del sitio web con Tailwind CSS y Alpine.js.
 
@@ -16,9 +16,9 @@ El frontend público incluye el layout HTML5 con Tailwind CSS v4, la barra de na
 
 | Archivo | Descripción |
 |---------|-------------|
-| `resources/views/layouts/app.blade.php` | Layout principal HTML5 con `@vite`, `@stack`, navbar, footer y banner RGPD de cookies |
+| `resources/views/layouts/app.blade.php` | Layout principal HTML5 con `@vite`, `@stack`, navbar, footer, sincronización TCF/Consent Mode v2 y banner RGPD de respaldo |
 | `resources/views/layouts/guest.blade.php` | Layout centrado para páginas de autenticación (`/login`, `/register`, etc.) |
-| `resources/views/layouts/head.blade.php` | Meta tags SEO completos (OG, Twitter, JSON-LD, hreflang) |
+| `resources/views/layouts/head.blade.php` | Meta tags SEO completos (OG, Twitter, JSON-LD, hreflang), `google-adsense-account`, Google Consent Mode v2 y CMP certificada TCF v2.2 (`fundingchoicesmessages.google.com`) |
 | `resources/views/layouts/navbar.blade.php` | Barra de navegación responsive con Alpine.js |
 | `resources/views/layouts/footer.blade.php` | Pie de página con copyright, enlaces legales, gestor de cookies y redes sociales |
 

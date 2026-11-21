@@ -65,6 +65,7 @@ return [
     'adsense' => [
         'enabled' => (bool) env('ADSENSE_ENABLED', false),
         'preview' => (bool) env('ADSENSE_PREVIEW', env('APP_ENV') === 'local'),
+        'cmp_enabled' => (bool) env('ADSENSE_CMP_ENABLED', true),
         'client_id' => env('ADSENSE_CLIENT_ID', ''),
         'slot_sidebar' => env('ADSENSE_SLOT_SIDEBAR', ''),
         'slot_horizontal' => env('ADSENSE_SLOT_HORIZONTAL', ''),

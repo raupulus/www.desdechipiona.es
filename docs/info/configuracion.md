@@ -1,6 +1,6 @@
 # Módulo: Configuración (Settings)
 
-*Última actualización: 2026-11-10*
+*Última actualización: 2026-11-21*
 
 > Ajustes globales de la plataforma en formato clave-valor, agrupados por categoría, cacheados durante 1 hora y accesibles mediante el helper global `setting()`.
 
@@ -103,6 +103,8 @@ Registrado en `composer.json` bajo `autoload.files` junto con `media_url()`, `st
 | `adsense_client_id` | ads | Identificador de editor de Google AdSense (`ca-pub-...`) |
 | `adsense_slot_sidebar` | ads | ID del bloque fijo lateral (`300×250`) |
 | `adsense_slot_horizontal` | ads | ID del bloque fijo horizontal (`728×90`) |
+
+> **Variables de entorno complementarias (`config/services.php` → `adsense`)**: `ADSENSE_ENABLED`, `ADSENSE_PREVIEW`, `ADSENSE_CMP_ENABLED` (activa por defecto la CMP certificada de Google IAB TCF v2.2 / Funding Choices junto con Google Consent Mode v2 y el meta tag `google-adsense-account`), `ADSENSE_CLIENT_ID`, `ADSENSE_SLOT_SIDEBAR` y `ADSENSE_SLOT_HORIZONTAL`.
 
 ---
 

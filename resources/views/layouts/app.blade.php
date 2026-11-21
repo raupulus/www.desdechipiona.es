@@ -5,10 +5,40 @@
         fontScale: localStorage.getItem('chipiona_font_scale') || 'normal',
         cookieConsent: localStorage.getItem('chipiona_cookie_consent') || 'pending',
         showCookieBanner: !localStorage.getItem('chipiona_cookie_consent'),
+        googleCmpDetected: false,
         setFontScale(scale) {
             this.fontScale = scale;
             localStorage.setItem('chipiona_font_scale', scale);
             document.documentElement.setAttribute('data-font-scale', scale);
+        },
+        initConsentSync() {
+            document.documentElement.setAttribute('data-font-scale', this.fontScale);
+            const detectGoogleCmp = () => {
+                if (typeof window.googlefc !== 'undefined' || typeof window.__tcfapi === 'function') {
+                    this.googleCmpDetected = true;
+                }
+                if (typeof window.__tcfapi === 'function') {
+                    try {
+                        window.__tcfapi('addEventListener', 2, (tcData, success) => {
+                            if (!success || !tcData) return;
+                            this.googleCmpDetected = true;
+                            if (tcData.eventStatus === 'tcloaded' || tcData.eventStatus === 'useractioncomplete') {
+                                const personalized = !!(tcData.purpose && tcData.purpose.consents && tcData.purpose.consents[1]);
+                                this.setCookieConsent(personalized ? 'all' : 'essential');
+                            }
+                        });
+                    } catch (e) {}
+                }
+            };
+            detectGoogleCmp();
+            setTimeout(detectGoogleCmp, 800);
+        },
+        openConsentPreferences() {
+            if (window.googlefc && typeof window.googlefc.showRevocationMessage === 'function') {
+                window.googlefc.showRevocationMessage();
+                return;
+            }
+            this.showCookieBanner = true;
         },
         setCookieConsent(choice) {
             this.cookieConsent = choice;
@@ -16,12 +46,20 @@
             localStorage.setItem('chipiona_cookie_consent', choice);
             localStorage.setItem('chipiona_cookie_notice', '1');
             (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = choice === 'all' ? 0 : 1;
+            if (typeof window.gtag === 'function') {
+                var consentState = choice === 'all' ? 'granted' : 'denied';
+                window.gtag('consent', 'update', {
+                    ad_storage: consentState,
+                    ad_user_data: consentState,
+                    ad_personalization: consentState
+                });
+            }
             window.dispatchEvent(new CustomEvent('chipiona-consent-updated', { detail: choice }));
         }
     }"
-    x-init="document.documentElement.setAttribute('data-font-scale', fontScale)"
+    x-init="initConsentSync()"
     @chipiona-consent-updated.window="cookieConsent = $event.detail; showCookieBanner = false; (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = $event.detail === 'all' ? 0 : 1;"
-    @chipiona-open-cookie-banner.window="showCookieBanner = true"
+    @chipiona-open-cookie-banner.window="openConsentPreferences()"
 >
     <head>
         <script>document.documentElement.setAttribute('data-font-scale', localStorage.getItem('chipiona_font_scale') || 'normal');</script>
@@ -50,9 +88,9 @@
 
         @include('layouts.footer')
 
-        {{-- Banner RGPD de consentimiento de cookies (Aceptar todas / Solo necesarias) --}}
+        {{-- Banner RGPD de consentimiento de cookies de respaldo cuando la CMP oficial no está activa --}}
         <div
-            x-show="showCookieBanner"
+            x-show="showCookieBanner && !googleCmpDetected"
             x-cloak
             role="region"
             aria-label="{{ __('messages.cookie_notice_aria') }}"
