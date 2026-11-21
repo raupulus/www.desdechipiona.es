@@ -15,7 +15,26 @@
     </div>
 </header>
 
-<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+    {{-- Guía editorial para colaboradores (visible antes de autenticarse) --}}
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-6">
+        <h2 class="font-serif text-2xl font-extrabold text-slate-950">{{ __('messages.suggestions_guide_heading') }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="rounded-xl border border-slate-200 bg-stone-50 p-4 space-y-1.5">
+                <h3 class="font-serif text-base font-extrabold text-slate-950">{{ __('messages.suggestions_step1_title') }}</h3>
+                <p class="text-sm text-slate-700 leading-relaxed">{{ __('messages.suggestions_step1_desc') }}</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 bg-stone-50 p-4 space-y-1.5">
+                <h3 class="font-serif text-base font-extrabold text-slate-950">{{ __('messages.suggestions_step2_title') }}</h3>
+                <p class="text-sm text-slate-700 leading-relaxed">{{ __('messages.suggestions_step2_desc') }}</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 bg-stone-50 p-4 space-y-1.5">
+                <h3 class="font-serif text-base font-extrabold text-slate-950">{{ __('messages.suggestions_step3_title') }}</h3>
+                <p class="text-sm text-slate-700 leading-relaxed">{{ __('messages.suggestions_step3_desc') }}</p>
+            </div>
+        </div>
+    </div>
+
     <div class="rounded-2xl border-2 border-slate-200 bg-white p-6 sm:p-10 shadow-sm space-y-6">
         @error('auth')
             <div class="rounded-xl border border-red-300 bg-red-50 p-3 text-xs font-bold text-red-800">
@@ -125,6 +144,34 @@
                 </button>
             </form>
         @endif
+    </div>
+
+    {{-- Temas prioritarios y criterios editoriales --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-4">
+            <h2 class="font-serif text-xl font-extrabold text-slate-950">{{ __('messages.suggestions_wanted_title') }}</h2>
+            <ul class="list-disc pl-5 space-y-2.5 text-sm text-slate-800 leading-relaxed">
+                <li>{!! __('messages.suggestions_wanted_li1') !!}</li>
+                <li>{!! __('messages.suggestions_wanted_li2') !!}</li>
+                <li>{!! __('messages.suggestions_wanted_li3') !!}</li>
+                <li>{!! __('messages.suggestions_wanted_li4') !!}</li>
+            </ul>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-4 flex flex-col justify-between">
+            <div class="space-y-3">
+                <h2 class="font-serif text-xl font-extrabold text-slate-950">{{ __('messages.suggestions_rules_title') }}</h2>
+                <p class="text-sm text-slate-700 leading-relaxed">{{ __('messages.suggestions_rules_body') }}</p>
+            </div>
+            <div class="flex flex-wrap gap-2.5 pt-4 border-t border-slate-100">
+                <a href="{{ route('proverbs.index') }}" class="rounded-xl bg-amber-100 border border-amber-300 px-4 py-2 text-xs font-extrabold text-amber-950 hover:bg-amber-200 transition">
+                    🗣️ {{ __('messages.suggestions_cross_proverbs') }}
+                </a>
+                <a href="{{ route('news.index') }}" class="rounded-xl border border-slate-300 bg-stone-50 px-4 py-2 text-xs font-extrabold text-slate-950 hover:bg-slate-200 transition">
+                    📰 {{ __('messages.suggestions_cross_news') }}
+                </a>
+            </div>
+        </div>
     </div>
 </section>
 @endsection

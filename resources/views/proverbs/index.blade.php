@@ -113,6 +113,16 @@
     {{-- Bloque publicitario fijo horizontal discreto --}}
     <x-ad-slot variant="horizontal" />
 
+    {{-- Contexto etnográfico del refranero chipionero --}}
+    <section class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-xs space-y-4">
+        <h2 class="font-serif text-2xl sm:text-3xl font-extrabold text-slate-950">
+            🗣️ {{ __('messages.proverbs_essay_title') }}
+        </h2>
+        <p class="text-base text-slate-800 leading-relaxed">{{ __('messages.proverbs_essay_p1') }}</p>
+        <p class="text-base text-slate-800 leading-relaxed">{{ __('messages.proverbs_essay_p2') }}</p>
+        <p class="text-base text-slate-800 leading-relaxed">{{ __('messages.proverbs_essay_p3') }}</p>
+    </section>
+
     {{-- Formulario para subir un refrán (requiere verificación OAuth anti-spam) --}}
     <section id="subir-refran" class="max-w-3xl mx-auto rounded-2xl border-2 border-slate-900 bg-white p-6 sm:p-10 shadow-lg space-y-6">
         <div>

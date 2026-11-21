@@ -110,5 +110,37 @@
 
     {{-- Bloque publicitario fijo horizontal discreto --}}
     <x-ad-slot variant="horizontal" />
+
+    {{-- Guía práctica de atención ciudadana y urgencias --}}
+    <section class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-xs space-y-6">
+        <div class="space-y-2">
+            <h2 class="font-serif text-2xl sm:text-3xl font-extrabold text-slate-950">
+                🛟 {{ __('messages.phones_guide_title') }}
+            </h2>
+            <p class="text-base text-slate-800 leading-relaxed max-w-4xl">
+                {{ __('messages.phones_guide_intro') }}
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="rounded-xl border border-rose-200 bg-rose-50/50 p-5 space-y-2">
+                <h3 class="font-serif text-lg font-extrabold text-slate-950">🚨 {{ __('messages.phones_guide_c1_title') }}</h3>
+                <p class="text-sm text-slate-800 leading-relaxed">{!! __('messages.phones_guide_c1_body') !!}</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 bg-stone-50 p-5 space-y-2">
+                <h3 class="font-serif text-lg font-extrabold text-slate-950">🏥 {{ __('messages.phones_guide_c2_title') }}</h3>
+                <p class="text-sm text-slate-800 leading-relaxed">{{ __('messages.phones_guide_c2_body') }}</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 bg-stone-50 p-5 space-y-3 flex flex-col justify-between">
+                <div class="space-y-2">
+                    <h3 class="font-serif text-lg font-extrabold text-slate-950">🔄 {{ __('messages.phones_guide_c3_title') }}</h3>
+                    <p class="text-sm text-slate-800 leading-relaxed">{{ __('messages.phones_guide_c3_body') }}</p>
+                </div>
+                <a href="{{ route('contact') }}" class="inline-flex items-center justify-center rounded-xl bg-slate-950 px-4 py-2 text-xs font-extrabold text-white hover:bg-orange-800 transition">
+                    {{ __('messages.phones_guide_contact_btn') }}
+                </a>
+            </div>
+        </div>
+    </section>
 </div>
 @endsection
