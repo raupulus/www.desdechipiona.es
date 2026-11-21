@@ -1,6 +1,6 @@
 # AGENTS.md — Guía completa del proyecto para agentes de IA
 
-*Última actualización: 2026-11-11*
+*Última actualización: 2026-11-21*
 
 Este archivo proporciona el contexto y las directrices obligatorias del proyecto para que los agentes de IA
 puedan trabajar de forma autónoma, consistente y precisa. Léelo completamente antes de realizar cualquier modificación.
@@ -39,6 +39,11 @@ Los siguientes directorios y archivos están estrictamente excluidos del reposit
 - IDEs y editores: `.idea/`, `.vscode/`, `*.sublime-*`, `.DS_Store`, `Thumbs.db`.
 - Logs y cachés: `/storage/logs/*.log`, `bootstrap/cache/*.php`, `storage/framework/cache/`.
 - Artefactos generados: `public/build/`, `public/sitemap.xml`, `public/ads.txt`, `public/docs/api/`, `.scribe/endpoints.cache/`.
+
+### ⚠️ Política de Base de Datos, Seeders y Contenido Propio — OBLIGATORIO
+- **Prohibido trackear contenido propio en git**: los artículos, páginas editoriales, noticias, refranes, copias de seguridad/dumps de base de datos (`.sql`, `.dump`, `.sqlite`, `.json`) y scripts puntuales de carga o actualización de contenido propio **NUNCA** se versionan ni se guardan en el repositorio git.
+- **Prohibido crear seeders o migraciones para actualizar o publicar contenido**: las migraciones se reservan exclusivamente para cambios de esquema y los seeders únicamente para la estructura inicial de arranque (usuarios base, categorías/ajustes estructurales y datos dummy de desarrollo).
+- **Gestión directa en base de datos**: el contenido editorial propio se crea, amplía y actualiza directamente sobre la base de datos (mediante el panel `/admin` o sincronización controlada entre local y producción usando copias de seguridad y scripts temporales fuera del repositorio).
 
 ### ⚠️ Política de commits — OBLIGATORIO
 - **Commits agrupados por funcionalidad**: Cada commit debe agrupar única y estrictamente los cambios relacionados que compartan un mismo contexto o funcionalidad (p. ej., maquetación base, módulo de blog, actualización de documentación, fix específico). Se cierra y valida el commit de una funcionalidad **antes** de pasar a la siguiente.
